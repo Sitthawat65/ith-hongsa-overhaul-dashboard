@@ -1,0 +1,11 @@
+# Source Excel workbook (company internal — kept local, not pushed)
+*.xlsx
+*.xlsm
+*.xls
+
+# OS / editor cruft
+Thumbs.db
+desktop.ini
+.DS_Store
+*~
+*.tmp
