@@ -63,7 +63,8 @@
   /* grid + cards */
   .grid{display:grid;gap:16px;margin-top:16px}
   .g3{grid-template-columns:1fr 1fr 1.1fr}
-  @media(max-width:1100px){.g3{grid-template-columns:1fr}}
+  .g2x2{grid-template-columns:1fr 1fr}
+  @media(max-width:1100px){.g3{grid-template-columns:1fr}.g2x2{grid-template-columns:1fr}}
   .card{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,var(--panel2),var(--panel));padding:16px 18px;box-shadow:var(--shadow)}
   .card h3{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:14px}
   .card h3 .dot{width:9px;height:9px;border-radius:3px;background:var(--cyan)}
@@ -174,7 +175,7 @@
 
   <div class="kpis" id="kpis"></div>
 
-  <div class="grid g3">
+  <div class="grid g2x2">
     <div class="card">
       <h3><span class="dot" style="background:var(--green)"></span>Status <small id="stTitle">Status</small></h3>
       <div class="donut-wrap">
@@ -192,6 +193,10 @@
         <span><i style="background:var(--amber)"></i>&lt; 5,000 ชม.</span>
         <span><i style="background:var(--green)"></i>OK</span>
       </div>
+    </div>
+    <div class="card">
+      <h3><span class="dot" style="background:var(--purple)"></span>Brand <small>ยี่ห้อมอเตอร์</small></h3>
+      <div class="hbars" id="brandBars"></div>
     </div>
     <div class="card">
       <h3><span class="dot" style="background:var(--cyan)"></span><span id="brkTitle">Location/Excavator</span> <small id="brkSub">Breakdown</small></h3>
@@ -1836,6 +1841,7 @@ const SYS = [
   {id:"BW1800",label:"BW1800", sub:"Conveyor line · 1000 kW", color:"#f472b6"},
 ];
 const fmt  = n => (n==null||isNaN(n))?"–":Math.round(n).toLocaleString("en-US");
+const fmtP = n => (n==null||isNaN(n))?"–":Number(n).toLocaleString("en-US",{maximumFractionDigits:1});
 const esc  = s => (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const SC = {"Running":"#34d399","PRE OH":"#fbbf24","Finished":"#60a5fa","Stand by":"#94a3b8"};
 const SB = {"Running":"b-run","PRE OH":"b-pre","Finished":"b-fin","Stand by":"b-stb"};
@@ -1930,7 +1936,7 @@ function motorCard(d){
     <div class="mhead">
       <div class="sdot" style="background:${SC[d.status]||'#94a3b8'}"></div>
       <div class="h-name"><b>${esc(d.name)}</b><span class="meta"><span class="loc">${esc(inst)}</span>${d.serial?` <span class="ser">· ${esc(d.serial)}</span>`:''}</span></div>
-      <div class="h-brand"><b>${esc(d.brand||'–')}</b><br>${fmt(d.power)} kW · ${fmt(d.voltage)} V</div>
+      <div class="h-brand"><b>${esc(d.brand||'–')}</b><br>${fmtP(d.power)} kW · ${fmt(d.voltage)} V</div>
       <div><span class="bg ${SB[d.status]||'b-stb'}">${esc(d.status||'')}</span></div>
       <div class="lifewrap"><div class="lifebar"><i style="width:${lw}%;background:${lc}"></i></div>
         <span class="lifepc">${d.lifeUsed==null?'–':Math.round(d.lifeUsed)+'%'}</span></div>
@@ -1963,7 +1969,14 @@ function renderMotors(){
     card.classList.toggle("open");
   }));
 }
-function renderAll(){renderTabs();renderKPIs();renderDonut();renderUrg();renderBrk();renderMotors();}
+function renderBrand(){
+  const r=rowsOf(cur);const m={};
+  r.forEach(d=>{if(d.brand)m[d.brand]=(m[d.brand]||0)+1;});
+  const arr=Object.entries(m).sort((a,b)=>b[1]-a[1]);const mx=Math.max(1,...arr.map(x=>x[1]));
+  const cols=["#a78bfa","#22d3ee","#34d399","#60a5fa","#fbbf24","#fb7185","#f472b6","#94a3b8"];
+  document.getElementById("brandBars").innerHTML=arr.length?arr.map((x,i)=>`<div class="hb"><div class="nm">${esc(x[0])}</div><div class="track"><div class="fill" style="width:${x[1]/mx*100}%;background:${cols[i%cols.length]}"></div></div><b>${x[1]}</b></div>`).join(""):'<div style="color:var(--muted);font-size:12px">ไม่มีข้อมูล</div>';
+}
+function renderAll(){renderTabs();renderKPIs();renderDonut();renderUrg();renderBrand();renderBrk();renderMotors();}
 document.getElementById("q").addEventListener("input",e=>{q=e.target.value;renderMotors();});
 function yearOf(s){if(!s)return null;const n=String(s).match(/\d+/g);if(!n)return null;let y=n[n.length-1];if(y.length===2)y="20"+y;return y.length===4?y:null;}
 (function(){const sf=document.getElementById("schedFilter");sf.insertAdjacentHTML('beforeend','<option value="over">เกินกำหนด (Overdue)</option>');const ys=[...new Set(DATA.map(d=>yearOf(d.next_oh)).filter(Boolean))].sort();ys.forEach(y=>sf.insertAdjacentHTML('beforeend',`<option value="${y}">ครบกำหนดปี ${y}</option>`));})();
