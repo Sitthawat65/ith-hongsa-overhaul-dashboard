@@ -3,6 +3,10 @@
 *.xlsm
 *.xls
 
+# Brand logo source images (already embedded as base64 in Dashboard.html)
+LOGO/
+master_data.json
+
 # OS / editor cruft
 Thumbs.db
 desktop.ini
