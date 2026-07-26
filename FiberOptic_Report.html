@@ -470,15 +470,19 @@ function render(){
 }
 
 function applyFilter(){
-  document.querySelectorAll("#tbody tr").forEach(tr=>{
-    if(tr.classList.contains("seghead")){
-      tr.classList.toggle("hidden", !((segFilter==="all"||tr.dataset.seg===segFilter) && !failOnly && !warnUp));
-      return;
-    }
+  const rows=[...document.querySelectorAll("#tbody tr")], hasVis={};
+  rows.forEach(tr=>{
+    if(tr.classList.contains("seghead")) return;
     let show=(segFilter==="all"||tr.dataset.seg===segFilter);
     if(failOnly) show=show && tr.dataset.stat==="fail";
     else if(warnUp) show=show && tr.dataset.stat!=="pass";
     tr.classList.toggle("hidden", !show);
+    if(show) hasVis[tr.dataset.seg]=true;
+  });
+  rows.forEach(tr=>{
+    if(!tr.classList.contains("seghead")) return;
+    const m=(segFilter==="all"||tr.dataset.seg===segFilter) && hasVis[tr.dataset.seg];
+    tr.classList.toggle("hidden", !m);
   });
 }
 
