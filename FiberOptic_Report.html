@@ -233,6 +233,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:11.5px;margin-top:6px;l
     <span class="sep"></span>
     <div class="grp"><span class="glab">สถานะ</span><select id="statSelect" class="segsel" aria-label="กรองสถานะ">
         <option value="all">แสดงทั้งหมด</option>
+        <option value="pass">✓ เฉพาะที่ผ่าน</option>
         <option value="warn">▲ เฝ้าระวังขึ้นไป</option>
         <option value="fail">✕ เฉพาะไม่ผ่าน</option>
       </select></div>
@@ -413,7 +414,7 @@ function selHtml(si,ci,col,val,otherVal){
   return `<select class="usel" data-key="${keyOf(si,ci,col)}" data-set="${effVal!=="—"?1:0}" aria-label="${col}" ${disabled?"disabled":""}>${opts}</select>`;
 }
 
-let CURRENT="h2", segFilter="all", failOnly=false, warnUp=false;
+let CURRENT="h2", segFilter="all", failOnly=false, warnUp=false, passOnly=false;
 let editMode = sessionStorage.getItem("fo_auth")==="1";
 
 function render(){
@@ -468,6 +469,7 @@ function applyFilter(){
     let show=(segFilter==="all"||tr.dataset.seg===segFilter);
     if(failOnly) show=show && tr.dataset.stat==="fail";
     else if(warnUp) show=show && tr.dataset.stat!=="pass";
+    else if(passOnly) show=show && tr.dataset.stat==="pass";
     tr.classList.toggle("hidden", !show);
     if(show) hasVis[tr.dataset.seg]=true;
   });
@@ -508,7 +510,7 @@ document.getElementById("loginForm").addEventListener("submit",e=>{
 document.getElementById("pswitch").addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b)return;
   document.querySelectorAll("#pswitch button").forEach(x=>x.setAttribute("aria-selected", x===b));
-  CURRENT=b.dataset.p; segFilter="all"; failOnly=false; warnUp=false;
+  CURRENT=b.dataset.p; segFilter="all"; failOnly=false; warnUp=false; passOnly=false;
   var _ss=document.getElementById("statSelect"); if(_ss) _ss.value="all";
   render();
 });
@@ -526,7 +528,7 @@ document.getElementById("tbody").addEventListener("change",e=>{
   render();
 });
 document.getElementById("statSelect").addEventListener("change",e=>{
-  const v=e.target.value; failOnly=(v==="fail"); warnUp=(v==="warn"); applyFilter();
+  const v=e.target.value; failOnly=(v==="fail"); warnUp=(v==="warn"); passOnly=(v==="pass"); applyFilter();
 });
 
 document.getElementById("themeBtn").addEventListener("click",()=>{
