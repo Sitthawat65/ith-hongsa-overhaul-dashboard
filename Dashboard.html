@@ -172,6 +172,39 @@
   .smu-track{margin-top:14px;height:26px;border-radius:9px;background:#0f1d3c;border:1px solid var(--line2);position:relative;overflow:hidden}
   .smu-track .used{position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:700;color:#06121f}
   .smu-cap{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+  /* SMU lifecycle timeline graphic */
+  .lifecyc{margin-top:14px}
+  .lc-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:11px;color:var(--muted);margin-bottom:6px}
+  .lc-head b{font-size:12.5px;font-variant-numeric:tabular-nums}
+  .lc-bar{position:relative;height:22px;border-radius:7px;display:flex;background:#0f1d3c;border:1px solid var(--line2)}
+  .lc-seg{height:100%}
+  .lc-seg:first-child{border-radius:6px 0 0 6px}
+  .lc-seg:last-of-type{border-radius:0 6px 6px 0}
+  .lc-now{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;box-shadow:0 0 5px rgba(255,255,255,.9);z-index:3}
+  .lc-now::after{content:"";position:absolute;top:-5px;left:-3px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 5px rgba(255,255,255,.9)}
+  .lc-tgt{position:absolute;top:-1px;bottom:-1px;border-left:2px dashed rgba(255,255,255,.5);z-index:2}
+  .lc-scale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
+  .lc-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;font-size:11px}
+  .lc-legend>span{display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
+  .lc-legend i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+  .lc-legend b{color:var(--txt);font-variant-numeric:tabular-nums;font-weight:700}
+  /* history / comments per motor */
+  .histsec{margin-top:16px;border-top:1px dashed var(--line2);padding-top:12px}
+  .hist-head{font-size:12.5px;font-weight:700;color:var(--txt);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+  .hist-head span{font-size:10px;font-weight:400;color:var(--muted)}
+  .hist-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+  .hist-empty{font-size:11.5px;color:var(--muted);font-style:italic;padding:2px 0}
+  .hist-item{background:#0f1d3c;border:1px solid var(--line2);border-radius:9px;padding:8px 10px}
+  .hist-meta{font-size:10px;color:var(--cyan);font-variant-numeric:tabular-nums;margin-bottom:3px}
+  .hist-txt{font-size:12.5px;color:var(--txt);line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .hist-act{display:flex;gap:8px;margin-top:6px}
+  .hist-act button{background:none;border:1px solid var(--line2);color:var(--muted);font-size:10.5px;padding:3px 9px;border-radius:7px;cursor:pointer;font-family:inherit}
+  .hist-act button:hover{color:var(--txt);border-color:var(--line)}
+  .hist-input{display:flex;gap:8px;align-items:flex-end}
+  .hist-input textarea{flex:1;background:var(--bg2);border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:8px 10px;font-size:12.5px;font-family:inherit;resize:vertical;min-height:44px;outline:none}
+  .hist-input textarea:focus{border-color:var(--cyan)}
+  .hist-save{background:var(--cyan);color:#06121f;border:none;border-radius:9px;padding:9px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .hist-save:hover{filter:brightness(1.08)}
   .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted);font-size:12px;flex-wrap:wrap;gap:8px}
   .credit{text-align:center;color:var(--muted2);font-size:11px;margin-top:26px;opacity:.7}
   .empty{padding:40px;text-align:center;color:var(--muted)}
@@ -1948,8 +1981,51 @@ function renderBrk(){
   document.getElementById("brkBars").innerHTML=arr.map(x=>`<div class="hb"><div class="nm">${esc(x[0])}</div>
     <div class="track"><div class="fill" style="width:${x[1]/mx*100}%;background:${colorFn(x[0])}"></div></div><b>${x[1]}</b></div>`).join("");
 }
+function lifecycleHTML(d){
+  const g=Math.max(0,+d.smu_oh1||0), b=Math.max(0,+d.smu_after_oh1||0), plan=Math.max(0,+d.plan_oh2||0);
+  const rem=(d.remain_oh2==null)?null:+d.remain_oh2;
+  if(!plan) return "";
+  const overdue = rem!=null && rem<0;
+  const total = g + Math.max(b,plan);
+  const pc = x => total>0 ? (x/total*100) : 0;
+  const usedPc = plan>0 ? Math.round(b/plan*100) : 0;
+  const uc = usedPc>100?'#fb7185':usedPc>=70?'#fbbf24':'#34d399';
+  const target = g+plan, now = g+b;
+  let segs = `<div class="lc-seg" style="width:${pc(g)}%;background:#34d399"></div>`;
+  if(overdue){
+    segs += `<div class="lc-seg" style="width:${pc(plan)}%;background:#60a5fa"></div>`;
+    segs += `<div class="lc-seg" style="width:${pc(b-plan)}%;background:#fb7185"></div>`;
+  } else {
+    segs += `<div class="lc-seg" style="width:${pc(b)}%;background:#60a5fa"></div>`;
+    segs += `<div class="lc-seg" style="width:${pc(plan-b)}%;background:#fbbf24"></div>`;
+  }
+  const remColor = overdue?'#fb7185':'#fbbf24';
+  const remLbl = rem==null?'คงเหลือถึง OH#2 <b>–</b>':(rem>=0?`คงเหลือถึง OH#2 <b>${fmt(rem)}</b>`:`เกินแผน OH#2 <b>${fmt(-rem)}</b>`);
+  return `<div class="lifecyc">
+    <div class="lc-head"><span>ไทม์ไลน์อายุการใช้งาน (SMU OH#1 → OH#2)</span><b style="color:${uc}">ปัจจุบัน ${fmt(d.smu_now)} ชม. · ใช้ไป ${usedPc}%</b></div>
+    <div class="lc-bar">${segs}<div class="lc-tgt" style="left:${pc(target)}%"></div><div class="lc-now" style="left:${pc(now)}%"></div></div>
+    <div class="lc-scale"><span>OH#1 · ${fmt(g)} ชม.</span><span>เป้าหมาย OH#2 · ${fmt(target)} ชม.</span></div>
+    <div class="lc-legend">
+      <span><i style="background:#34d399"></i>SMU OH#1 <b>${fmt(g)}</b></span>
+      <span><i style="background:#60a5fa"></i>เดินสะสมหลัง OH#1 <b>${fmt(b)}</b></span>
+      <span><i style="background:${remColor}"></i>${remLbl}</span>
+    </div></div>`;
+}
+function safeK(d){return 'mh_'+((d.serial||(d.system+'-'+d.item))+'').replace(/[^A-Za-z0-9]/g,'_');}
+function histGet(k){try{return JSON.parse(localStorage.getItem(k)||'[]');}catch(e){return[];}}
+function histSet(k,a){try{localStorage.setItem(k,JSON.stringify(a));}catch(e){alert('บันทึกไม่สำเร็จ: '+e.message);}}
+function histStamp(){const n=new Date(),p=x=>String(x).padStart(2,'0');return n.getFullYear()+'-'+p(n.getMonth()+1)+'-'+p(n.getDate())+' '+p(n.getHours())+':'+p(n.getMinutes());}
+function histHTML(k){
+  const a=histGet(k);
+  if(!a.length) return '<div class="hist-empty">ยังไม่มีบันทึก — เพิ่มความคิดเห็น / อาการผิดปกติได้ด้านล่าง</div>';
+  return a.map((e,i)=>`<div class="hist-item"><div class="hist-meta">🕒 ${esc(e.t)}</div><div class="hist-txt">${esc(e.txt)}</div><div class="hist-act"><button onclick="histEdit('${k}',${i})">✎ แก้ไข</button><button onclick="histDel('${k}',${i})">🗑 ลบ</button></div></div>`).join('');
+}
+function histRefresh(k){const el=document.getElementById('hl-'+k);if(el)el.innerHTML=histHTML(k);}
+function histAdd(k){const ta=document.getElementById('ht-'+k);if(!ta)return;const v=ta.value.trim();if(!v)return;const a=histGet(k);a.unshift({t:histStamp(),txt:v});histSet(k,a);ta.value='';histRefresh(k);}
+function histDel(k,i){if(!confirm('ลบบันทึกนี้?'))return;const a=histGet(k);a.splice(i,1);histSet(k,a);histRefresh(k);}
+function histEdit(k,i){const a=histGet(k);if(!a[i])return;const ta=document.getElementById('ht-'+k);if(ta){ta.value=a[i].txt;ta.focus();}a.splice(i,1);histSet(k,a);histRefresh(k);}
 function motorCard(d){
-  const open=openSet.has(d._id);const lc=lifeColor(d.lifeUsed);const lw=d.lifeUsed==null?0:Math.min(100,Math.max(2,d.lifeUsed));
+  const open=openSet.has(d._id);const lc=lifeColor(d.lifeUsed);const lw=d.lifeUsed==null?0:Math.min(100,Math.max(2,d.lifeUsed));const hk=safeK(d);
   const remColor=d.remain_oh2==null?'var(--muted)':d.remain_oh2<=0?'#fb7185':d.remain_oh2<=5000?'#fbbf24':'var(--txt)';
   const used=d.lifeUsed==null?0:Math.min(100,d.lifeUsed);
   const inst=!d.location?'–':(/stand\s*by/i.test(d.location)?'สำรอง (Stand by)':locDisp(d.location,d.system)+(d.position?' · '+posLabel(d.position):''));
@@ -1974,9 +2050,13 @@ function motorCard(d){
       <div class="chev">▾</div>
     </div>
     <div class="mbody">
-      <div class="smu-track"><div class="used" style="width:${used}%;background:${lc}">${d.lifeUsed==null?'':'อายุใช้แล้ว '+Math.round(d.lifeUsed)+'%'}</div></div>
-      <div class="smu-cap"><span>OH#1 → ปัจจุบัน ${fmt(d.smu_after_oh1)} ชม.</span><span>เป้าหมาย OH#2 ${fmt(d.plan_oh2)} ชม.</span></div>
+      ${lifecycleHTML(d)}
       <div class="dgrid">${det.map(x=>`<div class="dcell"><div class="k">${x[0]}</div><div class="v">${x[1]}</div></div>`).join("")}</div>
+      <div class="histsec">
+        <div class="hist-head">📝 ประวัติการใช้งาน / History <span>· บันทึกในเบราว์เซอร์นี้</span></div>
+        <div class="hist-list" id="hl-${hk}">${histHTML(hk)}</div>
+        <div class="hist-input"><textarea id="ht-${hk}" placeholder="อาการผิดปกติ / ประวัติซ่อม / ข้อสังเกต ..."></textarea><button class="hist-save" onclick="histAdd('${hk}')">บันทึก</button></div>
+      </div>
     </div>
   </div>`;
 }
