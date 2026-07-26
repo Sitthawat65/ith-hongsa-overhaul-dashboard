@@ -1932,9 +1932,13 @@ const DATA = [
 const SYS = [
   {id:"ALL",   label:"ทั้งหมด", sub:"ทุกระบบ · All systems",   color:"#22d3ee"},
   {id:"SPD",   label:"SPD",    sub:"Spreader",                color:"#34d399"},
-  {id:"BWE",   label:"BWE",    sub:"Bucket Wheel Excavator",  color:"#a78bfa"},
-  {id:"BELT",  label:"BW",     sub:"Belt wagon Excavator",    color:"#fb7185"},
-  {id:"CR",    label:"CR",     sub:"Crusher",                 color:"#fbbf24"},
+  {id:"BWE1",  label:"BWE1",   sub:"Bucket Wheel Excavator 01", color:"#a78bfa"},
+  {id:"BWE2",  label:"BWE2",   sub:"Bucket Wheel Excavator 02", color:"#8b5cf6"},
+  {id:"BW1",   label:"BW1",    sub:"Belt wagon Excavator 01",   color:"#fb7185"},
+  {id:"BW2",   label:"BW2",    sub:"Belt wagon Excavator 02",   color:"#f43f5e"},
+  {id:"CR1",   label:"CR1",    sub:"Crusher 01",                color:"#fbbf24"},
+  {id:"CR2",   label:"CR2",    sub:"Crusher 02",                color:"#f59e0b"},
+  {id:"CR3",   label:"CR3",    sub:"Crusher 03",                color:"#d97706"},
   {id:"BW2200",label:"BW2200", sub:"Conveyor line · 1500 kW", color:"#60a5fa"},
   {id:"BW1800",label:"BW1800", sub:"Conveyor line · 1000 kW", color:"#f472b6"},
 ];
@@ -1953,9 +1957,15 @@ DATA.forEach((d,i)=>{
   d._id=d.system+"_"+d.item+"_"+i;
 });
 
-const PAGE={ALL:"ALL SYSTEMS",SPD:"SPREADER MOTOR",BWE:"BUCKET WHEEL EXCAVATOR MOTOR",BELT:"BELT WAGON EXCAVATOR MOTOR",CR:"CRUSHER MOTOR",BW2200:"CONVEYOR LINE BW 2200",BW1800:"CONVEYOR LINE BW 1800"};
+const PAGE={ALL:"ALL SYSTEMS",SPD:"SPREADER MOTOR",BWE1:"BUCKET WHEEL EXCAVATOR 01",BWE2:"BUCKET WHEEL EXCAVATOR 02",BW1:"BELT WAGON EXCAVATOR 01",BW2:"BELT WAGON EXCAVATOR 02",CR1:"CRUSHER 01",CR2:"CRUSHER 02",CR3:"CRUSHER 03",BW2200:"CONVEYOR LINE BW 2200",BW1800:"CONVEYOR LINE BW 1800"};
 let cur="ALL", q="", schedFilter="", typeFilter="", brandFilter="", statusFilter="", openSet=new Set();
-const rowsOf = id => id==="ALL"?DATA:DATA.filter(d=>d.system===id);
+function subId(d){
+  if(d.system==="CR"){if(d.location==="CR#1")return "CR1";if(d.location==="CR#2")return "CR2";if(d.location==="CR#3")return "CR3";return "CR";}
+  if(d.system==="BWE"){if(d.location==="BWE 01")return "BWE1";if(d.location==="BWE 02")return "BWE2";return "BWE";}
+  if(d.system==="BELT"){if(d.location==="Belt 01")return "BW1";if(d.location==="Belt 02")return "BW2";return "BELT";}
+  return d.system;
+}
+const rowsOf = id => id==="ALL"?DATA:DATA.filter(d=>subId(d)===id);
 
 function renderTabs(){
   document.getElementById("tabs").innerHTML=SYS.map(s=>{
