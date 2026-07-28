@@ -1956,7 +1956,7 @@ function brandImg(b){if(!b)return '<span style="color:var(--muted)">–</span>';
    ปรับ HOURS_PER_DAY ให้ตรงการใช้งานจริง: 24 = เดินตลอด 24 ชม./วัน
    เดินค่าเฉพาะเครื่องสถานะ "Running" เท่านั้น (Stand by / PRE OH / Finished หยุดนิ่ง) */
 const SMU_ANCHOR   = new Date(2026,5,20,0,0,0);   // 20 มิ.ย. 2026 = วันที่ข้อมูลฐาน
-const HOURS_PER_DAY = 24;                          // อัตราเดินเครื่อง (ชม./วัน)
+const HOURS_PER_DAY = 13;                          // อัตราเดินเครื่อง (ชม./วัน) เฉลี่ย 13 ชม./วัน
 const SMU_ADD = Math.max(0,(Date.now()-SMU_ANCHOR.getTime())/86400000) * HOURS_PER_DAY;
 
 DATA.forEach((d,i)=>{
