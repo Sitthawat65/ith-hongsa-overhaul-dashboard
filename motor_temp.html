@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ITH Motor Temperature</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#16212e; --card:#ffffff; --ink:#0f1720; --muted:#8aa0b6;
+    --line:#243244; --shadow:0 6px 18px rgba(0,0,0,.25);
+    --warn:#f5a623; --alarm:#e02424;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Segoe UI',Tahoma,Arial,sans-serif;
+    background:linear-gradient(180deg,#0f1720,#0b1017);
+    color:#e7eef6; min-height:100vh; padding:18px 16px 40px;
+  }
+  header{max-width:1200px;margin:0 auto 18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+  .logo{width:46px;height:46px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:#c8102e;font-size:13px;letter-spacing:.5px;box-shadow:var(--shadow)}
+  .titles h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.3px}
+  .titles p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .status{margin-left:auto;text-align:right;font-size:13px;color:var(--muted)}
+  .status .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2ecc71;margin-right:6px;box-shadow:0 0 0 0 rgba(46,204,113,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.5)}70%{box-shadow:0 0 0 8px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+  .status b{color:#e7eef6}
+  .tabs{max-width:1200px;margin:0 auto 14px;display:flex;gap:8px;flex-wrap:wrap}
+  .tab{padding:7px 16px;border-radius:999px;background:var(--panel);color:var(--muted);border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600}
+  .tab.active{background:#1f6feb;color:#fff;border-color:#1f6feb}
+  .grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+  .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:150px}
+  .card .head{padding:9px 12px;color:#fff;font-weight:700;font-size:14px;letter-spacing:.4px;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+  .card .body{flex:1;display:flex;align-items:center;justify-content:center;padding:14px}
+  .card .val{font-size:46px;font-weight:600;color:var(--ink);line-height:1}
+  .card .unit{font-size:18px;color:#6b7a89;margin-left:4px;font-weight:500}
+  .card.warn .val{color:var(--warn)}
+  .card.alarm{animation:flash 1.2s infinite}
+  .card.alarm .val{color:var(--alarm)}
+  @keyframes flash{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 0 0 3px rgba(224,36,36,.6)}}
+  footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+  .legend{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">ITH</div>
+    <div class="titles">
+      <h1>ITH Hongsa — Motor Temperature Monitoring</h1>
+      <p>อุณหภูมิแบริ่งมอเตอร์ (°C) · ดึงข้อมูลจากระบบ Primus</p>
+    </div>
+    <div class="status">
+      <div><span class="dot"></span>Live</div>
+      <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
+    </div>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <div>เกณฑ์สี: <span style="color:#f5a623">≥ 70°C เตือน</span> · <span style="color:#e02424">≥ 85°C แจ้งเตือน (กะพริบ)</span></div>
+    <div style="margin-top:6px">ข้อมูลรีเฟรชอัตโนมัติทุก 60 วินาที · แหล่งข้อมูลอัปเดตทุก ~15 นาที</div>
+  </footer>
+
+<script>
+const WARN = 70, ALARM = 85;   // °C thresholds (ปรับได้)
+let DATA = null, activeGroup = null;
+
+function fmtTime(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString('th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) + ' น.';
+  }catch(e){ return iso; }
+}
+
+function render(){
+  if(!DATA) return;
+  const groups = Object.keys(DATA.groups||{});
+  if(!activeGroup || !groups.includes(activeGroup)) activeGroup = groups[0];
+
+  // tabs
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  if(groups.length > 1){
+    groups.forEach(g=>{
+      const b = document.createElement('div');
+      b.className = 'tab' + (g===activeGroup?' active':'');
+      b.textContent = g;
+      b.onclick = ()=>{ activeGroup=g; render(); };
+      tabs.appendChild(b);
+    });
+  }
+
+  // cards
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  (DATA.groups[activeGroup]||[]).forEach(item=>{
+    const v = Number(item.value);
+    const card = document.createElement('div');
+    let cls = 'card';
+    if(!isNaN(v)){ if(v>=ALARM) cls+=' alarm'; else if(v>=WARN) cls+=' warn'; }
+    card.className = cls;
+    card.innerHTML =
+      '<div class="head" style="background:'+(item.color||'#334')+'">'+item.tag+'</div>'+
+      '<div class="body"><span class="val">'+(isNaN(v)?'—':v.toFixed(1))+'</span><span class="unit">°C</span></div>';
+    grid.appendChild(card);
+  });
+
+  document.getElementById('updated').textContent = fmtTime(DATA.updated);
+}
+
+async function load(){
+  try{
+    const r = await fetch('temps.json?_=' + Date.now(), {cache:'no-store'});
+    DATA = await r.json();
+    render();
+  }catch(e){ console.error('load failed', e); }
+}
+
+load();
+setInterval(load, 60000);   // refresh every 60s
+</script>
+</body>
+</html>
