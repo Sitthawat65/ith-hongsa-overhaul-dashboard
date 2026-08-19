@@ -7,6 +7,10 @@
 LOGO/
 master_data.json
 
+# Local updater secrets & browser profile (NEVER push these)
+updater/credentials.txt
+updater/browser_profile/
+
 # OS / editor cruft
 Thumbs.db
 desktop.ini
