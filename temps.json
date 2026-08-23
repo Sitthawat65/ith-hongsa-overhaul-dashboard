@@ -1,11 +1,11 @@
 {
-  "updated": "2026-08-23T15:13:05+07:00",
+  "updated": "2026-08-23T15:18:07+07:00",
   "source": "Primus SPD dashboard (socket.io)",
   "groups": {
     "SPD": [
       {
         "tag": "DCV_TC_L",
-        "value": 34.4,
+        "value": 34.3,
         "color": "#008000"
       },
       {
@@ -15,12 +15,12 @@
       },
       {
         "tag": "BEND_L",
-        "value": 36.2,
+        "value": 35.9,
         "color": "#f8e71c"
       },
       {
         "tag": "BEND_R",
-        "value": 36.4,
+        "value": 36.3,
         "color": "#f8e71c"
       },
       {
@@ -30,12 +30,12 @@
       },
       {
         "tag": "TAKE_UP_R",
-        "value": 42.0,
+        "value": 41.3,
         "color": "#7ed321"
       },
       {
         "tag": "RCV_DE_L",
-        "value": 31.1,
+        "value": 31.0,
         "color": "#f5a623"
       },
       {
@@ -45,12 +45,12 @@
       },
       {
         "tag": "RCV_NDE_L",
-        "value": 41.8,
+        "value": 41.3,
         "color": "#4a90e2"
       },
       {
         "tag": "RCV_NDE_R",
-        "value": 45.0,
+        "value": 44.5,
         "color": "#4a90e2"
       },
       {
@@ -70,7 +70,7 @@
       },
       {
         "tag": "DCV_NDE_R",
-        "value": 37.6,
+        "value": 37.7,
         "color": "#9b9b9b"
       }
     ]
