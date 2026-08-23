@@ -21,7 +21,18 @@
   .logo{width:46px;height:46px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:#c8102e;font-size:13px;letter-spacing:.5px;box-shadow:var(--shadow)}
   .titles h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.3px}
   .titles p{margin:2px 0 0;color:var(--muted);font-size:13px}
-  .status{margin-left:auto;text-align:right;font-size:13px;color:var(--muted)}
+  .status{text-align:right;font-size:13px;color:var(--muted)}
+  .cd{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(31,111,235,.12);border:1px solid rgba(31,111,235,.35);color:#9cc2ff;font-size:13px;font-weight:600;white-space:nowrap}
+  .cd b{color:#dbe9ff;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+  .cd.soon{background:rgba(245,166,35,.14);border-color:rgba(245,166,35,.45);color:#ffd591}
+  .cd.soon b{color:#ffe6bf}
+  .refresh{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border-radius:999px;background:var(--panel);color:#cdd9e5;border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:background .15s,border-color .15s}
+  .refresh:hover{background:#1c2a3a;border-color:#31465c}
+  .refresh:active{transform:translateY(1px)}
+  .refresh:disabled{opacity:.7;cursor:default}
+  .refresh .ic{display:inline-block;font-size:15px;line-height:1}
+  .refresh.spin .ic{animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
   .status .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2ecc71;margin-right:6px;box-shadow:0 0 0 0 rgba(46,204,113,.6);animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.5)}70%{box-shadow:0 0 0 8px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
   .status b{color:#e7eef6}
@@ -57,6 +68,8 @@
       <h1>Bearing Pulley Temp Monitoring ITH-CV</h1>
       <p>อุณหภูมิแบริ่งพูลเลย์ (°C) · ดึงข้อมูลจากระบบ Primus</p>
     </div>
+    <div id="countdown" class="cd" title="เวลาโดยประมาณจนถึงการอัปเดตค่ารอบถัดไป (ทุก ~5 นาที)">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
+    <button id="refreshBtn" class="refresh" type="button" title="ดึงข้อมูลล่าสุดทันที"><span class="ic">↻</span>รีเฟรช</button>
     <div class="status">
       <div><span class="dot"></span>Live</div>
       <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
@@ -134,7 +147,27 @@ function render(){
   }).join('');
 
   document.getElementById('updated').textContent = fmtTime(DATA.updated);
+  setNext(DATA.updated);
 }
+
+// ---- countdown to next value update (source updates every ~5 min) ----
+const PERIOD = 5 * 60 * 1000;
+let nextUpdate = 0;
+function setNext(iso){
+  const t = new Date(iso).getTime();
+  if(!isNaN(t)) nextUpdate = t + PERIOD;
+}
+function tickCountdown(){
+  const el = document.getElementById('cdVal');
+  const box = document.getElementById('countdown');
+  if(!nextUpdate){ el.textContent = '—'; return; }
+  let rem = nextUpdate - Date.now();
+  if(rem < 0) rem = 0;
+  const m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
+  el.textContent = m + ':' + String(s).padStart(2,'0');
+  box.classList.toggle('soon', rem <= 60000);
+}
+setInterval(tickCountdown, 1000);
 
 async function load(){
   try{
@@ -143,6 +176,14 @@ async function load(){
     render();
   }catch(e){ console.error('load failed', e); }
 }
+
+async function refresh(){
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spin'); btn.disabled = true;
+  await load();
+  setTimeout(()=>{ btn.classList.remove('spin'); btn.disabled = false; }, 500);
+}
+document.getElementById('refreshBtn').addEventListener('click', refresh);
 
 load();
 setInterval(load, 60000);   // refresh every 60s
