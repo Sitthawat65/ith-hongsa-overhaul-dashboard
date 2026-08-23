@@ -147,25 +147,27 @@ function render(){
   }).join('');
 
   document.getElementById('updated').textContent = fmtTime(DATA.updated);
-  setNext(DATA.updated);
 }
 
-// ---- countdown to next value update (source updates every ~5 min) ----
-const PERIOD = 5 * 60 * 1000;
-let nextUpdate = 0;
-function setNext(iso){
-  const t = new Date(iso).getTime();
-  if(!isNaN(t)) nextUpdate = t + PERIOD;
-}
-function tickCountdown(){
+// ---- repeating 5-min countdown: at 0:00 pull fresh data, then restart & loop ----
+const PERIOD = 5 * 60;   // seconds
+let remaining = PERIOD;
+function drawCountdown(){
   const el = document.getElementById('cdVal');
   const box = document.getElementById('countdown');
-  if(!nextUpdate){ el.textContent = '—'; return; }
-  let rem = nextUpdate - Date.now();
-  if(rem < 0) rem = 0;
-  const m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
+  const m = Math.floor(remaining/60), s = remaining % 60;
   el.textContent = m + ':' + String(s).padStart(2,'0');
-  box.classList.toggle('soon', rem <= 60000);
+  box.classList.toggle('soon', remaining <= 60);
+}
+function resetCountdown(){ remaining = PERIOD; drawCountdown(); }
+function tickCountdown(){
+  if(remaining <= 0){        // reached 0:00 -> fetch update, then loop again
+    load();
+    remaining = PERIOD;
+  } else {
+    remaining--;
+  }
+  drawCountdown();
 }
 setInterval(tickCountdown, 1000);
 
@@ -181,12 +183,13 @@ async function refresh(){
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spin'); btn.disabled = true;
   await load();
+  resetCountdown();          // manual refresh restarts the 5-min cycle
   setTimeout(()=>{ btn.classList.remove('spin'); btn.disabled = false; }, 500);
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
 
-load();
-setInterval(load, 60000);   // refresh every 60s
+load();            // initial data pull
+resetCountdown();   // start the repeating 5-min countdown
 </script>
 </body>
 </html>
