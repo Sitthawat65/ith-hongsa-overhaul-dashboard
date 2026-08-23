@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Flight Price Watch · น่าน ⇄ กรุงเทพ</title>
+<title>Flight Price Watch · น่าน · เชียงใหม่ ⇄ กรุงเทพ</title>
 <style>
   /* ---- ธีมมืด (ค่าเริ่มต้น) ---- */
   :root{
@@ -53,12 +53,26 @@
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.5)}70%{box-shadow:0 0 0 8px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
   .status b{color:var(--ink)}
 
+  .tabs{max-width:1150px;margin:0 auto 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .tabs .lbl{font-size:12px;color:var(--muted);font-weight:600;margin-right:2px}
+  .tab{padding:8px 16px;border-radius:999px;background:var(--panel);color:var(--btn-ink);border:1px solid var(--line);cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;transition:background .15s,border-color .15s,color .15s}
+  .tab:hover{background:var(--btn-hover);border-color:var(--btn-line-hover)}
+  .tab.on{background:linear-gradient(135deg,#1f6feb,#0ea5b7);color:#fff;border-color:transparent;box-shadow:var(--shadow)}
+
   .wrap{max-width:1150px;margin:0 auto}
   .routes{display:grid;grid-template-columns:1fr;gap:22px}
   @media(min-width:980px){.routes{grid-template-columns:1fr 1fr}}
+  .routes.single{grid-template-columns:1fr!important;max-width:720px;margin:0 auto}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
   .card h2{margin:0;padding:14px 18px;font-size:15px;letter-spacing:.4px;background:var(--head);border-bottom:2px solid var(--line-strong);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .card h2 .sub{margin-left:auto;font-size:12px;font-weight:500;color:var(--muted)}
+  .alogo{width:19px;height:19px;flex:none;vertical-align:-5px;object-fit:contain;background:none;border:0}
+  .book .alogo,.cheap .alogo{width:17px;height:17px;vertical-align:-4px}
+  thead th .alogo,.book .alogo,.cheap .alogo,.badge .alogo{margin-right:5px}
+  .badge .alogo{vertical-align:-4px}
+  .book{align-items:center}
+  .cheap{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:999px;background:var(--tag-bg);color:var(--tag-ink);font-size:11px;font-weight:800;text-decoration:none;letter-spacing:.2px;white-space:nowrap}
+  .cheap:hover{filter:brightness(1.12)}
   table{width:100%;border-collapse:separate;border-spacing:0}
   th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
   thead th{background:var(--panel2);color:var(--thead);font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase}
@@ -103,8 +117,8 @@
   <header>
     <div class="logo">✈</div>
     <div class="titles">
-      <h1>Flight Price Watch · น่าน ⇄ กรุงเทพ</h1>
-      <p>ราคาตั๋วถูกที่สุดรายวัน ล่วงหน้า 15 วัน · Thai AirAsia &amp; Nok Air</p>
+      <h1>Flight Price Watch · น่าน &amp; เชียงใหม่ ⇄ กรุงเทพ</h1>
+      <p>ราคาตั๋วถูกที่สุดรายวัน ล่วงหน้า 30 วัน · Thai AirAsia &amp; Nok Air</p>
     </div>
     <div class="nav">
       <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตราคารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
@@ -117,13 +131,22 @@
     </div>
   </header>
 
+  <div class="tabs" id="tabs">
+    <span class="lbl">เลือกเส้นทาง:</span>
+    <button class="tab" type="button" data-route="ALL">ทั้งหมด</button>
+    <button class="tab" type="button" data-route="NNT_BKK">น่าน - กทม.</button>
+    <button class="tab" type="button" data-route="BKK_NNT">กทม. - น่าน</button>
+    <button class="tab" type="button" data-route="CNX_BKK">ชม. - กทม.</button>
+    <button class="tab" type="button" data-route="BKK_CNX">กทม. - ชม.</button>
+  </div>
+
   <div class="wrap"><div class="routes" id="routes"></div></div>
 
   <div class="promos">
     <h2>🎫 โปรโมชั่น &amp; ตั๋วบุฟเฟ่ต์ (ในประเทศ / ต่างประเทศ)</h2>
     <div class="pgrid">
       <div class="pcard">
-        <h3><span class="badge aa">AIR ASIA</span> ตั๋วบุฟเฟ่ต์ &amp; โปรฯ เด่น</h3>
+        <h3><span class="badge aa"><img class="alogo" src="logos/airasia.svg" alt="">AIR ASIA</span> ตั๋วบุฟเฟ่ต์ &amp; โปรฯ เด่น</h3>
         <ul>
           <li><b>FD Unlimited Pass</b> — บินไม่อั้นทั่วไทย จ่ายครั้งเดียว/ปี
             (<a href="https://promotion.airasia.com/campaign/th/th/fd-unlimited-pass.html" target="_blank" rel="noopener">ดูรอบขายล่าสุด</a>)</li>
@@ -135,15 +158,18 @@
         </ul>
       </div>
       <div class="pcard">
-        <h3><span class="badge nok">NOK AIR</span> โปรโมชั่น &amp; แพ็กเกจ</h3>
+        <h3><span class="badge nok"><img class="alogo" src="logos/nokair-badge.svg" alt="">NOK AIR</span> โปรโมชั่น &amp; แพ็กเกจ</h3>
         <ul>
           <li><b>Nok Promotion</b> — โปรฯ ตั๋วลดราคาตามรอบ เส้นทางในประเทศ
             (<a href="https://nokair.com/promotions" target="_blank" rel="noopener">ดูโปรฯ ทั้งหมด</a>)</li>
           <li><b>Nok Fan Club</b> — สะสมไมล์ &amp; ดีลเฉพาะสมาชิก
             (<a href="https://nokair.com/nokfanclub" target="_blank" rel="noopener">สมัคร / ดูสิทธิ์</a>)</li>
           <li><b>แพ็กเกจเที่ยวบินเหมา / Nok Pass</b> — เปิดขายเป็นช่วง โปรดเช็กหน้าโปรฯ ตามรอบ</li>
-          <li><a href="https://nokair.com/flights/en/flights-from-nan-to-bangkok" target="_blank" rel="noopener">ตารางบิน น่าน–กรุงเทพ</a> ·
-              <a href="https://nokair.com/flights/en/flights-from-bangkok-to-nan" target="_blank" rel="noopener">กรุงเทพ–น่าน</a></li>
+          <li>ตารางบิน:
+              <a href="https://nokair.com/flights/en/flights-from-nan-to-bangkok" target="_blank" rel="noopener">น่าน–กรุงเทพ</a> ·
+              <a href="https://nokair.com/flights/en/flights-from-bangkok-to-nan" target="_blank" rel="noopener">กรุงเทพ–น่าน</a> ·
+              <a href="https://nokair.com/flights/en/flights-from-chiang-mai-to-bangkok" target="_blank" rel="noopener">เชียงใหม่–กรุงเทพ</a> ·
+              <a href="https://nokair.com/flights/en/flights-from-bangkok-to-chiang-mai" target="_blank" rel="noopener">กรุงเทพ–เชียงใหม่</a></li>
         </ul>
       </div>
     </div>
@@ -151,6 +177,7 @@
 
   <footer>
     <div>ราคาเที่ยวเดียว · ผู้ใหญ่ 1 ท่าน · ชั้นประหยัด · ถูกที่สุดของวันนั้น — ที่มา Trip.com · ราคาเปลี่ยนแปลงตลอดเวลา โปรดยืนยันอีกครั้งบนหน้าจอง</div>
+    <div style="margin-top:6px">เส้นทางที่ติดตาม: น่าน ⇄ ดอนเมือง · เชียงใหม่ ⇄ ดอนเมือง</div>
     <div style="margin-top:6px">ข้อมูลอัปเดตอัตโนมัติทุก ~12 ชั่วโมง</div>
   </footer>
 
@@ -161,7 +188,21 @@ let DATA = null;
 
 const THMON = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const THDOW = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
-const IATA  = {NNT_BKK:{f:'NNT',t:'DMK',tf:'nnt',tt:'bkk'}, BKK_NNT:{f:'DMK',t:'NNT',tf:'bkk',tt:'nnt'}};
+const IATA  = {
+  NNT_BKK:{f:'NNT',t:'DMK',tf:'nnt',tt:'bkk'},
+  BKK_NNT:{f:'DMK',t:'NNT',tf:'bkk',tt:'nnt'},
+  CNX_BKK:{f:'CNX',t:'DMK',tf:'cnx',tt:'bkk'},
+  BKK_CNX:{f:'DMK',t:'CNX',tf:'bkk',tt:'cnx'}
+};
+// โลโก้ทางการของสายการบิน (ไฟล์ SVG ในโฟลเดอร์ logos/ - พื้นหลังโปร่งใส)
+const LOGO = {
+  airasia:'<img class="alogo" src="logos/airasia.svg" alt="Air Asia">',
+  nokair :'<img class="alogo" src="logos/nokair-badge.svg" alt="Nok Air">'
+};
+const ANAME = {airasia:'Air Asia', nokair:'Nok Air'};
+const ORDER   = ['NNT_BKK','BKK_NNT','CNX_BKK','BKK_CNX'];
+const TAB_KEY = 'ith_flight_route_tab';
+let   TAB     = localStorage.getItem(TAB_KEY) || 'ALL';
 
 function fmtTime(iso){
   try{ const d=new Date(iso);
@@ -196,13 +237,29 @@ function render(){
   const host = document.getElementById('routes');
   host.innerHTML = '';
   const today = new Date().toISOString().slice(0,10);
-  Object.entries(DATA.routes||{}).forEach(function(entry){
-    const key = entry[0], r = entry[1];
+  const all   = DATA.routes || {};
+  const keys  = ORDER.filter(function(k){ return all[k]; })
+                     .concat(Object.keys(all).filter(function(k){ return ORDER.indexOf(k)<0; }))
+                     .filter(function(k){ return TAB==='ALL' || TAB===k; });
+  host.classList.toggle('single', keys.length === 1);
+  if(!keys.length){
+    host.innerHTML = '<div class="card"><h2>ยังไม่มีข้อมูลของเส้นทางนี้ — รอรอบอัปเดตถัดไป</h2></div>';
+    return;
+  }
+  keys.forEach(function(key){
+    const r = all[key];
     const dates = Object.keys(r.days||{}).sort();
-    let min = Infinity;
+    let min = Infinity, minDate = '', minAir = 'airasia';
     dates.forEach(function(d){
-      Object.values(r.days[d]||{}).forEach(function(v){ if(v && v.price < min) min = v.price; });
+      Object.entries(r.days[d]||{}).forEach(function(kv){
+        if(kv[1] && kv[1].price < min){ min = kv[1].price; minDate = d; minAir = kv[0]; }
+      });
     });
+    const cheapChip = (min < Infinity)
+      ? '<a class="cheap" href="'+bookUrl(minAir,key,minDate)+'" target="_blank" rel="noopener" title="จองเที่ยวบินที่ถูกที่สุดในช่วง 30 วัน">💰 ถูกสุด ฿'
+        + Number(min).toLocaleString('th-TH') + ' · ' + fmtDay(minDate).d
+        + ' · ' + LOGO[minAir] + ANAME[minAir] + ' ↗</a>'
+      : '';
     const rows = dates.map(function(d){
       const day = r.days[d]||{}, f = fmtDay(d);
       const aa = day.airasia||null, nok = day.nokair||null;
@@ -215,12 +272,15 @@ function render(){
         + '</tr>';
     }).join('');
     host.insertAdjacentHTML('beforeend',
-      '<div class="card"><h2>✈️ '+r.label+'<span class="sub">'+(r.from_name||'')+' → '+(r.to_name||'')+'</span></h2>'
-      + '<table><thead><tr><th>วันที่</th><th class="num">Air Asia</th><th class="num">Nok Air</th><th class="num">เทียบราคา</th></tr></thead>'
+      '<div class="card"><h2>✈️ '+r.label+cheapChip+'<span class="sub">'+(r.from_name||'')+' → '+(r.to_name||'')+'</span></h2>'
+      + '<table><thead><tr><th>วันที่</th>'
+      + '<th class="num">'+LOGO.airasia+'Air Asia</th>'
+      + '<th class="num">'+LOGO.nokair+'Nok Air</th>'
+      + '<th class="num">เทียบราคา</th></tr></thead>'
       + '<tbody>'+rows+'</tbody></table>'
       + '<div class="foot-book"><span>จองตั๋ว:</span>'
-      + '<a class="book aa" href="https://www.airasia.com/flights/th/th/" target="_blank" rel="noopener">Air Asia ↗</a>'
-      + '<a class="book nok" href="https://nokair.com/" target="_blank" rel="noopener">Nok Air ↗</a>'
+      + '<a class="book aa" href="https://www.airasia.com/flights/th/th/" target="_blank" rel="noopener">'+LOGO.airasia+'Air Asia ↗</a>'
+      + '<a class="book nok" href="https://nokair.com/" target="_blank" rel="noopener">'+LOGO.nokair+'Nok Air ↗</a>'
       + '<a class="book plain" href="'+tripUrl(key, dates[0]||today)+'" target="_blank" rel="noopener">Trip.com ↗</a>'
       + '</div></div>');
   });
@@ -259,6 +319,21 @@ async function refresh(){
   setTimeout(function(){ b.classList.remove('spin'); b.disabled=false; }, 500);
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
+
+// ---- ปุ่มเลือกเส้นทาง (จำค่าไว้ใน localStorage) ----
+function paintTabs(){
+  document.querySelectorAll('#tabs .tab').forEach(function(b){
+    b.classList.toggle('on', b.dataset.route === TAB);
+  });
+}
+document.querySelectorAll('#tabs .tab').forEach(function(b){
+  b.addEventListener('click', function(){
+    TAB = b.dataset.route;
+    try{ localStorage.setItem(TAB_KEY, TAB); }catch(e){}
+    paintTabs(); render();
+  });
+});
+paintTabs();
 
 // ---- สลับธีม มืด/สว่าง (จำค่าไว้ใน localStorage) ----
 const TH_KEY='ith_flight_theme';

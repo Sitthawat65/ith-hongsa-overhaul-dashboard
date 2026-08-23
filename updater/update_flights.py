@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-ITH Flight Price Watch - auto updater (Nan <-> Bangkok)
---------------------------------------------------------
+ITH Flight Price Watch - auto updater (Nan / Chiang Mai <-> Bangkok)
+--------------------------------------------------------------------
 ดึงราคาตั๋วเครื่องบินถูกสุดของ Thai AirAsia และ Nok Air
-เส้นทาง น่าน (NNT) <-> กรุงเทพ (DMK/BKK) ล่วงหน้า 15 วัน จาก Trip.com
-แล้วเขียน flights.json + push ขึ้น GitHub Pages
+เส้นทาง น่าน (NNT) <-> กรุงเทพ (DMK) และ เชียงใหม่ (CNX) <-> กรุงเทพ (DMK)
+ล่วงหน้า 30 วัน จาก Trip.com แล้วเขียน flights.json + push ขึ้น GitHub Pages
 
-รัน:  python update_flights.py            (ปกติ - ใช้กับ Task Scheduler ทุก 12 ชม.)
-      python update_flights.py --days 2   (ทดสอบเร็ว)
+รัน:  python update_flights.py                          (ปกติ - Task Scheduler ทุก 12 ชม.)
+      python update_flights.py --days 2                 (ทดสอบเร็ว)
+      python update_flights.py --routes CNX_BKK,BKK_CNX (อัปเดตเฉพาะบางเส้นทาง - เส้นทางอื่นคงข้อมูลเดิม)
 """
 import json, os, re, sys, subprocess, datetime, pathlib, argparse
 
@@ -27,8 +28,10 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 
 # เส้นทางที่ติดตาม
 ROUTES = [
-    {"key": "NNT_BKK", "from": "nnt", "to": "bkk", "label": "น่าน → กรุงเทพ",  "from_name": "น่าน (NNT)",   "to_name": "กรุงเทพ (DMK)"},
-    {"key": "BKK_NNT", "from": "bkk", "to": "nnt", "label": "กรุงเทพ → น่าน",  "from_name": "กรุงเทพ (DMK)", "to_name": "น่าน (NNT)"},
+    {"key": "NNT_BKK", "from": "nnt", "to": "bkk", "label": "น่าน → กรุงเทพ",     "from_name": "น่าน (NNT)",     "to_name": "กรุงเทพ (DMK)"},
+    {"key": "BKK_NNT", "from": "bkk", "to": "nnt", "label": "กรุงเทพ → น่าน",     "from_name": "กรุงเทพ (DMK)",  "to_name": "น่าน (NNT)"},
+    {"key": "CNX_BKK", "from": "cnx", "to": "bkk", "label": "เชียงใหม่ → กรุงเทพ", "from_name": "เชียงใหม่ (CNX)", "to_name": "กรุงเทพ (DMK)"},
+    {"key": "BKK_CNX", "from": "bkk", "to": "cnx", "label": "กรุงเทพ → เชียงใหม่", "from_name": "กรุงเทพ (DMK)",  "to_name": "เชียงใหม่ (CNX)"},
 ]
 
 # สายการบินที่สนใจ (ข้อความบนหน้าเว็บ -> คีย์ของเรา)
@@ -81,19 +84,35 @@ def parse_page_text(txt):
     return best
 
 
-def scrape(days=15, headless=True):
+def scroll_and_parse(page, rounds=20, settle=2):
+    """เลื่อนหน้าลงจนความสูงไม่เพิ่มแล้ว (หรือครบ rounds) แล้วอ่านผลทั้งหน้า"""
+    last_h, stable = -1, 0
+    for _ in range(rounds):
+        page.evaluate("()=>window.scrollTo(0,document.body.scrollHeight)")
+        page.wait_for_timeout(1100)
+        h = page.evaluate("()=>document.body?document.body.scrollHeight:0")
+        stable = stable + 1 if h == last_h else 0
+        last_h = h
+        if stable >= settle:                 # ความสูงนิ่งแล้ว = โหลดครบ
+            break
+    txt = page.evaluate("()=>document.body?document.body.innerText:''")
+    return parse_page_text(txt)
+
+
+def scrape(days=30, headless=True, only=None):
     from playwright.sync_api import sync_playwright
     today = datetime.date.today()
     dates = [(today + datetime.timedelta(days=i)).isoformat() for i in range(days)]
+    todo = [r for r in ROUTES if not only or r["key"] in only]
     out = {r["key"]: {"label": r["label"], "from_name": r["from_name"],
-                      "to_name": r["to_name"], "days": {}} for r in ROUTES}
+                      "to_name": r["to_name"], "days": {}} for r in todo}
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=headless)
         ctx = browser.new_context(locale="th-TH", user_agent=UA,
                                   viewport={"width": 1400, "height": 1000})
         page = ctx.new_page()
-        for route in ROUTES:
+        for route in todo:
             for d in dates:
                 url = search_url(route["from"], route["to"], d)
                 found = {}
@@ -104,13 +123,15 @@ def scrape(days=15, headless=True):
                         txt = page.evaluate("()=>document.body?document.body.innerText:''")
                         if parse_page_text(txt):
                             break
-                    # เลื่อนหน้าลงเพื่อโหลดเที่ยวบินให้ครบ (ไม่งั้นจะเห็นแค่ 2-3 เที่ยวแรก
-                    # ทำให้พลาดสายการบินที่ถูกกว่า เช่น Nok Air)
-                    for _ in range(6):
-                        page.evaluate("()=>window.scrollTo(0,document.body.scrollHeight)")
-                        page.wait_for_timeout(1200)
-                    txt = page.evaluate("()=>document.body?document.body.innerText:''")
-                    found = parse_page_text(txt)
+                    # เลื่อนหน้าลงจนสุดเพื่อโหลดเที่ยวบินให้ครบ (ไม่งั้นจะเห็นแค่ 2-3 เที่ยวแรก
+                    # ทำให้พลาดสายการบินที่ถูกกว่า เช่น Nok Air) เส้นทางที่มีสายการบินเยอะ
+                    # อย่าง CNX-BKK ต้องเลื่อนหลายรอบกว่า AirAsia/Nok จะโผล่
+                    found = scroll_and_parse(page)
+                    if len(found) < 2:              # ยังไม่ครบ 2 สายการบิน -> ลองเลื่อนต่ออีกชุด
+                        more = scroll_and_parse(page, rounds=12)
+                        for k, v in more.items():
+                            if k not in found or v["price"] < found[k]["price"]:
+                                found[k] = v
                 except Exception as e:
                     print(f"   [warn] {route['key']} {d}: {type(e).__name__}")
                 out[route["key"]]["days"][d] = found
@@ -122,16 +143,42 @@ def scrape(days=15, headless=True):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--days", type=int, default=15)
+    ap.add_argument("--days", type=int, default=30)
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--routes", default="",
+                    help="อัปเดตเฉพาะเส้นทางนี้ คั่นด้วย , เช่น CNX_BKK,BKK_CNX (ว่าง = ทุกเส้นทาง)")
     args = ap.parse_args()
 
-    routes = scrape(days=args.days)
-    total = sum(1 for r in routes.values() for d in r["days"].values() if d)
+    only = [k.strip() for k in args.routes.split(",") if k.strip()] or None
+    if only:
+        valid = {r["key"] for r in ROUTES}
+        bad = [k for k in only if k not in valid]
+        if bad:
+            print(f"!! unknown route key(s): {', '.join(bad)} (valid: {', '.join(sorted(valid))})")
+            sys.exit(2)
+
+    fresh = scrape(days=args.days, only=only)
+    total = sum(1 for r in fresh.values() for d in r["days"].values() if d)
     print(f">> got fares for {total} route-days")
     if total == 0:
         print("!! no fares found - Trip.com may have blocked this run")
         sys.exit(1)
+
+    # ถ้าอัปเดตแค่บางเส้นทาง ให้คงข้อมูลเดิมของเส้นทางที่ไม่ได้ดึงไว้
+    prev = {}
+    if FLIGHTS_JSON.exists():
+        try:
+            prev = json.loads(FLIGHTS_JSON.read_text(encoding="utf-8")).get("routes", {})
+        except Exception as e:
+            print(f"(warn) cannot read existing flights.json: {type(e).__name__}")
+
+    routes = {}
+    for r in ROUTES:                       # เรียงตามลำดับ ROUTES เสมอ
+        k = r["key"]
+        if k in fresh:
+            routes[k] = fresh[k]
+        elif k in prev:
+            routes[k] = prev[k]
 
     data = {
         "updated": datetime.datetime.now(TZ).isoformat(timespec="seconds"),

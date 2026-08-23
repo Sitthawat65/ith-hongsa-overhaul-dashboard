@@ -7,7 +7,7 @@ cd /d "%LOCALAPPDATA%"
 set "SCRIPT=%~dp0update_flights.py"
 
 echo ==================================================
-echo    ITH FLIGHT PRICE WATCH  -  Nan ^<-^> Bangkok
+echo    ITH FLIGHT PRICE WATCH  -  Nan / Chiang Mai ^<-^> Bangkok
 echo ==================================================
 echo.
 
@@ -19,9 +19,9 @@ if errorlevel 1 (
   echo.
 )
 
-echo [1/2] Fetching cheapest fares for the next 15 days...
-echo       ^(this takes about 10-15 minutes - please wait^)
-python "%SCRIPT%" --days 15
+echo [1/2] Fetching cheapest fares for the next 30 days...
+echo       ^(4 routes: NNT^<-^>DMK and CNX^<-^>DMK - about 50-60 minutes^)
+python "%SCRIPT%" --days 30
 if errorlevel 1 (
   echo.
   echo   !! Could not read fares. Check your internet connection and try again.

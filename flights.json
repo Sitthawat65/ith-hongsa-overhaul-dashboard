@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-23T18:25:33+07:00",
+  "updated": "2026-08-23T20:58:54+07:00",
   "source": "Trip.com (th)",
   "routes": {
     "NNT_BKK": {
@@ -76,13 +76,14 @@
         },
         "2026-08-27": {
           "nokair": {
-            "price": 1290,
+            "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
             "from": "NNT",
             "to": "DMK",
             "promos": [
-              "บินตรงราคาถูกสุด"
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
             ]
           },
           "airasia": {
@@ -92,7 +93,8 @@
             "from": "NNT",
             "to": "DMK",
             "promos": [
-              "บินตรงราคาถูกสุด"
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
             ]
           }
         },
@@ -154,7 +156,7 @@
             ]
           },
           "airasia": {
-            "price": 2820,
+            "price": 2750,
             "depart": "13:55",
             "arrive": "15:00",
             "from": "NNT",
@@ -187,7 +189,7 @@
         },
         "2026-09-01": {
           "nokair": {
-            "price": 1315,
+            "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
             "from": "NNT",
@@ -318,6 +320,337 @@
               "สุดคุ้ม"
             ]
           }
+        },
+        "2026-09-07": {
+          "airasia": {
+            "price": 1320,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1455,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-08": {
+          "airasia": {
+            "price": 1155,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 1455,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-09": {
+          "airasia": {
+            "price": 1155,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 1290,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          }
+        },
+        "2026-09-10": {
+          "airasia": {
+            "price": 1190,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1205,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-11": {
+          "airasia": {
+            "price": 1320,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1455,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-12": {
+          "nokair": {
+            "price": 1310,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1365,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-13": {
+          "nokair": {
+            "price": 2030,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 2185,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-14": {
+          "nokair": {
+            "price": 1290,
+            "depart": "17:20",
+            "arrive": "18:30",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1320,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-15": {
+          "airasia": {
+            "price": 1155,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 1290,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          }
+        },
+        "2026-09-16": {
+          "airasia": {
+            "price": 1155,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 1290,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          }
+        },
+        "2026-09-17": {
+          "airasia": {
+            "price": 1155,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 1290,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          }
+        },
+        "2026-09-18": {
+          "nokair": {
+            "price": 1205,
+            "depart": "17:20",
+            "arrive": "18:30",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1365,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-19": {
+          "nokair": {
+            "price": 1290,
+            "depart": "17:20",
+            "arrive": "18:30",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1320,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-20": {
+          "airasia": {
+            "price": 1320,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1455,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-21": {
+          "nokair": {
+            "price": 1310,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1365,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          }
         }
       }
     },
@@ -330,8 +663,8 @@
         "2026-08-24": {
           "airasia": {
             "price": 1490,
-            "depart": "12:10",
-            "arrive": "13:25",
+            "depart": "17:50",
+            "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": [
@@ -483,133 +816,97 @@
         },
         "2026-08-31": {
           "nokair": {
-            "price": 1270,
+            "price": 1360,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด"
-            ]
+            "promos": []
           },
           "airasia": {
-            "price": 1350,
-            "depart": "07:15",
-            "arrive": "08:30",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
-            ]
-          }
-        },
-        "2026-09-01": {
-          "airasia": {
-            "price": 1345,
+            "price": 1430,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
-            ]
-          },
+            "promos": []
+          }
+        },
+        "2026-09-01": {
           "nokair": {
-            "price": 1400,
+            "price": 1475,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
-            ]
-          }
-        },
-        "2026-09-02": {
+            "promos": []
+          },
           "airasia": {
-            "price": 1345,
+            "price": 2600,
             "depart": "07:15",
             "arrive": "08:30",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
-            ]
-          },
+            "promos": []
+          }
+        },
+        "2026-09-02": {
           "nokair": {
-            "price": 1400,
+            "price": 1480,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "สุดคุ้ม"
-            ]
+            "promos": []
           }
         },
         "2026-09-03": {
           "nokair": {
-            "price": 1710,
+            "price": 1810,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
-            ]
+            "promos": []
           },
           "airasia": {
-            "price": 1765,
+            "price": 1940,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
-            ]
+            "promos": []
           }
         },
         "2026-09-04": {
           "airasia": {
-            "price": 1825,
+            "price": 1875,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด"
-            ]
+            "promos": []
           },
           "nokair": {
-            "price": 2210,
+            "price": 1980,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "บินตรงราคาถูกสุด"
-            ]
+            "promos": []
           }
         },
         "2026-09-05": {
           "airasia": {
-            "price": 1345,
+            "price": 1450,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
-            "promos": [
-              "สุดคุ้ม"
-            ]
+            "promos": []
           },
           "nokair": {
-            "price": 1550,
+            "price": 1610,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
@@ -619,7 +916,7 @@
         },
         "2026-09-06": {
           "airasia": {
-            "price": 1345,
+            "price": 1515,
             "depart": "07:15",
             "arrive": "08:30",
             "from": "DMK",
@@ -627,11 +924,865 @@
             "promos": []
           },
           "nokair": {
-            "price": 1550,
+            "price": 1630,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-07": {
+          "airasia": {
+            "price": 1415,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "nokair": {
+            "price": 1475,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-08": {
+          "nokair": {
+            "price": 1380,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1450,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-09": {
+          "nokair": {
+            "price": 1430,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1470,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-10": {
+          "nokair": {
+            "price": 1660,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-11": {
+          "airasia": {
+            "price": 1925,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "nokair": {
+            "price": 2295,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-12": {
+          "airasia": {
+            "price": 1415,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "nokair": {
+            "price": 2325,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-13": {
+          "nokair": {
+            "price": 1470,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 2345,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-14": {
+          "nokair": {
+            "price": 1375,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1450,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-15": {
+          "airasia": {
+            "price": 1430,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "nokair": {
+            "price": 1490,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-16": {
+          "nokair": {
+            "price": 1460,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1505,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-17": {
+          "airasia": {
+            "price": 1450,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "nokair": {
+            "price": 1650,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-18": {
+          "nokair": {
+            "price": 1515,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 2355,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-19": {
+          "nokair": {
+            "price": 1375,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1440,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-20": {
+          "nokair": {
+            "price": 1395,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1940,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        },
+        "2026-09-21": {
+          "nokair": {
+            "price": 1405,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1955,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        }
+      }
+    },
+    "CNX_BKK": {
+      "label": "เชียงใหม่ → กรุงเทพ",
+      "from_name": "เชียงใหม่ (CNX)",
+      "to_name": "กรุงเทพ (DMK)",
+      "days": {
+        "2026-08-23": {},
+        "2026-08-24": {
+          "nokair": {
+            "price": 1880,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-08-25": {
+          "nokair": {
+            "price": 1515,
+            "depart": "17:35",
+            "arrive": "18:50",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1630,
+            "depart": "08:25",
+            "arrive": "09:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-08-26": {
+          "airasia": {
+            "price": 1635,
+            "depart": "16:30",
+            "arrive": "17:40",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "nokair": {
+            "price": 1870,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-08-27": {
+          "nokair": {
+            "price": 1440,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1625,
+            "depart": "15:45",
+            "arrive": "17:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-08-28": {
+          "airasia": {
+            "price": 1615,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "nokair": {
+            "price": 1740,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-08-29": {
+          "airasia": {
+            "price": 1635,
+            "depart": "12:00",
+            "arrive": "13:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "nokair": {
+            "price": 1670,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-08-30": {
+          "nokair": {
+            "price": 2260,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-08-31": {
+          "nokair": {
+            "price": 1490,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1610,
+            "depart": "12:00",
+            "arrive": "13:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-01": {
+          "nokair": {
+            "price": 1500,
+            "depart": "16:20",
+            "arrive": "17:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1635,
+            "depart": "12:00",
+            "arrive": "13:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-02": {
+          "nokair": {
+            "price": 1250,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-03": {
+          "nokair": {
+            "price": 1485,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-04": {
+          "nokair": {
+            "price": 1485,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-05": {
+          "nokair": {
+            "price": 1705,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-06": {
+          "nokair": {
+            "price": 2210,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-07": {
+          "airasia": {
+            "price": 1620,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-08": {
+          "airasia": {
+            "price": 1630,
+            "depart": "12:00",
+            "arrive": "13:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-09": {
+          "airasia": {
+            "price": 1665,
+            "depart": "12:00",
+            "arrive": "13:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-10": {
+          "airasia": {
+            "price": 1635,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-11": {
+          "airasia": {
+            "price": 1620,
+            "depart": "14:20",
+            "arrive": "15:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-12": {
+          "airasia": {
+            "price": 1610,
+            "depart": "12:00",
+            "arrive": "13:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-13": {
+          "nokair": {
+            "price": 1705,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-14": {
+          "airasia": {
+            "price": 1620,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-15": {},
+        "2026-09-16": {},
+        "2026-09-17": {},
+        "2026-09-18": {},
+        "2026-09-19": {
+          "nokair": {
+            "price": 1480,
+            "depart": "13:50",
+            "arrive": "15:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1610,
+            "depart": "11:05",
+            "arrive": "12:15",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-20": {
+          "airasia": {
+            "price": 1610,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        },
+        "2026-09-21": {
+          "nokair": {
+            "price": 1725,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        }
+      }
+    },
+    "BKK_CNX": {
+      "label": "กรุงเทพ → เชียงใหม่",
+      "from_name": "กรุงเทพ (DMK)",
+      "to_name": "เชียงใหม่ (CNX)",
+      "days": {
+        "2026-08-23": {},
+        "2026-08-24": {
+          "nokair": {
+            "price": 1575,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-08-25": {
+          "nokair": {
+            "price": 1445,
+            "depart": "12:45",
+            "arrive": "14:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1620,
+            "depart": "14:40",
+            "arrive": "15:55",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-08-26": {
+          "nokair": {
+            "price": 1460,
+            "depart": "17:20",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-08-27": {
+          "nokair": {
+            "price": 1470,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-08-28": {
+          "nokair": {
+            "price": 1670,
+            "depart": "17:20",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-08-29": {
+          "nokair": {
+            "price": 1460,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-08-30": {
+          "nokair": {
+            "price": 1460,
+            "depart": "10:25",
+            "arrive": "11:40",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1610,
+            "depart": "14:40",
+            "arrive": "15:55",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-08-31": {
+          "airasia": {
+            "price": 1630,
+            "depart": "14:40",
+            "arrive": "15:55",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-01": {
+          "nokair": {
+            "price": 1495,
+            "depart": "10:25",
+            "arrive": "11:40",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-02": {
+          "nokair": {
+            "price": 1485,
+            "depart": "17:20",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1620,
+            "depart": "12:30",
+            "arrive": "13:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-03": {
+          "nokair": {
+            "price": 1505,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-04": {
+          "nokair": {
+            "price": 2245,
+            "depart": "17:20",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-05": {
+          "nokair": {
+            "price": 1920,
+            "depart": "10:25",
+            "arrive": "11:40",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-06": {
+          "nokair": {
+            "price": 1705,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-07": {},
+        "2026-09-08": {
+          "nokair": {
+            "price": 1470,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-09": {},
+        "2026-09-10": {},
+        "2026-09-11": {
+          "nokair": {
+            "price": 1900,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1980,
+            "depart": "17:05",
+            "arrive": "18:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-12": {},
+        "2026-09-13": {
+          "airasia": {
+            "price": 1610,
+            "depart": "14:40",
+            "arrive": "15:55",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-14": {
+          "nokair": {
+            "price": 1490,
+            "depart": "10:25",
+            "arrive": "11:40",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          "airasia": {
+            "price": 1620,
+            "depart": "10:10",
+            "arrive": "11:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-15": {},
+        "2026-09-16": {},
+        "2026-09-17": {},
+        "2026-09-18": {
+          "nokair": {
+            "price": 1670,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-19": {
+          "nokair": {
+            "price": 1490,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        },
+        "2026-09-20": {},
+        "2026-09-21": {
+          "airasia": {
+            "price": 1630,
+            "depart": "13:20",
+            "arrive": "14:35",
+            "from": "DMK",
+            "to": "CNX",
             "promos": []
           }
         }
