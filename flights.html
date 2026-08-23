@@ -5,58 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flight Price Watch · น่าน ⇄ กรุงเทพ</title>
 <style>
-  :root{--bg:#0f1720;--panel:#16212e;--muted:#8aa0b6;--line:#243244;--shadow:0 6px 18px rgba(0,0,0,.25);
-        --best:#2ecc71;}
+  /* ---- ธีมมืด (ค่าเริ่มต้น) ---- */
+  :root{
+    --bg1:#0f1720; --bg2:#0b1017; --panel:#16212e; --panel2:#101a26; --head:#0e1620;
+    --ink:#e7eef6; --ink-strong:#f2f6fb; --muted:#8aa0b6; --thead:#93a6ba;
+    --line:#243244; --line-strong:#2a3a4d; --btn-ink:#cdd9e5; --btn-hover:#1c2a3a; --btn-line-hover:#31465c;
+    --shadow:0 6px 18px rgba(0,0,0,.25);
+    --best:#2ecc71; --aa:#ff7a90; --nok:#ffc46b; --sub:#6b7a89; --na:#4a5a6b;
+    --row-hover:rgba(31,111,235,.08); --row-today:rgba(46,204,113,.06);
+    --tag-bg:rgba(46,204,113,.16); --tag-ink:#7ee2a8;
+    --cd-bg:rgba(31,111,235,.12); --cd-line:rgba(31,111,235,.35); --cd-ink:#9cc2ff; --cd-val:#dbe9ff;
+    --soon-bg:rgba(245,166,35,.14); --soon-line:rgba(245,166,35,.45); --soon-ink:#ffd591;
+    --plain-bg:rgba(255,255,255,.04); --plain-hover:rgba(255,255,255,.1);
+    --link:#9cc2ff;
+  }
+  /* ---- ธีมสว่าง ---- */
+  :root[data-theme="light"]{
+    --bg1:#eef2f7; --bg2:#e4eaf2; --panel:#ffffff; --panel2:#f4f7fb; --head:#eaf0f7;
+    --ink:#16212c; --ink-strong:#0d1620; --muted:#5b6b7d; --thead:#54677c;
+    --line:#dde4ec; --line-strong:#c6d2e0; --btn-ink:#243244; --btn-hover:#e8eef6; --btn-line-hover:#a9bcd2;
+    --shadow:0 1px 2px rgba(20,33,44,.06),0 8px 22px rgba(20,33,44,.09);
+    --best:#0a8f3c; --aa:#d81b45; --nok:#b45309; --sub:#7a8899; --na:#a9b4c0;
+    --row-hover:rgba(31,111,235,.07); --row-today:rgba(10,143,60,.07);
+    --tag-bg:rgba(10,143,60,.12); --tag-ink:#0a8f3c;
+    --cd-bg:rgba(31,111,235,.1); --cd-line:rgba(31,111,235,.32); --cd-ink:#1a5fc8; --cd-val:#123a80;
+    --soon-bg:rgba(180,83,9,.12); --soon-line:rgba(180,83,9,.4); --soon-ink:#8a4308;
+    --plain-bg:rgba(0,0,0,.03); --plain-hover:rgba(0,0,0,.07);
+    --link:#1a5fc8;
+  }
   *{box-sizing:border-box} html,body{margin:0}
-  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#0f1720,#0b1017);color:#e7eef6;min-height:100vh;padding:18px 16px 40px;}
+  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);transition:background .2s,color .2s;min-height:100vh;padding:18px 16px 40px;}
   header{max-width:1150px;margin:0 auto 16px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
   .logo{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1f6feb,#0ea5b7);color:#fff;font-size:24px;line-height:1;box-shadow:var(--shadow);flex:none}
   .titles h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.3px}
   .titles p{margin:2px 0 0;color:var(--muted);font-size:13px}
   .nav{margin-left:auto;display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .lnk{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:999px;background:var(--panel);color:#cdd9e5;border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;text-decoration:none;font-family:inherit;transition:background .15s,border-color .15s}
-  .lnk:hover{background:#1c2a3a;border-color:#31465c}
+  .lnk{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:999px;background:var(--panel);color:var(--btn-ink);border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;text-decoration:none;font-family:inherit;transition:background .15s,border-color .15s}
+  .lnk:hover{background:var(--btn-hover);border-color:var(--btn-line-hover)}
   .lnk .ic{display:inline-block;font-size:15px;line-height:1}
   .lnk.spin .ic{animation:spin .7s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .cd{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(31,111,235,.12);border:1px solid rgba(31,111,235,.35);color:#9cc2ff;font-size:13px;font-weight:600;white-space:nowrap}
-  .cd b{color:#dbe9ff;font-variant-numeric:tabular-nums;letter-spacing:.5px}
-  .cd.soon{background:rgba(245,166,35,.14);border-color:rgba(245,166,35,.45);color:#ffd591}
+  .cd{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--cd-bg);border:1px solid var(--cd-line);color:var(--cd-ink);font-size:13px;font-weight:600;white-space:nowrap}
+  .cd b{color:var(--cd-val);font-variant-numeric:tabular-nums;letter-spacing:.5px}
+  .cd.soon{background:var(--soon-bg);border-color:var(--soon-line);color:var(--soon-ink)}
   .status{text-align:right;font-size:13px;color:var(--muted)}
   .status .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2ecc71;margin-right:6px;animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.5)}70%{box-shadow:0 0 0 8px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
-  .status b{color:#e7eef6}
+  .status b{color:var(--ink)}
 
   .wrap{max-width:1150px;margin:0 auto}
   .routes{display:grid;grid-template-columns:1fr;gap:22px}
   @media(min-width:980px){.routes{grid-template-columns:1fr 1fr}}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
-  .card h2{margin:0;padding:14px 18px;font-size:15px;letter-spacing:.4px;background:#0e1620;border-bottom:2px solid #2a3a4d;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .card h2{margin:0;padding:14px 18px;font-size:15px;letter-spacing:.4px;background:var(--head);border-bottom:2px solid var(--line-strong);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .card h2 .sub{margin-left:auto;font-size:12px;font-weight:500;color:var(--muted)}
   table{width:100%;border-collapse:separate;border-spacing:0}
   th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
-  thead th{background:#101a26;color:#93a6ba;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase}
+  thead th{background:var(--panel2);color:var(--thead);font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase}
   th.num,td.num{text-align:right;white-space:nowrap}
   tbody tr:last-child td{border-bottom:none}
-  tbody tr:hover{background:rgba(31,111,235,.08)}
-  tr.today{background:rgba(46,204,113,.06)}
-  .d{font-weight:700;color:#f2f6fb}
+  tbody tr:hover{background:var(--row-hover)}
+  tr.today{background:var(--row-today)}
+  .d{font-weight:700;color:var(--ink-strong)}
   .dow{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
   .p{font-weight:700;font-variant-numeric:tabular-nums}
-  .p.aa{color:#ff7a90}
-  .p.nok{color:#ffc46b}
+  .p.aa{color:var(--aa)}
+  .p.nok{color:var(--nok)}
   .p.best{color:var(--best)}
-  .t{display:block;font-size:11px;color:#6b7a89;font-weight:500;margin-top:2px}
-  .na{color:#4a5a6b;font-weight:500}
-  .tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;background:rgba(46,204,113,.16);color:#7ee2a8;margin-top:3px}
+  .t{display:block;font-size:11px;color:var(--sub);font-weight:500;margin-top:2px}
+  .na{color:var(--na);font-weight:500}
+  .tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;background:var(--tag-bg);color:var(--tag-ink);margin-top:3px}
   .book{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid;transition:.15s}
-  .book.aa{color:#ff7a90;border-color:rgba(255,45,85,.45);background:rgba(255,45,85,.08)}
+  .book.aa{color:var(--aa);border-color:rgba(255,45,85,.45);background:rgba(255,45,85,.08)}
   .book.aa:hover{background:rgba(255,45,85,.2)}
-  .book.nok{color:#ffc46b;border-color:rgba(245,166,35,.45);background:rgba(245,166,35,.08)}
+  .book.nok{color:var(--nok);border-color:rgba(245,166,35,.45);background:rgba(245,166,35,.08)}
   .book.nok:hover{background:rgba(245,166,35,.2)}
-  .book.plain{border-color:#31465c;color:#cdd9e5;background:rgba(255,255,255,.04)}
-  .book.plain:hover{background:rgba(255,255,255,.1)}
-  .foot-book{padding:13px 18px;background:#101a26;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .book.plain{border-color:var(--btn-line-hover);color:var(--btn-ink);background:var(--plain-bg)}
+  .book.plain:hover{background:var(--plain-hover)}
+  .foot-book{padding:13px 18px;background:var(--panel2);border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .foot-book span{font-size:12px;color:var(--muted);margin-right:2px}
 
   .promos{max-width:1150px;margin:24px auto 0}
@@ -68,8 +94,8 @@
   .badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.5px}
   .badge.aa{background:rgba(255,45,85,.18);color:#ff7a90}
   .badge.nok{background:rgba(245,166,35,.18);color:#ffc46b}
-  .pcard ul{margin:10px 0 0;padding-left:18px;color:#cdd9e5;font-size:13px;line-height:1.85}
-  .pcard a{color:#9cc2ff}
+  .pcard ul{margin:10px 0 0;padding-left:18px;color:var(--btn-ink);font-size:13px;line-height:1.85}
+  .pcard a{color:var(--link)}
   footer{max-width:1150px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.8}
 </style>
 </head>
@@ -83,6 +109,7 @@
     <div class="nav">
       <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตราคารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
       <button id="refreshBtn" class="lnk" type="button" title="โหลดราคาล่าสุด"><span class="ic">↻</span>รีเฟรช</button>
+      <button id="themeBtn" class="lnk" type="button" title="สลับธีมมืด / สว่าง"><span class="ic" id="themeIc">☀</span><span id="themeTxt">สว่าง</span></button>
       <div class="status">
         <div><span class="dot"></span>Live</div>
         <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
@@ -232,6 +259,21 @@ async function refresh(){
   setTimeout(function(){ b.classList.remove('spin'); b.disabled=false; }, 500);
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
+
+// ---- สลับธีม มืด/สว่าง (จำค่าไว้ใน localStorage) ----
+const TH_KEY='ith_flight_theme';
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('themeIc').textContent  = (t==='light') ? '🌙' : '☀';
+  document.getElementById('themeTxt').textContent = (t==='light') ? 'มืด' : 'สว่าง';
+}
+function curTheme(){ return localStorage.getItem(TH_KEY)==='light' ? 'light' : 'dark'; }
+applyTheme(curTheme());
+document.getElementById('themeBtn').addEventListener('click', function(){
+  const next = curTheme()==='light' ? 'dark' : 'light';
+  try{ localStorage.setItem(TH_KEY, next); }catch(e){}
+  applyTheme(next);
+});
 
 load();
 if(!cdGet() || cdGet() <= Date.now()) cdSet(Date.now()+PERIOD);
