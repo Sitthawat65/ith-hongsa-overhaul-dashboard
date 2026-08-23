@@ -50,7 +50,7 @@
     <div class="nav">
       <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตค่ารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">5:00</b></div>
       <button id="refreshBtn" class="lnk" type="button" title="ดึงข้อมูลล่าสุดทันที"><span class="ic">↻</span>รีเฟรช</button>
-      <a class="lnk" href="motor_temp.html" title="กลับไปหน้าตาราง">▤ ตาราง</a>
+      <a class="lnk" href="Bearing-Pulley-Temp-Monitoring-ITH-CV.html" title="กลับไปหน้าตาราง">▤ ตาราง</a>
       <div class="status">
         <div><span class="dot"></span>Live</div>
         <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
@@ -114,18 +114,23 @@ async function load(){
   }catch(e){ console.error('load failed', e); }
 }
 
-// ---- repeating 5-min countdown: at 0:00 pull fresh data, then restart & loop ----
-const PERIOD = 5 * 60;
-let remaining = PERIOD;
+// ---- shared 5-min countdown (persists across pages via localStorage) ----
+// stores the wall-clock time of the next update so switching table<->SPD keeps counting
+const PERIOD = 5 * 60 * 1000;   // ms
+const CD_KEY = 'ith_temp_next_update';
+function cdGet(){ const v = parseInt(localStorage.getItem(CD_KEY)||'0',10); return isNaN(v)?0:v; }
+function cdSet(t){ try{ localStorage.setItem(CD_KEY, String(t)); }catch(e){} }
 function drawCountdown(){
   const el=document.getElementById('cdVal'), box=document.getElementById('countdown');
-  const m=Math.floor(remaining/60), s=remaining%60;
-  el.textContent=m+':'+String(s).padStart(2,'0');
-  box.classList.toggle('soon', remaining<=60);
+  let rem = cdGet() - Date.now(); if(rem < 0) rem = 0;
+  const sec = Math.floor(rem/1000), m = Math.floor(sec/60), s = sec % 60;
+  el.textContent = m + ':' + String(s).padStart(2,'0');
+  box.classList.toggle('soon', rem <= 60000);
 }
-function resetCountdown(){ remaining=PERIOD; drawCountdown(); }
+function resetCountdown(){ cdSet(Date.now() + PERIOD); drawCountdown(); }   // manual Refresh restarts the cycle
 function tickCountdown(){
-  if(remaining<=0){ load(); remaining=PERIOD; } else { remaining--; }
+  const next = cdGet();
+  if(!next || next <= Date.now()){ load(); cdSet(Date.now() + PERIOD); }
   drawCountdown();
 }
 setInterval(tickCountdown, 1000);
@@ -138,8 +143,9 @@ async function refresh(){
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
 
-load();
-resetCountdown();
+load();            // show data right away
+if(!cdGet() || cdGet() <= Date.now()) cdSet(Date.now() + PERIOD);   // start a cycle only if none is running
+drawCountdown();   // continue the shared countdown (do NOT reset on page switch)
 </script>
 </body>
 </html>

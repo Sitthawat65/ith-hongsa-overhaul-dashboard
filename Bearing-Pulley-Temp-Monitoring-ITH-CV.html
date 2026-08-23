@@ -150,23 +150,26 @@ function render(){
   document.getElementById('updated').textContent = fmtTime(DATA.updated);
 }
 
-// ---- repeating 5-min countdown: at 0:00 pull fresh data, then restart & loop ----
-const PERIOD = 5 * 60;   // seconds
-let remaining = PERIOD;
+// ---- shared 5-min countdown (persists across pages via localStorage) ----
+// stores the wall-clock time of the next update so switching table<->SPD keeps counting
+const PERIOD = 5 * 60 * 1000;   // ms
+const CD_KEY = 'ith_temp_next_update';
+function cdGet(){ const v = parseInt(localStorage.getItem(CD_KEY)||'0',10); return isNaN(v)?0:v; }
+function cdSet(t){ try{ localStorage.setItem(CD_KEY, String(t)); }catch(e){} }
 function drawCountdown(){
   const el = document.getElementById('cdVal');
   const box = document.getElementById('countdown');
-  const m = Math.floor(remaining/60), s = remaining % 60;
+  let rem = cdGet() - Date.now(); if(rem < 0) rem = 0;
+  const sec = Math.floor(rem/1000), m = Math.floor(sec/60), s = sec % 60;
   el.textContent = m + ':' + String(s).padStart(2,'0');
-  box.classList.toggle('soon', remaining <= 60);
+  box.classList.toggle('soon', rem <= 60000);
 }
-function resetCountdown(){ remaining = PERIOD; drawCountdown(); }
+function resetCountdown(){ cdSet(Date.now() + PERIOD); drawCountdown(); }   // manual Refresh restarts the cycle
 function tickCountdown(){
-  if(remaining <= 0){        // reached 0:00 -> fetch update, then loop again
+  const next = cdGet();
+  if(!next || next <= Date.now()){   // due (or first run) -> fetch update, schedule next
     load();
-    remaining = PERIOD;
-  } else {
-    remaining--;
+    cdSet(Date.now() + PERIOD);
   }
   drawCountdown();
 }
@@ -189,8 +192,9 @@ async function refresh(){
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
 
-load();            // initial data pull
-resetCountdown();   // start the repeating 5-min countdown
+load();            // show data right away
+if(!cdGet() || cdGet() <= Date.now()) cdSet(Date.now() + PERIOD);   // start a cycle only if none is running
+drawCountdown();   // continue the shared countdown (do NOT reset on page switch)
 </script>
 </body>
 </html>
