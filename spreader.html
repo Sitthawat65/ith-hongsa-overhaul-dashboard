@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spreader Bearing Temp — ITH-CV</title>
+<style>
+  :root{--bg:#0f1720;--panel:#16212e;--muted:#8aa0b6;--line:#243244;--shadow:0 6px 18px rgba(0,0,0,.25);--warn:#f5a623;--alarm:#e02424;}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#0f1720,#0b1017);color:#e7eef6;min-height:100vh;padding:18px 16px 40px;}
+  header{max-width:1100px;margin:0 auto 16px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:#c8102e;font-size:13px;letter-spacing:.5px;box-shadow:var(--shadow)}
+  .titles h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.3px}
+  .titles p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .nav{margin-left:auto;display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lnk{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:999px;background:var(--panel);color:#cdd9e5;border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;text-decoration:none;font-family:inherit;transition:background .15s,border-color .15s}
+  .lnk:hover{background:#1c2a3a;border-color:#31465c}
+  .lnk:active{transform:translateY(1px)}
+  .lnk:disabled{opacity:.7;cursor:default}
+  .lnk .ic{display:inline-block;font-size:15px;line-height:1}
+  .lnk.spin .ic{animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .cd{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(31,111,235,.12);border:1px solid rgba(31,111,235,.35);color:#9cc2ff;font-size:13px;font-weight:600;white-space:nowrap}
+  .cd b{color:#dbe9ff;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+  .cd.soon{background:rgba(245,166,35,.14);border-color:rgba(245,166,35,.45);color:#ffd591}
+  .cd.soon b{color:#ffe6bf}
+  .status{text-align:right;font-size:13px;color:var(--muted)}
+  .status .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2ecc71;margin-right:6px;box-shadow:0 0 0 0 rgba(46,204,113,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.5)}70%{box-shadow:0 0 0 8px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+  .status b{color:#e7eef6}
+
+  .stage{position:relative;max-width:1100px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);container-type:inline-size}
+  .stage img{width:100%;display:block}
+  .tv{position:absolute;transform:translate(-50%,-50%);font-weight:500;font-size:1.5cqw;color:#111;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;text-align:center}
+  .tv.ok{color:#0a8f3c}
+  .tv.warn{color:#e07d00}
+  .tv.alarm{color:#d10000;animation:blink 1s steps(1,end) infinite}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+
+  footer{max-width:1100px;margin:22px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">ITH</div>
+    <div class="titles">
+      <h1>Spreader — Bearing Pulley Temp</h1>
+      <p>อุณหภูมิแบริ่งพูลเลย์ Spreader (°C) · ดึงข้อมูลจากระบบ Primus</p>
+    </div>
+    <div class="nav">
+      <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตค่ารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">5:00</b></div>
+      <button id="refreshBtn" class="lnk" type="button" title="ดึงข้อมูลล่าสุดทันที"><span class="ic">↻</span>รีเฟรช</button>
+      <a class="lnk" href="motor_temp.html" title="กลับไปหน้าตาราง">▤ ตาราง</a>
+      <div class="status">
+        <div><span class="dot"></span>Live</div>
+        <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="stage">
+    <img src="BEARING%20PULLEY%20TEMP%20MONITORING%20OF%20SPREADER.PNG" alt="Spreader bearing temperature monitoring">
+    <!-- RCV DE (top, near boom) -->
+    <span class="tv" id="RCV_DE_L"  style="left:38.02%;top:29.63%"></span>
+    <span class="tv" id="RCV_DE_R"  style="left:42.34%;top:29.63%"></span>
+    <!-- RCV NDE (left, receiving conveyor tail) -->
+    <span class="tv" id="RCV_NDE_L" style="left:8.19%;top:56.63%"></span>
+    <span class="tv" id="RCV_NDE_R" style="left:12.51%;top:56.63%"></span>
+    <!-- DCV DE (center-bottom) -->
+    <span class="tv" id="DCV_DE_L"  style="left:38.35%;top:71.55%"></span>
+    <span class="tv" id="DCV_DE_R"  style="left:42.67%;top:71.55%"></span>
+    <!-- DCV NDE (right) -->
+    <span class="tv" id="DCV_NDE_L" style="left:84.80%;top:74.45%"></span>
+    <span class="tv" id="DCV_NDE_R" style="left:89.12%;top:74.45%"></span>
+  </div>
+
+  <footer>
+    <div>เกณฑ์สี: <span style="color:#2ecc71">0–69 ปกติ</span> · <span style="color:#f5a623">70–79 เตือน</span> · <span style="color:#e02424">≥ 80 แจ้งเตือน (กะพริบ)</span></div>
+    <div style="margin-top:6px">แหล่งข้อมูลอัปเดตทุก ~5 นาที · หน่วย °C</div>
+  </footer>
+
+<script>
+const WARN = 70, ALARM = 80;
+const TAGS = ["RCV_DE_L","RCV_DE_R","RCV_NDE_L","RCV_NDE_R","DCV_DE_L","DCV_DE_R","DCV_NDE_L","DCV_NDE_R"];
+let DATA = null;
+
+function fmtTime(iso){
+  try{ const d=new Date(iso);
+    return d.toLocaleString('th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' น.';
+  }catch(e){ return iso; }
+}
+
+function render(){
+  if(!DATA) return;
+  // flatten all groups into a tag->value map
+  const map = {};
+  Object.values(DATA.groups||{}).forEach(arr=>arr.forEach(it=>{ map[it.tag]=it.value; }));
+  TAGS.forEach(tag=>{
+    const el = document.getElementById(tag);
+    if(!el) return;
+    const v = Number(map[tag]);
+    if(map[tag]==null || isNaN(v)){ el.textContent='—'; el.className='tv'; return; }
+    let cls='tv'; if(v>=ALARM)cls+=' alarm'; else if(v>=WARN)cls+=' warn'; else cls+=' ok';
+    el.className=cls; el.textContent=v.toFixed(1);
+  });
+  document.getElementById('updated').textContent = fmtTime(DATA.updated);
+}
+
+async function load(){
+  try{
+    const r = await fetch('temps.json?_=' + Date.now(), {cache:'no-store'});
+    DATA = await r.json();
+    render();
+  }catch(e){ console.error('load failed', e); }
+}
+
+// ---- repeating 5-min countdown: at 0:00 pull fresh data, then restart & loop ----
+const PERIOD = 5 * 60;
+let remaining = PERIOD;
+function drawCountdown(){
+  const el=document.getElementById('cdVal'), box=document.getElementById('countdown');
+  const m=Math.floor(remaining/60), s=remaining%60;
+  el.textContent=m+':'+String(s).padStart(2,'0');
+  box.classList.toggle('soon', remaining<=60);
+}
+function resetCountdown(){ remaining=PERIOD; drawCountdown(); }
+function tickCountdown(){
+  if(remaining<=0){ load(); remaining=PERIOD; } else { remaining--; }
+  drawCountdown();
+}
+setInterval(tickCountdown, 1000);
+
+async function refresh(){
+  const btn=document.getElementById('refreshBtn');
+  btn.classList.add('spin'); btn.disabled=true;
+  await load(); resetCountdown();
+  setTimeout(()=>{ btn.classList.remove('spin'); btn.disabled=false; }, 500);
+}
+document.getElementById('refreshBtn').addEventListener('click', refresh);
+
+load();
+resetCountdown();
+</script>
+</body>
+</html>
