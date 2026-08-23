@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tripper Car Bearing Temp — ITH-CV</title>
+<title>BWE1 Bearing Temp — ITH-CV</title>
 <style>
   :root{--bg:#0f1720;--panel:#16212e;--muted:#8aa0b6;--line:#243244;--shadow:0 6px 18px rgba(0,0,0,.25);--warn:#f5a623;--alarm:#e02424;}
   *{box-sizing:border-box} html,body{margin:0}
@@ -38,21 +38,22 @@
   @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}
 
   footer{max-width:1100px;margin:22px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+  .pending{color:#f5a623;font-weight:600}
 </style>
 </head>
 <body>
   <header>
     <div class="logo">ITH</div>
     <div class="titles">
-      <h1>Tripper Car — Bearing Pulley Temp</h1>
-      <p>อุณหภูมิแบริ่งพูลเลย์ Tripper Car (°C) · ดึงข้อมูลจากระบบ Primus</p>
+      <h1>BWE1 — Bearing Pulley Temp</h1>
+      <p>อุณหภูมิแบริ่งพูลเลย์ Bucket Wheel Excavator 1 (°C) · ดึงข้อมูลจากระบบ Primus</p>
     </div>
     <div class="nav">
       <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตค่ารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">5:00</b></div>
       <button id="refreshBtn" class="lnk" type="button" title="ดึงข้อมูลล่าสุดทันที"><span class="ic">↻</span>รีเฟรช</button>
       <a class="lnk" href="Bearing-Pulley-Temp-Monitoring-ITH-CV.html" title="กลับไปหน้าตาราง">▤ ตาราง</a>
       <a class="lnk" href="spreader.html" title="ดูแผนภาพ Spreader (SPD)">▦ SPD</a>
-      <a class="lnk" href="BWE1.html" title="ดูแผนภาพ BWE1">▨ BWE1</a>
+      <a class="lnk" href="tripper.html" title="ดูแผนภาพ Tripper Car">▧ Tripper car</a>
       <a class="lnk" href="BWE2.html" title="ดูแผนภาพ BWE2">▩ BWE2</a>
       <div class="status">
         <div><span class="dot"></span>Live</div>
@@ -62,54 +63,29 @@
   </header>
 
   <div class="stage">
-    <img src="tripper.png" alt="Tripper car bearing temperature monitoring">
-    <!-- DCV TC (top right) -->
-    <span class="tv" id="DCV_TC_L"  style="left:71.99%;top:30.01%"></span>
-    <span class="tv" id="DCV_TC_R"  style="left:76.32%;top:30.01%"></span>
-    <!-- BEND (center) -->
-    <span class="tv" id="BEND_L"    style="left:52.53%;top:38.36%"></span>
-    <span class="tv" id="BEND_R"    style="left:56.86%;top:38.36%"></span>
-    <!-- TAKE UP (bottom center) -->
-    <span class="tv" id="TAKE_UP_L" style="left:52.68%;top:84.39%"></span>
-    <span class="tv" id="TAKE_UP_R" style="left:57.01%;top:84.39%"></span>
+    <img src="BWE1.PNG" alt="Bucket Wheel Excavator 1 bearing temperature monitoring">
+    <!-- Value overlays pending: tags not yet mapped. Boxes left blank on purpose.
+         When ready, measure cell centers (PIL script) and add <span class="tv" id="TAG"> like SPD/Tripper.
+         Boxes on this diagram: CVW DE, DCV DE, DCV NDE, CVW NDE (each L/R). -->
   </div>
 
   <footer>
     <div>เกณฑ์สี: <span style="color:#2ecc71">0–69 ปกติ</span> · <span style="color:#f5a623">70–79 เตือน</span> · <span style="color:#e02424">≥ 80 แจ้งเตือน (กะพริบ)</span></div>
-    <div style="margin-top:6px">แหล่งข้อมูลอัปเดตทุก ~5 นาที · หน่วย °C</div>
+    <div style="margin-top:6px"><span class="pending">ค่าอุณหภูมิ: รอเชื่อมต่อ tag (ยังไม่อัปเดต)</span> · แหล่งข้อมูลอัปเดตทุก ~5 นาที · หน่วย °C</div>
   </footer>
 
 <script>
-const WARN = 70, ALARM = 80;
-const TAGS = ["DCV_TC_L","DCV_TC_R","BEND_L","BEND_R","TAKE_UP_L","TAKE_UP_R"];
 let DATA = null;
-
 function fmtTime(iso){
   try{ const d=new Date(iso);
     return d.toLocaleString('th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' น.';
   }catch(e){ return iso; }
 }
-
-function render(){
-  if(!DATA) return;
-  const map = {};
-  Object.values(DATA.groups||{}).forEach(arr=>arr.forEach(it=>{ map[it.tag]=it.value; }));
-  TAGS.forEach(tag=>{
-    const el = document.getElementById(tag);
-    if(!el) return;
-    const v = Number(map[tag]);
-    if(map[tag]==null || isNaN(v)){ el.textContent='—'; el.className='tv'; return; }
-    let cls='tv'; if(v>=ALARM)cls+=' alarm'; else if(v>=WARN)cls+=' warn'; else cls+=' ok';
-    el.className=cls; el.textContent=v.toFixed(1);
-  });
-  document.getElementById('updated').textContent = fmtTime(DATA.updated);
-}
-
 async function load(){
   try{
     const r = await fetch('temps.json?_=' + Date.now(), {cache:'no-store'});
     DATA = await r.json();
-    render();
+    if(DATA && DATA.updated) document.getElementById('updated').textContent = fmtTime(DATA.updated);
   }catch(e){ console.error('load failed', e); }
 }
 
@@ -141,7 +117,7 @@ async function refresh(){
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
 
-load();            // show data right away
+load();            // show updated time right away
 if(!cdGet() || cdGet() <= Date.now()) cdSet(Date.now() + PERIOD);   // start a cycle only if none is running
 drawCountdown();   // continue the shared countdown (do NOT reset on page switch)
 </script>
