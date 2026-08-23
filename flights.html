@@ -61,13 +61,11 @@
 
   .wrap{max-width:1150px;margin:0 auto}
   .routes{display:grid;grid-template-columns:1fr;gap:22px}
-  @media(min-width:980px){.routes{grid-template-columns:1fr 1fr}}
-  .routes.single{grid-template-columns:1fr!important;max-width:720px;margin:0 auto}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
   .card h2{margin:0;padding:14px 18px;font-size:15px;letter-spacing:.4px;background:var(--head);border-bottom:2px solid var(--line-strong);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .card h2 .sub{margin-left:auto;font-size:12px;font-weight:500;color:var(--muted)}
-  .alogo{width:19px;height:19px;flex:none;vertical-align:-5px;object-fit:contain;background:none;border:0}
-  .book .alogo,.cheap .alogo{width:17px;height:17px;vertical-align:-4px}
+  .alogo{height:18px;width:auto;max-width:74px;flex:none;vertical-align:-4px;object-fit:contain;background:none;border:0}
+  .book .alogo,.cheap .alogo,.badge .alogo{height:15px;max-width:62px;vertical-align:-3px}
   thead th .alogo,.book .alogo,.cheap .alogo,.badge .alogo{margin-right:5px}
   .badge .alogo{vertical-align:-4px}
   .book{align-items:center}
@@ -82,10 +80,13 @@
   tr.today{background:var(--row-today)}
   .d{font-weight:700;color:var(--ink-strong)}
   .dow{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
-  .p{font-weight:700;font-variant-numeric:tabular-nums}
-  .p.aa{color:var(--aa)}
-  .p.nok{color:var(--nok)}
+  .p{display:block;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink-strong);font-size:15px}
   .p.best{color:var(--best)}
+  .fcell{display:block;text-decoration:none;color:inherit}
+  .al{display:flex;align-items:center;justify-content:flex-end;gap:5px;margin-bottom:2px}
+  .al .alogo{height:14px;max-width:56px}
+  .an{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .rank{display:inline-block;min-width:16px;font-size:10px;font-weight:800;color:var(--muted)}
   .t{display:block;font-size:11px;color:var(--sub);font-weight:500;margin-top:2px}
   .na{color:var(--na);font-weight:500}
   .tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;background:var(--tag-bg);color:var(--tag-ink);margin-top:3px}
@@ -118,7 +119,7 @@
     <div class="logo">✈</div>
     <div class="titles">
       <h1>Flight Price Watch · น่าน &amp; เชียงใหม่ ⇄ กรุงเทพ</h1>
-      <p>ราคาตั๋วถูกที่สุดรายวัน ล่วงหน้า 30 วัน · Thai AirAsia &amp; Nok Air</p>
+      <p>ราคาถูกที่สุดรายวัน ล่วงหน้า 30 วัน · เทียบ<b>ทุกสายการบิน</b> แสดง 4 อันดับถูกสุดของแต่ละวัน</p>
     </div>
     <div class="nav">
       <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตราคารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
@@ -176,8 +177,8 @@
   </div>
 
   <footer>
-    <div>ราคาเที่ยวเดียว · ผู้ใหญ่ 1 ท่าน · ชั้นประหยัด · ถูกที่สุดของวันนั้น — ที่มา Trip.com · ราคาเปลี่ยนแปลงตลอดเวลา โปรดยืนยันอีกครั้งบนหน้าจอง</div>
-    <div style="margin-top:6px">เส้นทางที่ติดตาม: น่าน ⇄ ดอนเมือง · เชียงใหม่ ⇄ ดอนเมือง</div>
+    <div>ราคาเที่ยวเดียว · ผู้ใหญ่ 1 ท่าน · ชั้นประหยัด · 4 อันดับถูกที่สุดของวันนั้น (สายการบินละ 1 ราคา) — ที่มา Trip.com · ราคาเปลี่ยนแปลงตลอดเวลา โปรดยืนยันอีกครั้งบนหน้าจอง</div>
+    <div style="margin-top:6px">เส้นทางที่ติดตาม: น่าน ⇄ กรุงเทพ · เชียงใหม่ ⇄ กรุงเทพ (ดอนเมือง + สุวรรณภูมิ) — ปุ่ม “ดูทั้งหมด” เปิดผลค้นหาเต็มของวันนั้น</div>
     <div style="margin-top:6px">ข้อมูลอัปเดตอัตโนมัติทุก ~12 ชั่วโมง</div>
   </footer>
 
@@ -194,12 +195,25 @@ const IATA  = {
   CNX_BKK:{f:'CNX',t:'DMK',tf:'cnx',tt:'bkk'},
   BKK_CNX:{f:'DMK',t:'CNX',tf:'bkk',tt:'cnx'}
 };
-// โลโก้ทางการของสายการบิน (ไฟล์ SVG ในโฟลเดอร์ logos/ - พื้นหลังโปร่งใส)
+// โลโก้ทางการของสายการบิน (ไฟล์ในโฟลเดอร์ logos/ - พื้นหลังโปร่งใส)
 const LOGO = {
-  airasia:'<img class="alogo" src="logos/airasia.svg" alt="Air Asia">',
-  nokair :'<img class="alogo" src="logos/nokair-badge.svg" alt="Nok Air">'
+  airasia   :'logos/airasia.svg',
+  nokair    :'logos/nokair-badge.svg',
+  vietjet   :'logos/vietjet.svg',
+  lionair   :'logos/lionair.png',
+  thai      :'logos/thai.svg',
+  bangkokair:'logos/bangkokair.svg'
 };
-const ANAME = {airasia:'Air Asia', nokair:'Nok Air'};
+// หน้าเว็บของแต่ละสายการบิน (ใช้กับปุ่มจองท้ายการ์ด)
+const SITE = {
+  airasia   :'https://www.airasia.com/flights/th/th/',
+  nokair    :'https://nokair.com/',
+  vietjet   :'https://www.vietjetair.com/th/',
+  lionair   :'https://www.lionairthai.com/',
+  thai      :'https://www.thaiairways.com/th_TH/index.page',
+  bangkokair:'https://www.bangkokair.com/'
+};
+const RANKLBL = ['ถูกสุด','อันดับ 2','อันดับ 3','อันดับ 4','อันดับ 5','อันดับ 6'];
 const ORDER   = ['NNT_BKK','BKK_NNT','CNX_BKK','BKK_CNX'];
 const TAB_KEY = 'ith_flight_route_tab';
 let   TAB     = localStorage.getItem(TAB_KEY) || 'ALL';
@@ -213,23 +227,42 @@ function fmtDay(iso){
   const d=new Date(iso+'T00:00:00');
   return {d:d.getDate()+' '+THMON[d.getMonth()], dow:THDOW[d.getDay()]};
 }
-function bookUrl(airline, routeKey, date){
-  const r = IATA[routeKey] || IATA.NNT_BKK;
-  if(airline==='airasia')
-    return 'https://www.airasia.com/flights/search/?origin='+r.f+'&destination='+r.t+'&departDate='+date+'&tripType=O&adult=1&currency=THB&locale=th-th';
-  return 'https://nokair.com/booking?origin='+r.f+'&destination='+r.t+'&departureDate='+date+'&adult=1';
+function logoImg(f){
+  const src = LOGO[f.airline];
+  return src ? '<img class="alogo" src="'+src+'" alt="'+f.name+'">' : '';
 }
 function tripUrl(routeKey, date){
   const r = IATA[routeKey] || IATA.NNT_BKK;
   return 'https://th.trip.com/flights/showfarefirst?dcity='+r.tf+'&acity='+r.tt+'&ddate='+date+'&triptype=ow&class=y&quantity=1&locale=th-TH&curr=THB';
 }
-function cell(info, airline, routeKey, date, isBest){
-  if(!info) return '<td class="num"><span class="na">—</span></td>';
-  const cls = 'p ' + (isBest ? 'best' : (airline==='airasia' ? 'aa' : 'nok'));
-  const promo = (info.promos && info.promos.length) ? '<span class="tag">'+info.promos[0]+'</span>' : '';
-  return '<td class="num"><a href="'+bookUrl(airline,routeKey,date)+'" target="_blank" rel="noopener" style="text-decoration:none">'
-       + '<span class="'+cls+'">฿'+Number(info.price).toLocaleString('th-TH')+'</span></a>'
-       + '<span class="t">'+(info.depart||'')+' → '+(info.arrive||'')+'</span>' + promo + '</td>';
+// สายการบินที่มีหน้าจองแบบระบุวันได้ ให้ลิงก์ตรง ที่เหลือส่งไปหน้า Trip.com ของวันนั้น
+function bookUrl(f, routeKey, date){
+  if(f.airline==='airasia')
+    return 'https://www.airasia.com/flights/search/?origin='+f.from+'&destination='+f.to+'&departDate='+date+'&tripType=O&adult=1&currency=THB&locale=th-th';
+  if(f.airline==='nokair')
+    return 'https://nokair.com/booking?origin='+f.from+'&destination='+f.to+'&departureDate='+date+'&adult=1';
+  return tripUrl(routeKey, date);
+}
+// รองรับทั้งรูปแบบใหม่ (list เรียงจากถูกไปแพง) และรูปแบบเดิม (airasia/nokair เป็นคีย์)
+function fareList(day){
+  if(Array.isArray(day)) return day;
+  if(day && typeof day === 'object')
+    return Object.keys(day).map(function(k){
+      const f = Object.assign({}, day[k]);
+      f.airline = f.airline || k;
+      f.name = f.name || (k==='airasia' ? 'Thai AirAsia' : k==='nokair' ? 'Nok Air' : k);
+      return f;
+    }).sort(function(a,b){ return a.price - b.price; });
+  return [];
+}
+function fareCell(f, routeKey, date, rank){
+  if(!f) return '<td class="num"><span class="na">—</span></td>';
+  const promo = (f.promos && f.promos.length) ? '<span class="tag">'+f.promos[0]+'</span>' : '';
+  return '<td class="num"><a class="fcell" href="'+bookUrl(f,routeKey,date)+'" target="_blank" rel="noopener" title="จอง '+f.name+' '+(f.depart||'')+'">'
+       + '<span class="al">'+logoImg(f)+'<span class="an">'+f.name+'</span></span>'
+       + '<span class="p'+(rank===0?' best':'')+'">฿'+Number(f.price).toLocaleString('th-TH')+'</span>'
+       + '<span class="t">'+(f.depart||'')+' → '+(f.arrive||'')+(f.to?' · '+f.to:'')+'</span>'
+       + promo + '</a></td>';
 }
 
 function render(){
@@ -238,10 +271,10 @@ function render(){
   host.innerHTML = '';
   const today = new Date().toISOString().slice(0,10);
   const all   = DATA.routes || {};
+  const topN  = DATA.top_n || 4;
   const keys  = ORDER.filter(function(k){ return all[k]; })
                      .concat(Object.keys(all).filter(function(k){ return ORDER.indexOf(k)<0; }))
                      .filter(function(k){ return TAB==='ALL' || TAB===k; });
-  host.classList.toggle('single', keys.length === 1);
   if(!keys.length){
     host.innerHTML = '<div class="card"><h2>ยังไม่มีข้อมูลของเส้นทางนี้ — รอรอบอัปเดตถัดไป</h2></div>';
     return;
@@ -249,38 +282,40 @@ function render(){
   keys.forEach(function(key){
     const r = all[key];
     const dates = Object.keys(r.days||{}).sort();
-    let min = Infinity, minDate = '', minAir = 'airasia';
+    let min = Infinity, minDate = '', minFare = null;
+    const seen = {};                       // สายการบินที่โผล่ในเส้นทางนี้ (ไว้ทำปุ่มจอง)
     dates.forEach(function(d){
-      Object.entries(r.days[d]||{}).forEach(function(kv){
-        if(kv[1] && kv[1].price < min){ min = kv[1].price; minDate = d; minAir = kv[0]; }
+      fareList(r.days[d]).forEach(function(f){
+        seen[f.airline] = f.name;
+        if(f.price < min){ min = f.price; minDate = d; minFare = f; }
       });
     });
-    const cheapChip = (min < Infinity)
-      ? '<a class="cheap" href="'+bookUrl(minAir,key,minDate)+'" target="_blank" rel="noopener" title="จองเที่ยวบินที่ถูกที่สุดในช่วง 30 วัน">💰 ถูกสุด ฿'
-        + Number(min).toLocaleString('th-TH') + ' · ' + fmtDay(minDate).d
-        + ' · ' + LOGO[minAir] + ANAME[minAir] + ' ↗</a>'
+    const cheapChip = minFare
+      ? '<a class="cheap" href="'+bookUrl(minFare,key,minDate)+'" target="_blank" rel="noopener" title="จองเที่ยวบินที่ถูกที่สุดในช่วง 30 วัน">💰 ถูกสุด ฿'
+        + Number(min).toLocaleString('th-TH') + ' · ' + fmtDay(minDate).d + ' · '
+        + logoImg(minFare) + minFare.name + ' ↗</a>'
       : '';
     const rows = dates.map(function(d){
-      const day = r.days[d]||{}, f = fmtDay(d);
-      const aa = day.airasia||null, nok = day.nokair||null;
-      const best = Math.min(aa?aa.price:Infinity, nok?nok.price:Infinity);
+      const fares = fareList(r.days[d]), f = fmtDay(d);
+      let tds = '';
+      for(let i=0; i<topN; i++) tds += fareCell(fares[i]||null, key, d, i);
       return '<tr class="'+(d===today?'today':'')+'">'
         + '<td><span class="d">'+f.d+'</span><span class="dow">'+f.dow+'</span></td>'
-        + cell(aa,'airasia',key,d, !!aa && aa.price===best && best===min)
-        + cell(nok,'nokair',key,d, !!nok && nok.price===best && best===min)
-        + '<td class="num"><a class="book plain" href="'+tripUrl(key,d)+'" target="_blank" rel="noopener">เทียบ ↗</a></td>'
+        + tds
+        + '<td class="num"><a class="book plain" href="'+tripUrl(key,d)+'" target="_blank" rel="noopener">ดูทั้งหมด ↗</a></td>'
         + '</tr>';
+    }).join('');
+    let ths = '';
+    for(let i=0; i<topN; i++) ths += '<th class="num">'+RANKLBL[i]+'</th>';
+    const siteBtns = Object.keys(seen).map(function(a){
+      return SITE[a] ? '<a class="book plain" href="'+SITE[a]+'" target="_blank" rel="noopener">'
+        + (LOGO[a] ? '<img class="alogo" src="'+LOGO[a]+'" alt="">' : '') + seen[a] + ' ↗</a>' : '';
     }).join('');
     host.insertAdjacentHTML('beforeend',
       '<div class="card"><h2>✈️ '+r.label+cheapChip+'<span class="sub">'+(r.from_name||'')+' → '+(r.to_name||'')+'</span></h2>'
-      + '<table><thead><tr><th>วันที่</th>'
-      + '<th class="num">'+LOGO.airasia+'Air Asia</th>'
-      + '<th class="num">'+LOGO.nokair+'Nok Air</th>'
-      + '<th class="num">เทียบราคา</th></tr></thead>'
+      + '<table><thead><tr><th>วันที่</th>'+ths+'<th class="num">ทุกเที่ยวบิน</th></tr></thead>'
       + '<tbody>'+rows+'</tbody></table>'
-      + '<div class="foot-book"><span>จองตั๋ว:</span>'
-      + '<a class="book aa" href="https://www.airasia.com/flights/th/th/" target="_blank" rel="noopener">'+LOGO.airasia+'Air Asia ↗</a>'
-      + '<a class="book nok" href="https://nokair.com/" target="_blank" rel="noopener">'+LOGO.nokair+'Nok Air ↗</a>'
+      + '<div class="foot-book"><span>จองตั๋ว:</span>' + siteBtns
       + '<a class="book plain" href="'+tripUrl(key, dates[0]||today)+'" target="_blank" rel="noopener">Trip.com ↗</a>'
       + '</div></div>');
   });
