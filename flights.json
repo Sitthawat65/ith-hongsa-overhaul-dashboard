@@ -1,15 +1,18 @@
 {
-  "updated": "2026-08-23T20:58:54+07:00",
+  "updated": "2026-08-23T21:49:55+07:00",
   "source": "Trip.com (th)",
+  "top_n": 4,
   "routes": {
     "NNT_BKK": {
       "label": "น่าน → กรุงเทพ",
       "from_name": "น่าน (NNT)",
-      "to_name": "กรุงเทพ (DMK)",
+      "to_name": "กรุงเทพ (DMK/BKK)",
       "days": {
-        "2026-08-23": {},
-        "2026-08-24": {
-          "nokair": {
+        "2026-08-23": [],
+        "2026-08-24": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1475,
             "depart": "11:40",
             "arrive": "12:50",
@@ -19,7 +22,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1545,
             "depart": "13:55",
             "arrive": "15:00",
@@ -29,9 +34,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-25": {
-          "nokair": {
+        ],
+        "2026-08-25": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1475,
             "depart": "14:10",
             "arrive": "15:20",
@@ -41,7 +48,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1545,
             "depart": "13:55",
             "arrive": "15:00",
@@ -51,9 +60,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-26": {
-          "nokair": {
+        ],
+        "2026-08-26": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
@@ -63,7 +74,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1460,
             "depart": "13:55",
             "arrive": "15:00",
@@ -73,20 +86,23 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-27": {
-          "nokair": {
+        ],
+        "2026-08-27": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
             "from": "NNT",
             "to": "DMK",
             "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
+              "บินตรงราคาถูกสุด"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1460,
             "depart": "13:55",
             "arrive": "15:00",
@@ -97,9 +113,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-28": {
-          "nokair": {
+        ],
+        "2026-08-28": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
@@ -110,7 +128,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1460,
             "depart": "09:00",
             "arrive": "10:10",
@@ -121,9 +141,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-29": {
-          "nokair": {
+        ],
+        "2026-08-29": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
@@ -133,7 +155,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1460,
             "depart": "09:00",
             "arrive": "10:10",
@@ -143,9 +167,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-30": {
-          "nokair": {
+        ],
+        "2026-08-30": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 2660,
             "depart": "11:40",
             "arrive": "12:50",
@@ -155,8 +181,10 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
-            "price": 2750,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2820,
             "depart": "13:55",
             "arrive": "15:00",
             "from": "NNT",
@@ -165,9 +193,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-31": {
-          "airasia": {
+        ],
+        "2026-08-31": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1320,
             "depart": "09:00",
             "arrive": "10:10",
@@ -178,7 +208,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
@@ -186,9 +218,11 @@
             "to": "DMK",
             "promos": []
           }
-        },
-        "2026-09-01": {
-          "nokair": {
+        ],
+        "2026-09-01": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
@@ -198,7 +232,9 @@
               "บินตรงราคาถูกสุด"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1725,
             "depart": "09:00",
             "arrive": "10:10",
@@ -208,9 +244,11 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        },
-        "2026-09-02": {
-          "airasia": {
+        ],
+        "2026-09-02": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1155,
             "depart": "09:00",
             "arrive": "10:10",
@@ -220,7 +258,9 @@
               "บินตรงราคาถูกสุด"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
@@ -230,9 +270,11 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        },
-        "2026-09-03": {
-          "nokair": {
+        ],
+        "2026-09-03": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
@@ -242,7 +284,9 @@
               "บินตรงราคาถูกสุด"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1500,
             "depart": "09:00",
             "arrive": "10:10",
@@ -252,9 +296,11 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        },
-        "2026-09-04": {
-          "airasia": {
+        ],
+        "2026-09-04": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1365,
             "depart": "09:00",
             "arrive": "10:10",
@@ -265,8 +311,10 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
-            "price": 1475,
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1490,
             "depart": "11:40",
             "arrive": "12:50",
             "from": "NNT",
@@ -276,9 +324,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-05": {
-          "airasia": {
+        ],
+        "2026-09-05": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1320,
             "depart": "09:00",
             "arrive": "10:10",
@@ -288,7 +338,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
@@ -298,9 +350,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-06": {
-          "nokair": {
+        ],
+        "2026-09-06": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 2050,
             "depart": "11:40",
             "arrive": "12:50",
@@ -310,7 +364,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 2165,
             "depart": "09:00",
             "arrive": "10:10",
@@ -320,9 +376,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-07": {
-          "airasia": {
+        ],
+        "2026-09-07": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1320,
             "depart": "09:00",
             "arrive": "10:10",
@@ -332,7 +390,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
@@ -342,9 +402,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-08": {
-          "airasia": {
+        ],
+        "2026-09-08": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1155,
             "depart": "09:00",
             "arrive": "10:10",
@@ -354,7 +416,9 @@
               "บินตรงราคาถูกสุด"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
@@ -362,9 +426,11 @@
             "to": "DMK",
             "promos": []
           }
-        },
-        "2026-09-09": {
-          "airasia": {
+        ],
+        "2026-09-09": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1155,
             "depart": "09:00",
             "arrive": "10:10",
@@ -374,7 +440,9 @@
               "บินตรงราคาถูกสุด"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
@@ -384,20 +452,23 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        },
-        "2026-09-10": {
-          "airasia": {
+        ],
+        "2026-09-10": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1190,
             "depart": "09:00",
             "arrive": "10:10",
             "from": "NNT",
             "to": "DMK",
             "promos": [
-              "บินตรงราคาถูกสุด",
-              "สุดคุ้ม"
+              "บินตรงราคาถูกสุด"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1205,
             "depart": "11:40",
             "arrive": "12:50",
@@ -408,9 +479,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-11": {
-          "airasia": {
+        ],
+        "2026-09-11": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1320,
             "depart": "09:00",
             "arrive": "10:10",
@@ -420,7 +493,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1455,
             "depart": "11:40",
             "arrive": "12:50",
@@ -430,9 +505,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-12": {
-          "nokair": {
+        ],
+        "2026-09-12": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1310,
             "depart": "11:40",
             "arrive": "12:50",
@@ -442,7 +519,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1365,
             "depart": "09:00",
             "arrive": "10:10",
@@ -452,9 +531,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-13": {
-          "nokair": {
+        ],
+        "2026-09-13": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 2030,
             "depart": "11:40",
             "arrive": "12:50",
@@ -464,7 +545,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 2185,
             "depart": "09:00",
             "arrive": "10:10",
@@ -474,9 +557,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-14": {
-          "nokair": {
+        ],
+        "2026-09-14": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "17:20",
             "arrive": "18:30",
@@ -486,7 +571,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1320,
             "depart": "09:00",
             "arrive": "10:10",
@@ -496,9 +583,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-15": {
-          "airasia": {
+        ],
+        "2026-09-15": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1155,
             "depart": "09:00",
             "arrive": "10:10",
@@ -508,7 +597,9 @@
               "บินตรงราคาถูกสุด"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
@@ -518,9 +609,11 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        },
-        "2026-09-16": {
-          "airasia": {
+        ],
+        "2026-09-16": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1155,
             "depart": "09:00",
             "arrive": "10:10",
@@ -530,7 +623,9 @@
               "บินตรงราคาถูกสุด"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "11:40",
             "arrive": "12:50",
@@ -540,9 +635,11 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        },
-        "2026-09-17": {
-          "airasia": {
+        ],
+        "2026-09-17": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1155,
             "depart": "09:00",
             "arrive": "10:10",
@@ -551,20 +648,12 @@
             "promos": [
               "บินตรงราคาถูกสุด"
             ]
-          },
-          "nokair": {
-            "price": 1290,
-            "depart": "11:40",
-            "arrive": "12:50",
-            "from": "NNT",
-            "to": "DMK",
-            "promos": [
-              "บินตรงราคาถูกสุด"
-            ]
           }
-        },
-        "2026-09-18": {
-          "nokair": {
+        ],
+        "2026-09-18": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1205,
             "depart": "17:20",
             "arrive": "18:30",
@@ -574,7 +663,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1365,
             "depart": "09:00",
             "arrive": "10:10",
@@ -584,9 +675,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-19": {
-          "nokair": {
+        ],
+        "2026-09-19": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1290,
             "depart": "17:20",
             "arrive": "18:30",
@@ -596,7 +689,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1320,
             "depart": "09:00",
             "arrive": "10:10",
@@ -606,9 +701,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-09-20": {
-          "airasia": {
+        ],
+        "2026-09-20": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1320,
             "depart": "09:00",
             "arrive": "10:10",
@@ -617,20 +714,12 @@
             "promos": [
               "สุดคุ้ม"
             ]
-          },
-          "nokair": {
-            "price": 1455,
-            "depart": "11:40",
-            "arrive": "12:50",
-            "from": "NNT",
-            "to": "DMK",
-            "promos": [
-              "สุดคุ้ม"
-            ]
           }
-        },
-        "2026-09-21": {
-          "nokair": {
+        ],
+        "2026-09-21": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1310,
             "depart": "11:40",
             "arrive": "12:50",
@@ -641,7 +730,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1365,
             "depart": "09:00",
             "arrive": "10:10",
@@ -651,17 +742,19 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        }
+        ]
       }
     },
     "BKK_NNT": {
       "label": "กรุงเทพ → น่าน",
-      "from_name": "กรุงเทพ (DMK)",
+      "from_name": "กรุงเทพ (DMK/BKK)",
       "to_name": "น่าน (NNT)",
       "days": {
-        "2026-08-23": {},
-        "2026-08-24": {
-          "airasia": {
+        "2026-08-23": [],
+        "2026-08-24": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1490,
             "depart": "17:50",
             "arrive": "19:05",
@@ -671,7 +764,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1580,
             "depart": "09:55",
             "arrive": "11:10",
@@ -681,9 +776,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-25": {
-          "airasia": {
+        ],
+        "2026-08-25": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1490,
             "depart": "17:50",
             "arrive": "19:05",
@@ -693,7 +790,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1580,
             "depart": "12:25",
             "arrive": "13:40",
@@ -703,9 +802,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-26": {
-          "airasia": {
+        ],
+        "2026-08-26": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1490,
             "depart": "17:50",
             "arrive": "19:05",
@@ -715,8 +816,10 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
-            "price": 1550,
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1575,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
@@ -725,9 +828,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-27": {
-          "airasia": {
+        ],
+        "2026-08-27": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1490,
             "depart": "17:50",
             "arrive": "19:05",
@@ -738,7 +843,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1710,
             "depart": "09:55",
             "arrive": "11:10",
@@ -748,9 +855,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-28": {
-          "airasia": {
+        ],
+        "2026-08-28": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1490,
             "depart": "07:15",
             "arrive": "08:30",
@@ -761,7 +870,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1550,
             "depart": "09:55",
             "arrive": "11:10",
@@ -769,9 +880,11 @@
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-08-29": {
-          "airasia": {
+        ],
+        "2026-08-29": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1490,
             "depart": "07:15",
             "arrive": "08:30",
@@ -781,7 +894,9 @@
               "สุดคุ้ม"
             ]
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1550,
             "depart": "09:55",
             "arrive": "11:10",
@@ -791,9 +906,11 @@
               "บินตรงราคาถูกสุด"
             ]
           }
-        },
-        "2026-08-30": {
-          "nokair": {
+        ],
+        "2026-08-30": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1420,
             "depart": "09:55",
             "arrive": "11:10",
@@ -803,7 +920,9 @@
               "สุดคุ้ม"
             ]
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1535,
             "depart": "12:10",
             "arrive": "13:25",
@@ -813,9 +932,11 @@
               "สุดคุ้ม"
             ]
           }
-        },
-        "2026-08-31": {
-          "nokair": {
+        ],
+        "2026-08-31": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1360,
             "depart": "09:55",
             "arrive": "11:10",
@@ -823,35 +944,53 @@
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 1430,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1435,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-01": {
-          "nokair": {
-            "price": 1475,
+        ],
+        "2026-09-01": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1460,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 2600,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2580,
             "depart": "07:15",
             "arrive": "08:30",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-02": {
-          "nokair": {
+        ],
+        "2026-09-02": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1475,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1480,
             "depart": "09:55",
             "arrive": "11:10",
@@ -859,153 +998,187 @@
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-03": {
-          "nokair": {
-            "price": 1810,
+        ],
+        "2026-09-03": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1790,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 1940,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2045,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-04": {
-          "airasia": {
-            "price": 1875,
+        ],
+        "2026-09-04": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1840,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1890,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-05": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1655,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-06": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1545,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1605,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-07": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1485,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "nokair": {
-            "price": 1980,
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1500,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-05": {
-          "airasia": {
-            "price": 1450,
+        ],
+        "2026-09-08": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1350,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1440,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-09": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1435,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "nokair": {
-            "price": 1610,
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1445,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-06": {
-          "airasia": {
-            "price": 1515,
-            "depart": "07:15",
-            "arrive": "08:30",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          },
-          "nokair": {
-            "price": 1630,
-            "depart": "09:55",
-            "arrive": "11:10",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-07": {
-          "airasia": {
-            "price": 1415,
-            "depart": "07:15",
-            "arrive": "08:30",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          },
-          "nokair": {
-            "price": 1475,
-            "depart": "09:55",
-            "arrive": "11:10",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-08": {
-          "nokair": {
-            "price": 1380,
+        ],
+        "2026-09-10": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1675,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 1450,
-            "depart": "07:15",
-            "arrive": "08:30",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-09": {
-          "nokair": {
-            "price": 1430,
-            "depart": "09:55",
-            "arrive": "11:10",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          },
-          "airasia": {
-            "price": 1470,
-            "depart": "07:15",
-            "arrive": "08:30",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-10": {
-          "nokair": {
-            "price": 1660,
-            "depart": "09:55",
-            "arrive": "11:10",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-11": {
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1925,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": []
+          }
+        ],
+        "2026-09-11": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1890,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
           },
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 2295,
             "depart": "09:55",
             "arrive": "11:10",
@@ -1013,9 +1186,99 @@
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-12": {
-          "airasia": {
+        ],
+        "2026-09-12": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1435,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2295,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-13": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1415,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1460,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-14": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1350,
+            "depart": "15:35",
+            "arrive": "16:50",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1455,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-15": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1455,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1470,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": []
+          }
+        ],
+        "2026-09-16": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1415,
             "depart": "17:50",
             "arrive": "19:05",
@@ -1023,678 +1286,2403 @@
             "to": "NNT",
             "promos": []
           },
-          "nokair": {
-            "price": 2325,
-            "depart": "09:55",
-            "arrive": "11:10",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-13": {
-          "nokair": {
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1470,
-            "depart": "15:35",
-            "arrive": "16:50",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          },
-          "airasia": {
-            "price": 2345,
-            "depart": "17:50",
-            "arrive": "19:05",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-14": {
-          "nokair": {
-            "price": 1375,
-            "depart": "15:35",
-            "arrive": "16:50",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          },
-          "airasia": {
-            "price": 1450,
-            "depart": "07:15",
-            "arrive": "08:30",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          }
-        },
-        "2026-09-15": {
-          "airasia": {
-            "price": 1430,
-            "depart": "17:50",
-            "arrive": "19:05",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          },
-          "nokair": {
-            "price": 1490,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-16": {
-          "nokair": {
-            "price": 1460,
-            "depart": "09:55",
-            "arrive": "11:10",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
-          },
-          "airasia": {
+        ],
+        "2026-09-17": [
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1505,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": []
-          }
-        },
-        "2026-09-17": {
-          "airasia": {
-            "price": 1450,
-            "depart": "17:50",
-            "arrive": "19:05",
-            "from": "DMK",
-            "to": "NNT",
-            "promos": []
           },
-          "nokair": {
-            "price": 1650,
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1640,
             "depart": "09:55",
             "arrive": "11:10",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-18": {
-          "nokair": {
-            "price": 1515,
+        ],
+        "2026-09-18": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1500,
             "depart": "15:35",
             "arrive": "16:50",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 2355,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2330,
             "depart": "07:15",
             "arrive": "08:30",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-19": {
-          "nokair": {
-            "price": 1375,
+        ],
+        "2026-09-19": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1380,
             "depart": "15:35",
             "arrive": "16:50",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 1440,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1455,
             "depart": "17:50",
             "arrive": "19:05",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-20": {
-          "nokair": {
-            "price": 1395,
+        ],
+        "2026-09-20": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1370,
             "depart": "15:35",
             "arrive": "16:50",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 1940,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1890,
             "depart": "07:15",
             "arrive": "08:30",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        },
-        "2026-09-21": {
-          "nokair": {
-            "price": 1405,
+        ],
+        "2026-09-21": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1380,
             "depart": "15:35",
             "arrive": "16:50",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           },
-          "airasia": {
-            "price": 1955,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1890,
             "depart": "07:15",
             "arrive": "08:30",
             "from": "DMK",
             "to": "NNT",
             "promos": []
           }
-        }
+        ]
       }
     },
     "CNX_BKK": {
       "label": "เชียงใหม่ → กรุงเทพ",
       "from_name": "เชียงใหม่ (CNX)",
-      "to_name": "กรุงเทพ (DMK)",
+      "to_name": "กรุงเทพ (DMK/BKK)",
       "days": {
-        "2026-08-23": {},
-        "2026-08-24": {
-          "nokair": {
-            "price": 1880,
-            "depart": "06:50",
-            "arrive": "08:05",
+        "2026-08-23": [],
+        "2026-08-24": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1605,
+            "depart": "22:30",
+            "arrive": "23:55",
             "from": "CNX",
-            "to": "DMK",
+            "to": "BKK",
             "promos": []
-          }
-        },
-        "2026-08-25": {
-          "nokair": {
-            "price": 1515,
-            "depart": "17:35",
-            "arrive": "18:50",
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1690,
+            "depart": "13:30",
+            "arrive": "14:45",
             "from": "CNX",
             "to": "DMK",
             "promos": []
           },
-          "airasia": {
-            "price": 1630,
-            "depart": "08:25",
-            "arrive": "09:35",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-08-26": {
-          "airasia": {
-            "price": 1635,
-            "depart": "16:30",
-            "arrive": "17:40",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          },
-          "nokair": {
-            "price": 1870,
-            "depart": "12:10",
-            "arrive": "13:25",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-08-27": {
-          "nokair": {
-            "price": 1440,
-            "depart": "12:10",
-            "arrive": "13:25",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          },
-          "airasia": {
-            "price": 1625,
-            "depart": "15:45",
-            "arrive": "17:05",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-08-28": {
-          "airasia": {
-            "price": 1615,
-            "depart": "09:50",
-            "arrive": "11:00",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          },
-          "nokair": {
-            "price": 1740,
-            "depart": "12:10",
-            "arrive": "13:25",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-08-29": {
-          "airasia": {
-            "price": 1635,
-            "depart": "12:00",
-            "arrive": "13:05",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          },
-          "nokair": {
-            "price": 1670,
-            "depart": "12:10",
-            "arrive": "13:25",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-08-30": {
-          "nokair": {
-            "price": 2260,
-            "depart": "12:10",
-            "arrive": "13:25",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-08-31": {
-          "nokair": {
-            "price": 1490,
-            "depart": "12:10",
-            "arrive": "13:25",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          },
-          "airasia": {
-            "price": 1610,
-            "depart": "12:00",
-            "arrive": "13:05",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-01": {
-          "nokair": {
-            "price": 1500,
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1935,
             "depart": "16:20",
             "arrive": "17:35",
             "from": "CNX",
             "to": "DMK",
             "promos": []
           },
-          "airasia": {
-            "price": 1635,
-            "depart": "12:00",
-            "arrive": "13:05",
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2630,
+            "depart": "08:25",
+            "arrive": "09:35",
             "from": "CNX",
             "to": "DMK",
             "promos": []
           }
-        },
-        "2026-09-02": {
-          "nokair": {
-            "price": 1250,
+        ],
+        "2026-08-25": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1385,
+            "depart": "07:10",
+            "arrive": "08:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1550,
             "depart": "08:15",
             "arrive": "09:30",
             "from": "CNX",
             "to": "DMK",
             "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 2170,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2445,
+            "depart": "07:40",
+            "arrive": "08:50",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
           }
-        },
-        "2026-09-03": {
-          "nokair": {
+        ],
+        "2026-08-26": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1370,
+            "depart": "07:10",
+            "arrive": "08:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1485,
-            "depart": "12:10",
-            "arrive": "13:25",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-04": {
-          "nokair": {
-            "price": 1485,
             "depart": "08:15",
             "arrive": "09:30",
             "from": "CNX",
             "to": "DMK",
             "promos": []
-          }
-        },
-        "2026-09-05": {
-          "nokair": {
-            "price": 1705,
-            "depart": "08:15",
-            "arrive": "09:30",
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1810,
+            "depart": "06:35",
+            "arrive": "07:55",
             "from": "CNX",
-            "to": "DMK",
+            "to": "BKK",
             "promos": []
-          }
-        },
-        "2026-09-06": {
-          "nokair": {
-            "price": 2210,
-            "depart": "08:15",
-            "arrive": "09:30",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-07": {
-          "airasia": {
-            "price": 1620,
-            "depart": "09:50",
-            "arrive": "11:00",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-08": {
-          "airasia": {
-            "price": 1630,
-            "depart": "12:00",
-            "arrive": "13:05",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-09": {
-          "airasia": {
-            "price": 1665,
-            "depart": "12:00",
-            "arrive": "13:05",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-10": {
-          "airasia": {
-            "price": 1635,
-            "depart": "09:50",
-            "arrive": "11:00",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-11": {
-          "airasia": {
-            "price": 1620,
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2495,
             "depart": "14:20",
             "arrive": "15:30",
             "from": "CNX",
             "to": "DMK",
             "promos": []
           }
-        },
-        "2026-09-12": {
-          "airasia": {
-            "price": 1610,
-            "depart": "12:00",
-            "arrive": "13:05",
+        ],
+        "2026-08-27": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1375,
+            "depart": "15:05",
+            "arrive": "16:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1420,
+            "depart": "16:20",
+            "arrive": "17:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1480,
+            "depart": "22:55",
+            "arrive": "00:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1840,
+            "depart": "06:35",
+            "arrive": "07:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          }
+        ],
+        "2026-08-28": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1325,
+            "depart": "07:10",
+            "arrive": "08:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1480,
+            "depart": "08:00",
+            "arrive": "09:20",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1670,
+            "depart": "07:40",
+            "arrive": "08:50",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1685,
+            "depart": "16:20",
+            "arrive": "17:35",
             "from": "CNX",
             "to": "DMK",
             "promos": []
           }
-        },
-        "2026-09-13": {
-          "nokair": {
-            "price": 1705,
+        ],
+        "2026-08-29": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1145,
+            "depart": "07:10",
+            "arrive": "08:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1475,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1525,
             "depart": "06:50",
             "arrive": "08:05",
             "from": "CNX",
             "to": "DMK",
             "promos": []
-          }
-        },
-        "2026-09-14": {
-          "airasia": {
-            "price": 1620,
-            "depart": "09:50",
-            "arrive": "11:00",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
-          }
-        },
-        "2026-09-15": {},
-        "2026-09-16": {},
-        "2026-09-17": {},
-        "2026-09-18": {},
-        "2026-09-19": {
-          "nokair": {
-            "price": 1480,
-            "depart": "13:50",
-            "arrive": "15:05",
-            "from": "CNX",
-            "to": "DMK",
-            "promos": []
           },
-          "airasia": {
-            "price": 1610,
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
             "depart": "11:05",
             "arrive": "12:15",
             "from": "CNX",
             "to": "DMK",
             "promos": []
           }
-        },
-        "2026-09-20": {
-          "airasia": {
-            "price": 1610,
-            "depart": "09:50",
-            "arrive": "11:00",
+        ],
+        "2026-08-30": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1425,
+            "depart": "07:10",
+            "arrive": "08:20",
             "from": "CNX",
             "to": "DMK",
             "promos": []
-          }
-        },
-        "2026-09-21": {
-          "nokair": {
-            "price": 1725,
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1505,
+            "depart": "08:00",
+            "arrive": "09:20",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2005,
+            "depart": "22:55",
+            "arrive": "00:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2220,
             "depart": "12:10",
             "arrive": "13:25",
             "from": "CNX",
             "to": "DMK",
             "promos": []
           }
-        }
+        ],
+        "2026-08-31": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1490,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1520,
+            "depart": "15:05",
+            "arrive": "16:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1595,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1630,
+            "depart": "13:55",
+            "arrive": "15:15",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          }
+        ],
+        "2026-09-01": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1350,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1445,
+            "depart": "08:10",
+            "arrive": "09:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1495,
+            "depart": "16:20",
+            "arrive": "17:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1525,
+            "depart": "07:40",
+            "arrive": "08:50",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-02": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1300,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1315,
+            "depart": "21:05",
+            "arrive": "22:25",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1340,
+            "depart": "22:10",
+            "arrive": "23:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "20:10",
+            "arrive": "21:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-03": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1340,
+            "depart": "21:05",
+            "arrive": "22:25",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1455,
+            "depart": "22:10",
+            "arrive": "23:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1470,
+            "depart": "19:05",
+            "arrive": "20:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "20:10",
+            "arrive": "21:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-04": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1360,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1500,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1825,
+            "depart": "10:30",
+            "arrive": "11:45",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2035,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-05": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1035,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1440,
+            "depart": "21:30",
+            "arrive": "22:45",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1705,
+            "depart": "19:05",
+            "arrive": "20:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1980,
+            "depart": "08:25",
+            "arrive": "09:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-06": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1625,
+            "depart": "06:35",
+            "arrive": "07:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2240,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2420,
+            "depart": "22:55",
+            "arrive": "00:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "thai",
+            "name": "Thai Airways",
+            "price": 2870,
+            "depart": "09:25",
+            "arrive": "10:50",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          }
+        ],
+        "2026-09-07": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1325,
+            "depart": "21:05",
+            "arrive": "22:25",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1620,
+            "depart": "10:30",
+            "arrive": "11:45",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1935,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-08": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1185,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1325,
+            "depart": "07:10",
+            "arrive": "08:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1455,
+            "depart": "22:55",
+            "arrive": "00:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1840,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-09": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1170,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1325,
+            "depart": "22:10",
+            "arrive": "23:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1610,
+            "depart": "08:25",
+            "arrive": "09:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2235,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-10": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1170,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1320,
+            "depart": "07:10",
+            "arrive": "08:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "20:10",
+            "arrive": "21:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1920,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-11": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1190,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1425,
+            "depart": "22:35",
+            "arrive": "23:50",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "14:20",
+            "arrive": "15:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1710,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-12": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1065,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1460,
+            "depart": "22:10",
+            "arrive": "23:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "12:00",
+            "arrive": "13:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1930,
+            "depart": "08:15",
+            "arrive": "09:30",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-13": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1645,
+            "depart": "07:10",
+            "arrive": "08:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1810,
+            "depart": "08:00",
+            "arrive": "09:20",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "bangkokair",
+            "name": "Bangkok Airways",
+            "price": 2730,
+            "depart": "10:10",
+            "arrive": "11:35",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 3380,
+            "depart": "19:05",
+            "arrive": "20:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-14": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1175,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1440,
+            "depart": "22:10",
+            "arrive": "23:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1515,
+            "depart": "22:55",
+            "arrive": "00:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2200,
+            "depart": "16:20",
+            "arrive": "17:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-15": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1310,
+            "depart": "08:00",
+            "arrive": "09:20",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1325,
+            "depart": "22:10",
+            "arrive": "23:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1490,
+            "depart": "22:55",
+            "arrive": "00:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1490,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-16": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1175,
+            "depart": "22:30",
+            "arrive": "23:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1415,
+            "depart": "13:10",
+            "arrive": "14:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1435,
+            "depart": "22:55",
+            "arrive": "00:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1495,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-17": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1225,
+            "depart": "21:05",
+            "arrive": "22:25",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1310,
+            "depart": "22:10",
+            "arrive": "23:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1480,
+            "depart": "07:40",
+            "arrive": "08:50",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1495,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-18": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1185,
+            "depart": "21:05",
+            "arrive": "22:25",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1425,
+            "depart": "08:10",
+            "arrive": "09:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1640,
+            "depart": "21:25",
+            "arrive": "22:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "bangkokair",
+            "name": "Bangkok Airways",
+            "price": 2315,
+            "depart": "20:00",
+            "arrive": "21:25",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          }
+        ],
+        "2026-09-19": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1030,
+            "depart": "21:30",
+            "arrive": "22:50",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1425,
+            "depart": "15:05",
+            "arrive": "16:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1490,
+            "depart": "19:05",
+            "arrive": "20:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "20:10",
+            "arrive": "21:20",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-20": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1455,
+            "depart": "06:35",
+            "arrive": "07:55",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1530,
+            "depart": "08:10",
+            "arrive": "09:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1605,
+            "depart": "09:50",
+            "arrive": "11:00",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1695,
+            "depart": "06:50",
+            "arrive": "08:05",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-21": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1180,
+            "depart": "21:05",
+            "arrive": "22:25",
+            "from": "CNX",
+            "to": "BKK",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1520,
+            "depart": "13:10",
+            "arrive": "14:25",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1900,
+            "depart": "16:20",
+            "arrive": "17:35",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1965,
+            "depart": "15:05",
+            "arrive": "16:15",
+            "from": "CNX",
+            "to": "DMK",
+            "promos": []
+          }
+        ]
       }
     },
     "BKK_CNX": {
       "label": "กรุงเทพ → เชียงใหม่",
-      "from_name": "กรุงเทพ (DMK)",
+      "from_name": "กรุงเทพ (DMK/BKK)",
       "to_name": "เชียงใหม่ (CNX)",
       "days": {
-        "2026-08-23": {},
-        "2026-08-24": {
-          "nokair": {
-            "price": 1575,
+        "2026-08-23": [],
+        "2026-08-24": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1400,
+            "depart": "18:05",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1590,
             "depart": "14:35",
             "arrive": "15:50",
             "from": "DMK",
             "to": "CNX",
             "promos": []
-          }
-        },
-        "2026-08-25": {
-          "nokair": {
-            "price": 1445,
-            "depart": "12:45",
-            "arrive": "14:00",
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1980,
+            "depart": "21:15",
+            "arrive": "22:25",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           },
-          "airasia": {
-            "price": 1620,
-            "depart": "14:40",
-            "arrive": "15:55",
-            "from": "DMK",
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 2220,
+            "depart": "22:00",
+            "arrive": "23:25",
+            "from": "BKK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-08-26": {
-          "nokair": {
-            "price": 1460,
-            "depart": "17:20",
-            "arrive": "18:35",
+        ],
+        "2026-08-25": [
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1280,
+            "depart": "06:30",
+            "arrive": "07:45",
             "from": "DMK",
             "to": "CNX",
             "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1340,
+            "depart": "16:45",
+            "arrive": "18:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1615,
+            "depart": "09:20",
+            "arrive": "10:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1645,
+            "depart": "07:35",
+            "arrive": "09:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
           }
-        },
-        "2026-08-27": {
-          "nokair": {
+        ],
+        "2026-08-26": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1335,
+            "depart": "18:05",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1470,
-            "depart": "14:35",
-            "arrive": "15:50",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          }
-        },
-        "2026-08-28": {
-          "nokair": {
-            "price": 1670,
-            "depart": "17:20",
-            "arrive": "18:35",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          }
-        },
-        "2026-08-29": {
-          "nokair": {
-            "price": 1460,
-            "depart": "14:35",
-            "arrive": "15:50",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          }
-        },
-        "2026-08-30": {
-          "nokair": {
-            "price": 1460,
-            "depart": "10:25",
-            "arrive": "11:40",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          },
-          "airasia": {
-            "price": 1610,
-            "depart": "14:40",
-            "arrive": "15:55",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          }
-        },
-        "2026-08-31": {
-          "airasia": {
-            "price": 1630,
-            "depart": "14:40",
-            "arrive": "15:55",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          }
-        },
-        "2026-09-01": {
-          "nokair": {
-            "price": 1495,
-            "depart": "10:25",
-            "arrive": "11:40",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          }
-        },
-        "2026-09-02": {
-          "nokair": {
-            "price": 1485,
             "depart": "17:20",
             "arrive": "18:35",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           },
-          "airasia": {
-            "price": 1620,
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1480,
+            "depart": "20:35",
+            "arrive": "22:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1965,
             "depart": "12:30",
             "arrive": "13:45",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-03": {
-          "nokair": {
-            "price": 1505,
+        ],
+        "2026-08-27": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1110,
+            "depart": "11:05",
+            "arrive": "12:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1310,
+            "depart": "15:50",
+            "arrive": "17:15",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1475,
+            "depart": "06:00",
+            "arrive": "07:10",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "thai",
+            "name": "Thai Airways",
+            "price": 2555,
+            "depart": "19:15",
+            "arrive": "20:30",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-08-28": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1445,
+            "depart": "06:00",
+            "arrive": "07:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1530,
+            "depart": "11:05",
+            "arrive": "12:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "06:45",
+            "arrive": "07:55",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1685,
             "depart": "14:35",
             "arrive": "15:50",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-04": {
-          "nokair": {
-            "price": 2245,
+        ],
+        "2026-08-29": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1265,
+            "depart": "19:30",
+            "arrive": "20:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1445,
+            "depart": "13:50",
+            "arrive": "15:15",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1495,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1625,
+            "depart": "19:35",
+            "arrive": "20:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-08-30": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1070,
+            "depart": "06:00",
+            "arrive": "07:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1250,
+            "depart": "06:30",
+            "arrive": "07:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1525,
+            "depart": "11:05",
+            "arrive": "12:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "09:20",
+            "arrive": "10:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-08-31": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1280,
+            "depart": "06:00",
+            "arrive": "07:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1435,
+            "depart": "06:15",
+            "arrive": "07:30",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1475,
+            "depart": "21:15",
+            "arrive": "22:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1480,
+            "depart": "06:30",
+            "arrive": "07:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-01": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1325,
+            "depart": "21:25",
+            "arrive": "22:50",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1430,
+            "depart": "16:45",
+            "arrive": "18:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1460,
+            "depart": "21:30",
+            "arrive": "22:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "17:05",
+            "arrive": "18:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-02": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1315,
+            "depart": "06:00",
+            "arrive": "07:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1435,
+            "depart": "18:05",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1480,
+            "depart": "06:30",
+            "arrive": "07:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "18:15",
+            "arrive": "19:30",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-03": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1340,
+            "depart": "22:00",
+            "arrive": "23:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1490,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1560,
+            "depart": "16:45",
+            "arrive": "18:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1640,
+            "depart": "06:45",
+            "arrive": "07:55",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-04": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 2140,
+            "depart": "07:35",
+            "arrive": "09:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2220,
+            "depart": "17:20",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 2325,
+            "depart": "11:05",
+            "arrive": "12:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2465,
+            "depart": "18:15",
+            "arrive": "19:30",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-05": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1220,
+            "depart": "22:00",
+            "arrive": "23:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1485,
+            "depart": "21:30",
+            "arrive": "22:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "19:35",
+            "arrive": "20:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1910,
+            "depart": "06:15",
+            "arrive": "07:30",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-06": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1365,
+            "depart": "21:25",
+            "arrive": "22:50",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1535,
+            "depart": "06:30",
+            "arrive": "07:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1650,
+            "depart": "11:30",
+            "arrive": "12:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1975,
+            "depart": "18:15",
+            "arrive": "19:30",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-07": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1325,
+            "depart": "19:00",
+            "arrive": "20:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1575,
+            "depart": "08:35",
+            "arrive": "09:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "19:35",
+            "arrive": "20:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1685,
+            "depart": "06:30",
+            "arrive": "07:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-08": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1170,
+            "depart": "21:25",
+            "arrive": "22:50",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1485,
+            "depart": "14:35",
+            "arrive": "15:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1520,
+            "depart": "11:05",
+            "arrive": "12:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "17:05",
+            "arrive": "18:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-09": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1335,
+            "depart": "22:00",
+            "arrive": "23:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1640,
+            "depart": "16:45",
+            "arrive": "18:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1685,
+            "depart": "10:25",
+            "arrive": "11:40",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2075,
+            "depart": "18:15",
+            "arrive": "19:30",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-10": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1300,
+            "depart": "22:00",
+            "arrive": "23:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1520,
+            "depart": "16:45",
+            "arrive": "18:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "06:45",
+            "arrive": "07:55",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2180,
             "depart": "17:20",
             "arrive": "18:35",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-05": {
-          "nokair": {
-            "price": 1920,
-            "depart": "10:25",
-            "arrive": "11:40",
+        ],
+        "2026-09-11": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1950,
+            "depart": "06:15",
+            "arrive": "07:30",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 2450,
+            "depart": "06:30",
+            "arrive": "07:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "bangkokair",
+            "name": "Bangkok Airways",
+            "price": 3190,
+            "depart": "08:00",
+            "arrive": "09:20",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 3285,
+            "depart": "06:00",
+            "arrive": "07:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-12": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1185,
+            "depart": "22:00",
+            "arrive": "23:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "19:35",
+            "arrive": "20:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1645,
+            "depart": "13:10",
+            "arrive": "14:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1685,
+            "depart": "21:30",
+            "arrive": "22:45",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-06": {
-          "nokair": {
-            "price": 1705,
-            "depart": "14:35",
-            "arrive": "15:50",
+        ],
+        "2026-09-13": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1455,
+            "depart": "13:50",
+            "arrive": "15:15",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1530,
+            "depart": "13:10",
+            "arrive": "14:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1925,
+            "depart": "17:20",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 2000,
+            "depart": "17:05",
+            "arrive": "18:25",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-07": {},
-        "2026-09-08": {
-          "nokair": {
+        ],
+        "2026-09-14": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1170,
+            "depart": "19:30",
+            "arrive": "20:55",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1425,
+            "depart": "16:45",
+            "arrive": "18:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1460,
+            "depart": "21:30",
+            "arrive": "22:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1645,
+            "depart": "19:35",
+            "arrive": "20:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-15": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1185,
+            "depart": "20:35",
+            "arrive": "22:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1420,
+            "depart": "13:10",
+            "arrive": "14:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1495,
+            "depart": "21:30",
+            "arrive": "22:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1620,
+            "depart": "17:25",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-16": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1220,
+            "depart": "20:35",
+            "arrive": "22:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1420,
+            "depart": "11:30",
+            "arrive": "12:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1490,
+            "depart": "21:30",
+            "arrive": "22:45",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1630,
+            "depart": "19:35",
+            "arrive": "20:50",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          }
+        ],
+        "2026-09-17": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1340,
+            "depart": "20:35",
+            "arrive": "22:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1425,
+            "depart": "13:10",
+            "arrive": "14:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1435,
+            "depart": "06:00",
+            "arrive": "07:10",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
             "price": 1470,
             "depart": "14:35",
             "arrive": "15:50",
@@ -1702,90 +3690,175 @@
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-09": {},
-        "2026-09-10": {},
-        "2026-09-11": {
-          "nokair": {
-            "price": 1900,
+        ],
+        "2026-09-18": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1635,
+            "depart": "16:45",
+            "arrive": "18:00",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1705,
+            "depart": "18:35",
+            "arrive": "20:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1735,
             "depart": "14:35",
             "arrive": "15:50",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           },
-          "airasia": {
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
             "price": 1980,
-            "depart": "17:05",
-            "arrive": "18:25",
+            "depart": "18:15",
+            "arrive": "19:30",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-12": {},
-        "2026-09-13": {
-          "airasia": {
-            "price": 1610,
-            "depart": "14:40",
-            "arrive": "15:55",
-            "from": "DMK",
+        ],
+        "2026-09-19": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1220,
+            "depart": "20:35",
+            "arrive": "22:00",
+            "from": "BKK",
             "to": "CNX",
             "promos": []
-          }
-        },
-        "2026-09-14": {
-          "nokair": {
-            "price": 1490,
-            "depart": "10:25",
-            "arrive": "11:40",
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1500,
+            "depart": "14:35",
+            "arrive": "15:50",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           },
-          "airasia": {
-            "price": 1620,
-            "depart": "10:10",
-            "arrive": "11:25",
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1525,
+            "depart": "13:10",
+            "arrive": "14:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1610,
+            "depart": "18:15",
+            "arrive": "19:30",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-15": {},
-        "2026-09-16": {},
-        "2026-09-17": {},
-        "2026-09-18": {
-          "nokair": {
-            "price": 1670,
-            "depart": "14:35",
-            "arrive": "15:50",
+        ],
+        "2026-09-20": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1315,
+            "depart": "18:35",
+            "arrive": "20:00",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1430,
+            "depart": "11:05",
+            "arrive": "12:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1500,
+            "depart": "12:05",
+            "arrive": "13:20",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1605,
+            "depart": "08:05",
+            "arrive": "09:20",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-19": {
-          "nokair": {
-            "price": 1490,
-            "depart": "14:35",
-            "arrive": "15:50",
+        ],
+        "2026-09-21": [
+          {
+            "airline": "vietjet",
+            "name": "Thai Vietjet",
+            "price": 1325,
+            "depart": "19:00",
+            "arrive": "20:25",
+            "from": "BKK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1455,
+            "depart": "21:15",
+            "arrive": "22:25",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "nokair",
+            "name": "Nok Air",
+            "price": 1480,
+            "depart": "17:20",
+            "arrive": "18:35",
+            "from": "DMK",
+            "to": "CNX",
+            "promos": []
+          },
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1520,
+            "depart": "19:30",
+            "arrive": "20:45",
             "from": "DMK",
             "to": "CNX",
             "promos": []
           }
-        },
-        "2026-09-20": {},
-        "2026-09-21": {
-          "airasia": {
-            "price": 1630,
-            "depart": "13:20",
-            "arrive": "14:35",
-            "from": "DMK",
-            "to": "CNX",
-            "promos": []
-          }
-        }
+        ]
       }
     }
   }
