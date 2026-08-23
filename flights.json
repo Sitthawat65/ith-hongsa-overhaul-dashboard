@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-23T21:49:55+07:00",
+  "updated": "2026-08-23T23:38:46+07:00",
   "source": "Trip.com (th)",
   "top_n": 4,
   "routes": {
@@ -3857,6 +3857,1474 @@
             "from": "DMK",
             "to": "CNX",
             "promos": []
+          }
+        ]
+      }
+    },
+    "KOP_BKK": {
+      "label": "นครพนม → กรุงเทพ",
+      "from_name": "นครพนม (KOP)",
+      "to_name": "กรุงเทพ (DMK/BKK)",
+      "days": {
+        "2026-08-23": [],
+        "2026-08-24": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1435,
+            "depart": "19:25",
+            "arrive": "20:45",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1635,
+            "depart": "19:50",
+            "arrive": "21:00",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-08-25": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1240,
+            "depart": "19:25",
+            "arrive": "20:45",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1470,
+            "depart": "19:50",
+            "arrive": "21:00",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-26": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1250,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1365,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-08-27": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1235,
+            "depart": "19:25",
+            "arrive": "20:45",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1365,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-28": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1040,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1365,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-29": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1045,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1365,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-30": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-08-31": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1235,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1295,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-01": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1365,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-02": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1045,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1365,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-03": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1040,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-04": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1020,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-05": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1030,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1285,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-06": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1020,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-07": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-08": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1020,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": []
+          }
+        ],
+        "2026-09-09": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-10": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-11": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1235,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1295,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-12": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-13": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1235,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1285,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-14": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          }
+        ],
+        "2026-09-15": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-16": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-17": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        ],
+        "2026-09-18": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1220,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1250,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          }
+        ],
+        "2026-09-19": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1235,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1285,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-20": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1160,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1670,
+            "depart": "13:30",
+            "arrive": "14:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-21": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1260,
+            "depart": "09:20",
+            "arrive": "10:40",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1410,
+            "depart": "09:45",
+            "arrive": "10:55",
+            "from": "KOP",
+            "to": "DMK",
+            "promos": []
+          }
+        ]
+      }
+    },
+    "BKK_KOP": {
+      "label": "กรุงเทพ → นครพนม",
+      "from_name": "กรุงเทพ (DMK/BKK)",
+      "to_name": "นครพนม (KOP)",
+      "days": {
+        "2026-08-23": [],
+        "2026-08-24": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1500,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1765,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-25": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1160,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1430,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-26": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1335,
+            "depart": "07:20",
+            "arrive": "08:40",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          }
+        ],
+        "2026-08-27": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1150,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1405,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-28": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1310,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1700,
+            "depart": "11:40",
+            "arrive": "13:00",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-29": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1270,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1460,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-30": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1340,
+            "depart": "07:20",
+            "arrive": "08:40",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1545,
+            "depart": "11:40",
+            "arrive": "13:00",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-08-31": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1120,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1450,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          }
+        ],
+        "2026-09-01": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1120,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1435,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-02": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1340,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1535,
+            "depart": "11:40",
+            "arrive": "13:00",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-03": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1125,
+            "depart": "07:20",
+            "arrive": "08:40",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1405,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-04": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1145,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1405,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-05": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1115,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-06": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1115,
+            "depart": "07:20",
+            "arrive": "08:40",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1460,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-07": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1120,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1465,
+            "depart": "08:00",
+            "arrive": "09:15",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          }
+        ],
+        "2026-09-08": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1130,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1420,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-09": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1115,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1405,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-10": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1125,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1405,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-11": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1150,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1520,
+            "depart": "08:00",
+            "arrive": "09:15",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-12": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1125,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1490,
+            "depart": "11:40",
+            "arrive": "13:00",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-13": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1110,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1405,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-14": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1320,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1415,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-15": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1130,
+            "depart": "07:20",
+            "arrive": "08:40",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1405,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-16": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1125,
+            "depart": "07:20",
+            "arrive": "08:40",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1425,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          }
+        ],
+        "2026-09-17": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1145,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-18": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1155,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1420,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-19": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1145,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1355,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          }
+        ],
+        "2026-09-20": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1140,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1505,
+            "depart": "11:40",
+            "arrive": "13:00",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        ],
+        "2026-09-21": [
+          {
+            "airline": "lionair",
+            "name": "Thai Lion Air",
+            "price": 1340,
+            "depart": "17:30",
+            "arrive": "18:45",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": []
+          },
+          {
+            "airline": "airasia",
+            "name": "Thai AirAsia",
+            "price": 1395,
+            "depart": "18:00",
+            "arrive": "19:20",
+            "from": "DMK",
+            "to": "KOP",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
           }
         ]
       }

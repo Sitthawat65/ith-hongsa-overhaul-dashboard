@@ -4,7 +4,7 @@
 ITH Flight Price Watch - auto updater (Nan / Chiang Mai <-> Bangkok)
 --------------------------------------------------------------------
 ดึงราคาตั๋วเครื่องบินถูกสุดของ "ทุกสายการบิน" ที่บินเส้นทาง
-น่าน (NNT) <-> กรุงเทพ (DMK/BKK) และ เชียงใหม่ (CNX) <-> กรุงเทพ (DMK/BKK)
+น่าน (NNT) / เชียงใหม่ (CNX) / นครพนม (KOP) <-> กรุงเทพ (DMK/BKK)
 ล่วงหน้า 30 วัน จาก Trip.com เก็บ 4 อันดับที่ถูกที่สุดของแต่ละวัน
 (อันดับละ 1 สายการบิน) แล้วเขียน flights.json + push ขึ้น GitHub Pages
 
@@ -35,10 +35,12 @@ ROUTES = [
     {"key": "BKK_NNT", "from": "bkk", "to": "nnt", "label": "กรุงเทพ → น่าน",      "from_name": "กรุงเทพ (DMK/BKK)", "to_name": "น่าน (NNT)"},
     {"key": "CNX_BKK", "from": "cnx", "to": "bkk", "label": "เชียงใหม่ → กรุงเทพ", "from_name": "เชียงใหม่ (CNX)",   "to_name": "กรุงเทพ (DMK/BKK)"},
     {"key": "BKK_CNX", "from": "bkk", "to": "cnx", "label": "กรุงเทพ → เชียงใหม่", "from_name": "กรุงเทพ (DMK/BKK)", "to_name": "เชียงใหม่ (CNX)"},
+    {"key": "KOP_BKK", "from": "kop", "to": "bkk", "label": "นครพนม → กรุงเทพ",   "from_name": "นครพนม (KOP)",      "to_name": "กรุงเทพ (DMK/BKK)"},
+    {"key": "BKK_KOP", "from": "bkk", "to": "kop", "label": "กรุงเทพ → นครพนม",   "from_name": "กรุงเทพ (DMK/BKK)", "to_name": "นครพนม (KOP)"},
 ]
 
 # รหัสเมืองบน Trip.com -> สนามบินที่ยอมรับ (กรุงเทพมี 2 สนามบิน)
-CITY_AIRPORTS = {"nnt": {"NNT"}, "cnx": {"CNX"}, "bkk": {"BKK", "DMK"}}
+CITY_AIRPORTS = {"nnt": {"NNT"}, "cnx": {"CNX"}, "kop": {"KOP"}, "bkk": {"BKK", "DMK"}}
 
 # ชื่อสายการบินบนหน้าเว็บ (ตัวพิมพ์เล็ก) -> (คีย์สำหรับโลโก้, ชื่อที่แสดง)
 AIRLINES = {

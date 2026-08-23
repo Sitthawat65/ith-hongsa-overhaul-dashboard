@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Flight Price Watch · น่าน · เชียงใหม่ ⇄ กรุงเทพ</title>
+<title>Flight Price Watch · น่าน · เชียงใหม่ · นครพนม ⇄ กรุงเทพ</title>
 <style>
   /* ---- ธีมมืด (ค่าเริ่มต้น) ---- */
   :root{
@@ -118,7 +118,7 @@
   <header>
     <div class="logo">✈</div>
     <div class="titles">
-      <h1>Flight Price Watch · น่าน &amp; เชียงใหม่ ⇄ กรุงเทพ</h1>
+      <h1>Flight Price Watch · น่าน &amp; เชียงใหม่ &amp; นครพนม ⇄ กรุงเทพ</h1>
       <p>ราคาถูกที่สุดรายวัน ล่วงหน้า 30 วัน · เทียบ<b>ทุกสายการบิน</b> แสดง 4 อันดับถูกสุดของแต่ละวัน</p>
     </div>
     <div class="nav">
@@ -139,6 +139,8 @@
     <button class="tab" type="button" data-route="BKK_NNT">กทม. - น่าน</button>
     <button class="tab" type="button" data-route="CNX_BKK">ชม. - กทม.</button>
     <button class="tab" type="button" data-route="BKK_CNX">กทม. - ชม.</button>
+    <button class="tab" type="button" data-route="KOP_BKK">นครพนม - กทม.</button>
+    <button class="tab" type="button" data-route="BKK_KOP">กทม. - นครพนม</button>
   </div>
 
   <div class="wrap"><div class="routes" id="routes"></div></div>
@@ -178,7 +180,7 @@
 
   <footer>
     <div>ราคาเที่ยวเดียว · ผู้ใหญ่ 1 ท่าน · ชั้นประหยัด · 4 อันดับถูกที่สุดของวันนั้น (สายการบินละ 1 ราคา) — ที่มา Trip.com · ราคาเปลี่ยนแปลงตลอดเวลา โปรดยืนยันอีกครั้งบนหน้าจอง</div>
-    <div style="margin-top:6px">เส้นทางที่ติดตาม: น่าน ⇄ กรุงเทพ · เชียงใหม่ ⇄ กรุงเทพ (ดอนเมือง + สุวรรณภูมิ) — ปุ่ม “ดูทั้งหมด” เปิดผลค้นหาเต็มของวันนั้น</div>
+    <div style="margin-top:6px">เส้นทางที่ติดตาม: น่าน ⇄ กรุงเทพ · เชียงใหม่ ⇄ กรุงเทพ · นครพนม ⇄ กรุงเทพ (ดอนเมือง + สุวรรณภูมิ) — ปุ่ม “ดูทั้งหมด” เปิดผลค้นหาเต็มของวันนั้น</div>
     <div style="margin-top:6px">ข้อมูลอัปเดตอัตโนมัติทุก ~12 ชั่วโมง</div>
   </footer>
 
@@ -193,7 +195,9 @@ const IATA  = {
   NNT_BKK:{f:'NNT',t:'DMK',tf:'nnt',tt:'bkk'},
   BKK_NNT:{f:'DMK',t:'NNT',tf:'bkk',tt:'nnt'},
   CNX_BKK:{f:'CNX',t:'DMK',tf:'cnx',tt:'bkk'},
-  BKK_CNX:{f:'DMK',t:'CNX',tf:'bkk',tt:'cnx'}
+  BKK_CNX:{f:'DMK',t:'CNX',tf:'bkk',tt:'cnx'},
+  KOP_BKK:{f:'KOP',t:'DMK',tf:'kop',tt:'bkk'},
+  BKK_KOP:{f:'DMK',t:'KOP',tf:'bkk',tt:'kop'}
 };
 // โลโก้ทางการของสายการบิน (ไฟล์ในโฟลเดอร์ logos/ - พื้นหลังโปร่งใส)
 const LOGO = {
@@ -214,7 +218,7 @@ const SITE = {
   bangkokair:'https://www.bangkokair.com/'
 };
 const RANKLBL = ['ถูกสุด','อันดับ 2','อันดับ 3','อันดับ 4','อันดับ 5','อันดับ 6'];
-const ORDER   = ['NNT_BKK','BKK_NNT','CNX_BKK','BKK_CNX'];
+const ORDER   = ['NNT_BKK','BKK_NNT','CNX_BKK','BKK_CNX','KOP_BKK','BKK_KOP'];
 const TAB_KEY = 'ith_flight_route_tab';
 let   TAB     = localStorage.getItem(TAB_KEY) || 'ALL';
 

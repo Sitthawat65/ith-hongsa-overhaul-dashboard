@@ -7,7 +7,7 @@ cd /d "%LOCALAPPDATA%"
 set "SCRIPT=%~dp0update_flights.py"
 
 echo ==================================================
-echo    ITH FLIGHT PRICE WATCH  -  Nan / Chiang Mai ^<-^> Bangkok
+echo    ITH FLIGHT PRICE WATCH  -  Nan / Chiang Mai / Nakhon Phanom ^<-^> Bangkok
 echo ==================================================
 echo.
 
@@ -20,7 +20,7 @@ if errorlevel 1 (
 )
 
 echo [1/2] Fetching cheapest fares for the next 30 days...
-echo       ^(4 routes: NNT^<-^>DMK and CNX^<-^>DMK - about 50-60 minutes^)
+echo       ^(6 routes: NNT / CNX / KOP ^<-^> Bangkok - about 45-60 minutes^)
 python "%SCRIPT%" --days 30
 if errorlevel 1 (
   echo.
