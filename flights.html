@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Price Watch · น่าน ⇄ กรุงเทพ</title>
+<style>
+  :root{--bg:#0f1720;--panel:#16212e;--muted:#8aa0b6;--line:#243244;--shadow:0 6px 18px rgba(0,0,0,.25);
+        --best:#2ecc71;}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#0f1720,#0b1017);color:#e7eef6;min-height:100vh;padding:18px 16px 40px;}
+  header{max-width:1150px;margin:0 auto 16px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .logo{height:46px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;padding:4px 8px;box-shadow:var(--shadow)}
+  .logo img{height:100%;width:auto;display:block;object-fit:contain}
+  .titles h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.3px}
+  .titles p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .nav{margin-left:auto;display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lnk{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:999px;background:var(--panel);color:#cdd9e5;border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;text-decoration:none;font-family:inherit;transition:background .15s,border-color .15s}
+  .lnk:hover{background:#1c2a3a;border-color:#31465c}
+  .lnk .ic{display:inline-block;font-size:15px;line-height:1}
+  .lnk.spin .ic{animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .cd{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(31,111,235,.12);border:1px solid rgba(31,111,235,.35);color:#9cc2ff;font-size:13px;font-weight:600;white-space:nowrap}
+  .cd b{color:#dbe9ff;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+  .cd.soon{background:rgba(245,166,35,.14);border-color:rgba(245,166,35,.45);color:#ffd591}
+  .status{text-align:right;font-size:13px;color:var(--muted)}
+  .status .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2ecc71;margin-right:6px;animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.5)}70%{box-shadow:0 0 0 8px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+  .status b{color:#e7eef6}
+
+  .wrap{max-width:1150px;margin:0 auto}
+  .routes{display:grid;grid-template-columns:1fr;gap:22px}
+  @media(min-width:980px){.routes{grid-template-columns:1fr 1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .card h2{margin:0;padding:14px 18px;font-size:15px;letter-spacing:.4px;background:#0e1620;border-bottom:2px solid #2a3a4d;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .card h2 .sub{margin-left:auto;font-size:12px;font-weight:500;color:var(--muted)}
+  table{width:100%;border-collapse:separate;border-spacing:0}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
+  thead th{background:#101a26;color:#93a6ba;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase}
+  th.num,td.num{text-align:right;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(31,111,235,.08)}
+  tr.today{background:rgba(46,204,113,.06)}
+  .d{font-weight:700;color:#f2f6fb}
+  .dow{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
+  .p{font-weight:700;font-variant-numeric:tabular-nums}
+  .p.aa{color:#ff7a90}
+  .p.nok{color:#ffc46b}
+  .p.best{color:var(--best)}
+  .t{display:block;font-size:11px;color:#6b7a89;font-weight:500;margin-top:2px}
+  .na{color:#4a5a6b;font-weight:500}
+  .tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;background:rgba(46,204,113,.16);color:#7ee2a8;margin-top:3px}
+  .book{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid;transition:.15s}
+  .book.aa{color:#ff7a90;border-color:rgba(255,45,85,.45);background:rgba(255,45,85,.08)}
+  .book.aa:hover{background:rgba(255,45,85,.2)}
+  .book.nok{color:#ffc46b;border-color:rgba(245,166,35,.45);background:rgba(245,166,35,.08)}
+  .book.nok:hover{background:rgba(245,166,35,.2)}
+  .book.plain{border-color:#31465c;color:#cdd9e5;background:rgba(255,255,255,.04)}
+  .book.plain:hover{background:rgba(255,255,255,.1)}
+  .foot-book{padding:13px 18px;background:#101a26;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .foot-book span{font-size:12px;color:var(--muted);margin-right:2px}
+
+  .promos{max-width:1150px;margin:24px auto 0}
+  .promos h2{font-size:15px;margin:0 0 12px;letter-spacing:.4px}
+  .pgrid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:760px){.pgrid{grid-template-columns:1fr 1fr}}
+  .pcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+  .pcard h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.5px}
+  .badge.aa{background:rgba(255,45,85,.18);color:#ff7a90}
+  .badge.nok{background:rgba(245,166,35,.18);color:#ffc46b}
+  .pcard ul{margin:10px 0 0;padding-left:18px;color:#cdd9e5;font-size:13px;line-height:1.85}
+  .pcard a{color:#9cc2ff}
+  footer{max-width:1150px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.8}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo"><img src="data:image/jpeg;base64,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" alt="ITH Italian-Thai Hongsa"></div>
+    <div class="titles">
+      <h1>Flight Price Watch · น่าน ⇄ กรุงเทพ</h1>
+      <p>ราคาตั๋วถูกที่สุดรายวัน ล่วงหน้า 15 วัน · Thai AirAsia &amp; Nok Air</p>
+    </div>
+    <div class="nav">
+      <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตราคารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
+      <button id="refreshBtn" class="lnk" type="button" title="โหลดราคาล่าสุด"><span class="ic">↻</span>รีเฟรช</button>
+      <a class="lnk" href="home.html" title="หน้าหลัก">⌂ Home page</a>
+      <div class="status">
+        <div><span class="dot"></span>Live</div>
+        <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap"><div class="routes" id="routes"></div></div>
+
+  <div class="promos">
+    <h2>🎫 โปรโมชั่น &amp; ตั๋วบุฟเฟ่ต์ (ในประเทศ / ต่างประเทศ)</h2>
+    <div class="pgrid">
+      <div class="pcard">
+        <h3><span class="badge aa">AIR ASIA</span> ตั๋วบุฟเฟ่ต์ &amp; โปรฯ เด่น</h3>
+        <ul>
+          <li><b>FD Unlimited Pass</b> — บินไม่อั้นทั่วไทย จ่ายครั้งเดียว/ปี
+            (<a href="https://promotion.airasia.com/campaign/th/th/fd-unlimited-pass.html" target="_blank" rel="noopener">ดูรอบขายล่าสุด</a>)</li>
+          <li><b>SUPER+ / SUPER+ Premium</b> — แพ็กเหมาจ่ายรายปี ครอบคลุมทั้งในและต่างประเทศ
+            (<a href="https://www.airasia.com/superapp/superplus/th/th/" target="_blank" rel="noopener">รายละเอียด</a>)</li>
+          <li><b>BIG SALE</b> — ตั๋วเริ่มต้น 0 บาท ลดสูงสุด 80%
+            (<a href="https://www.airasia.com/flights/th/th/campaign-free-seat/" target="_blank" rel="noopener">หน้าโปรฯ</a>)</li>
+          <li><a href="https://www.airasia.com/flights/campaign-discount-all-seats/" target="_blank" rel="noopener">ส่วนลด 10% ทุกที่นั่งทุกเที่ยวบิน</a> (ตามรอบแคมเปญ)</li>
+        </ul>
+      </div>
+      <div class="pcard">
+        <h3><span class="badge nok">NOK AIR</span> โปรโมชั่น &amp; แพ็กเกจ</h3>
+        <ul>
+          <li><b>Nok Promotion</b> — โปรฯ ตั๋วลดราคาตามรอบ เส้นทางในประเทศ
+            (<a href="https://nokair.com/promotions" target="_blank" rel="noopener">ดูโปรฯ ทั้งหมด</a>)</li>
+          <li><b>Nok Fan Club</b> — สะสมไมล์ &amp; ดีลเฉพาะสมาชิก
+            (<a href="https://nokair.com/nokfanclub" target="_blank" rel="noopener">สมัคร / ดูสิทธิ์</a>)</li>
+          <li><b>แพ็กเกจเที่ยวบินเหมา / Nok Pass</b> — เปิดขายเป็นช่วง โปรดเช็กหน้าโปรฯ ตามรอบ</li>
+          <li><a href="https://nokair.com/flights/en/flights-from-nan-to-bangkok" target="_blank" rel="noopener">ตารางบิน น่าน–กรุงเทพ</a> ·
+              <a href="https://nokair.com/flights/en/flights-from-bangkok-to-nan" target="_blank" rel="noopener">กรุงเทพ–น่าน</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>ราคาเที่ยวเดียว · ผู้ใหญ่ 1 ท่าน · ชั้นประหยัด · ถูกที่สุดของวันนั้น — ที่มา Trip.com · ราคาเปลี่ยนแปลงตลอดเวลา โปรดยืนยันอีกครั้งบนหน้าจอง</div>
+    <div style="margin-top:6px">ข้อมูลอัปเดตอัตโนมัติทุก ~12 ชั่วโมง</div>
+  </footer>
+
+<script>
+const PERIOD = 12 * 60 * 60 * 1000;
+const CD_KEY = 'ith_flight_next_update';
+let DATA = null;
+
+const THMON = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const THDOW = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+const IATA  = {NNT_BKK:{f:'NNT',t:'DMK',tf:'nnt',tt:'bkk'}, BKK_NNT:{f:'DMK',t:'NNT',tf:'bkk',tt:'nnt'}};
+
+function fmtTime(iso){
+  try{ const d=new Date(iso);
+    return d.toLocaleString('th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' น.';
+  }catch(e){ return iso; }
+}
+function fmtDay(iso){
+  const d=new Date(iso+'T00:00:00');
+  return {d:d.getDate()+' '+THMON[d.getMonth()], dow:THDOW[d.getDay()]};
+}
+function bookUrl(airline, routeKey, date){
+  const r = IATA[routeKey] || IATA.NNT_BKK;
+  if(airline==='airasia')
+    return 'https://www.airasia.com/flights/search/?origin='+r.f+'&destination='+r.t+'&departDate='+date+'&tripType=O&adult=1&currency=THB&locale=th-th';
+  return 'https://nokair.com/booking?origin='+r.f+'&destination='+r.t+'&departureDate='+date+'&adult=1';
+}
+function tripUrl(routeKey, date){
+  const r = IATA[routeKey] || IATA.NNT_BKK;
+  return 'https://th.trip.com/flights/showfarefirst?dcity='+r.tf+'&acity='+r.tt+'&ddate='+date+'&triptype=ow&class=y&quantity=1&locale=th-TH&curr=THB';
+}
+function cell(info, airline, routeKey, date, isBest){
+  if(!info) return '<td class="num"><span class="na">—</span></td>';
+  const cls = 'p ' + (isBest ? 'best' : (airline==='airasia' ? 'aa' : 'nok'));
+  const promo = (info.promos && info.promos.length) ? '<span class="tag">'+info.promos[0]+'</span>' : '';
+  return '<td class="num"><a href="'+bookUrl(airline,routeKey,date)+'" target="_blank" rel="noopener" style="text-decoration:none">'
+       + '<span class="'+cls+'">฿'+Number(info.price).toLocaleString('th-TH')+'</span></a>'
+       + '<span class="t">'+(info.depart||'')+' → '+(info.arrive||'')+'</span>' + promo + '</td>';
+}
+
+function render(){
+  if(!DATA) return;
+  const host = document.getElementById('routes');
+  host.innerHTML = '';
+  const today = new Date().toISOString().slice(0,10);
+  Object.entries(DATA.routes||{}).forEach(function(entry){
+    const key = entry[0], r = entry[1];
+    const dates = Object.keys(r.days||{}).sort();
+    let min = Infinity;
+    dates.forEach(function(d){
+      Object.values(r.days[d]||{}).forEach(function(v){ if(v && v.price < min) min = v.price; });
+    });
+    const rows = dates.map(function(d){
+      const day = r.days[d]||{}, f = fmtDay(d);
+      const aa = day.airasia||null, nok = day.nokair||null;
+      const best = Math.min(aa?aa.price:Infinity, nok?nok.price:Infinity);
+      return '<tr class="'+(d===today?'today':'')+'">'
+        + '<td><span class="d">'+f.d+'</span><span class="dow">'+f.dow+'</span></td>'
+        + cell(aa,'airasia',key,d, !!aa && aa.price===best && best===min)
+        + cell(nok,'nokair',key,d, !!nok && nok.price===best && best===min)
+        + '<td class="num"><a class="book plain" href="'+tripUrl(key,d)+'" target="_blank" rel="noopener">เทียบ ↗</a></td>'
+        + '</tr>';
+    }).join('');
+    host.insertAdjacentHTML('beforeend',
+      '<div class="card"><h2>✈️ '+r.label+'<span class="sub">'+(r.from_name||'')+' → '+(r.to_name||'')+'</span></h2>'
+      + '<table><thead><tr><th>วันที่</th><th class="num">Air Asia</th><th class="num">Nok Air</th><th class="num">เทียบราคา</th></tr></thead>'
+      + '<tbody>'+rows+'</tbody></table>'
+      + '<div class="foot-book"><span>จองตั๋ว:</span>'
+      + '<a class="book aa" href="https://www.airasia.com/flights/th/th/" target="_blank" rel="noopener">Air Asia ↗</a>'
+      + '<a class="book nok" href="https://nokair.com/" target="_blank" rel="noopener">Nok Air ↗</a>'
+      + '<a class="book plain" href="'+tripUrl(key, dates[0]||today)+'" target="_blank" rel="noopener">Trip.com ↗</a>'
+      + '</div></div>');
+  });
+  document.getElementById('updated').textContent = fmtTime(DATA.updated);
+}
+
+async function load(){
+  try{
+    const r = await fetch('flights.json?_=' + Date.now(), {cache:'no-store'});
+    DATA = await r.json();
+    render();
+  }catch(e){ console.error('load failed', e); }
+}
+
+function cdGet(){ const v = parseInt(localStorage.getItem(CD_KEY)||'0',10); return isNaN(v)?0:v; }
+function cdSet(t){ try{ localStorage.setItem(CD_KEY, String(t)); }catch(e){} }
+function drawCountdown(){
+  const el=document.getElementById('cdVal'), box=document.getElementById('countdown');
+  let rem = cdGet() - Date.now(); if(rem < 0) rem = 0;
+  const s=Math.floor(rem/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=s%60;
+  el.textContent = h+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+  box.classList.toggle('soon', rem <= 30*60*1000);
+}
+function resetCountdown(){ cdSet(Date.now()+PERIOD); drawCountdown(); }
+function tickCountdown(){
+  const n = cdGet();
+  if(!n || n <= Date.now()){ load(); cdSet(Date.now()+PERIOD); }
+  drawCountdown();
+}
+setInterval(tickCountdown, 1000);
+
+async function refresh(){
+  const b=document.getElementById('refreshBtn');
+  b.classList.add('spin'); b.disabled=true;
+  await load(); resetCountdown();
+  setTimeout(function(){ b.classList.remove('spin'); b.disabled=false; }, 500);
+}
+document.getElementById('refreshBtn').addEventListener('click', refresh);
+
+load();
+if(!cdGet() || cdGet() <= Date.now()) cdSet(Date.now()+PERIOD);
+drawCountdown();
+</script>
+</body>
+</html>

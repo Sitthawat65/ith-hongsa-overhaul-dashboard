@@ -1,0 +1,663 @@
+{
+  "updated": "2026-08-23T17:54:22+07:00",
+  "source": "Trip.com (th)",
+  "routes": {
+    "NNT_BKK": {
+      "label": "น่าน → กรุงเทพ",
+      "from_name": "น่าน (NNT)",
+      "to_name": "กรุงเทพ (DMK)",
+      "days": {
+        "2026-08-23": {},
+        "2026-08-24": {
+          "nokair": {
+            "price": 1475,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1545,
+            "depart": "13:55",
+            "arrive": "15:00",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-25": {
+          "nokair": {
+            "price": 1475,
+            "depart": "14:10",
+            "arrive": "15:20",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1545,
+            "depart": "13:55",
+            "arrive": "15:00",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-26": {
+          "nokair": {
+            "price": 1460,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1460,
+            "depart": "13:55",
+            "arrive": "15:00",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-08-27": {
+          "nokair": {
+            "price": 1295,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          "airasia": {
+            "price": 1460,
+            "depart": "13:55",
+            "arrive": "15:00",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-08-28": {
+          "airasia": {
+            "price": 1460,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1460,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-29": {
+          "nokair": {
+            "price": 1295,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1460,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-08-30": {
+          "nokair": {
+            "price": 2665,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 2750,
+            "depart": "13:55",
+            "arrive": "15:00",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-08-31": {
+          "airasia": {
+            "price": 1320,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-01": {
+          "nokair": {
+            "price": 1295,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          "airasia": {
+            "price": 1725,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-09-02": {
+          "airasia": {
+            "price": 1155,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 1295,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-09-03": {
+          "nokair": {
+            "price": 1295,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          "airasia": {
+            "price": 1500,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-09-04": {
+          "airasia": {
+            "price": 1365,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1480,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-05": {
+          "airasia": {
+            "price": 1320,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1460,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-06": {
+          "nokair": {
+            "price": 2055,
+            "depart": "11:40",
+            "arrive": "12:50",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 2165,
+            "depart": "09:00",
+            "arrive": "10:10",
+            "from": "NNT",
+            "to": "DMK",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        }
+      }
+    },
+    "BKK_NNT": {
+      "label": "กรุงเทพ → น่าน",
+      "from_name": "กรุงเทพ (DMK)",
+      "to_name": "น่าน (NNT)",
+      "days": {
+        "2026-08-23": {},
+        "2026-08-24": {
+          "airasia": {
+            "price": 1490,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1580,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-25": {
+          "airasia": {
+            "price": 1490,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1580,
+            "depart": "12:25",
+            "arrive": "13:40",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-26": {
+          "airasia": {
+            "price": 1490,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1555,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-27": {
+          "airasia": {
+            "price": 1490,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1715,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-28": {
+          "airasia": {
+            "price": 1490,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1555,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-08-29": {
+          "airasia": {
+            "price": 1490,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1555,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-08-30": {
+          "nokair": {
+            "price": 1425,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          },
+          "airasia": {
+            "price": 1535,
+            "depart": "12:10",
+            "arrive": "13:25",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-08-31": {
+          "nokair": {
+            "price": 1275,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          "airasia": {
+            "price": 1350,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-01": {
+          "airasia": {
+            "price": 1345,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1405,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-02": {
+          "airasia": {
+            "price": 1345,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1405,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-03": {
+          "nokair": {
+            "price": 1715,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          },
+          "airasia": {
+            "price": 1765,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ",
+              "สุดคุ้ม"
+            ]
+          }
+        },
+        "2026-09-04": {
+          "airasia": {
+            "price": 1825,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 2215,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงราคาถูกสุด",
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-09-05": {
+          "airasia": {
+            "price": 1345,
+            "depart": "17:50",
+            "arrive": "19:05",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "สุดคุ้ม"
+            ]
+          },
+          "nokair": {
+            "price": 1555,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        },
+        "2026-09-06": {
+          "airasia": {
+            "price": 1345,
+            "depart": "07:15",
+            "arrive": "08:30",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "บินตรงถูกสุด"
+            ]
+          },
+          "nokair": {
+            "price": 1555,
+            "depart": "09:55",
+            "arrive": "11:10",
+            "from": "DMK",
+            "to": "NNT",
+            "promos": [
+              "ราคาพิเศษ"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
