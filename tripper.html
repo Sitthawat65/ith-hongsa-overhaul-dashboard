@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spreader Bearing Temp — ITH-CV</title>
+<title>Tripper Car Bearing Temp — ITH-CV</title>
 <style>
   :root{--bg:#0f1720;--panel:#16212e;--muted:#8aa0b6;--line:#243244;--shadow:0 6px 18px rgba(0,0,0,.25);--warn:#f5a623;--alarm:#e02424;}
   *{box-sizing:border-box} html,body{margin:0}
@@ -44,14 +44,14 @@
   <header>
     <div class="logo">ITH</div>
     <div class="titles">
-      <h1>Spreader — Bearing Pulley Temp</h1>
-      <p>อุณหภูมิแบริ่งพูลเลย์ Spreader (°C) · ดึงข้อมูลจากระบบ Primus</p>
+      <h1>Tripper Car — Bearing Pulley Temp</h1>
+      <p>อุณหภูมิแบริ่งพูลเลย์ Tripper Car (°C) · ดึงข้อมูลจากระบบ Primus</p>
     </div>
     <div class="nav">
       <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตค่ารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">5:00</b></div>
       <button id="refreshBtn" class="lnk" type="button" title="ดึงข้อมูลล่าสุดทันที"><span class="ic">↻</span>รีเฟรช</button>
       <a class="lnk" href="Bearing-Pulley-Temp-Monitoring-ITH-CV.html" title="กลับไปหน้าตาราง">▤ ตาราง</a>
-      <a class="lnk" href="tripper.html" title="ดูแผนภาพ Tripper Car">▧ Tripper car</a>
+      <a class="lnk" href="spreader.html" title="ดูแผนภาพ Spreader (SPD)">▦ SPD</a>
       <div class="status">
         <div><span class="dot"></span>Live</div>
         <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
@@ -60,19 +60,16 @@
   </header>
 
   <div class="stage">
-    <img src="spreader.png" alt="Spreader bearing temperature monitoring">
-    <!-- RCV DE (top, near boom) -->
-    <span class="tv" id="RCV_DE_L"  style="left:38.02%;top:29.63%"></span>
-    <span class="tv" id="RCV_DE_R"  style="left:42.34%;top:29.63%"></span>
-    <!-- RCV NDE (left, receiving conveyor tail) -->
-    <span class="tv" id="RCV_NDE_L" style="left:8.19%;top:56.63%"></span>
-    <span class="tv" id="RCV_NDE_R" style="left:12.51%;top:56.63%"></span>
-    <!-- DCV DE (center-bottom) -->
-    <span class="tv" id="DCV_DE_L"  style="left:38.35%;top:71.55%"></span>
-    <span class="tv" id="DCV_DE_R"  style="left:42.67%;top:71.55%"></span>
-    <!-- DCV NDE (right) -->
-    <span class="tv" id="DCV_NDE_L" style="left:84.80%;top:74.45%"></span>
-    <span class="tv" id="DCV_NDE_R" style="left:89.12%;top:74.45%"></span>
+    <img src="tripper.png" alt="Tripper car bearing temperature monitoring">
+    <!-- DCV TC (top right) -->
+    <span class="tv" id="DCV_TC_L"  style="left:71.99%;top:30.01%"></span>
+    <span class="tv" id="DCV_TC_R"  style="left:76.32%;top:30.01%"></span>
+    <!-- BEND (center) -->
+    <span class="tv" id="BEND_L"    style="left:52.53%;top:38.36%"></span>
+    <span class="tv" id="BEND_R"    style="left:56.86%;top:38.36%"></span>
+    <!-- TAKE UP (bottom center) -->
+    <span class="tv" id="TAKE_UP_L" style="left:52.68%;top:84.39%"></span>
+    <span class="tv" id="TAKE_UP_R" style="left:57.01%;top:84.39%"></span>
   </div>
 
   <footer>
@@ -82,7 +79,7 @@
 
 <script>
 const WARN = 70, ALARM = 80;
-const TAGS = ["RCV_DE_L","RCV_DE_R","RCV_NDE_L","RCV_NDE_R","DCV_DE_L","DCV_DE_R","DCV_NDE_L","DCV_NDE_R"];
+const TAGS = ["DCV_TC_L","DCV_TC_R","BEND_L","BEND_R","TAKE_UP_L","TAKE_UP_R"];
 let DATA = null;
 
 function fmtTime(iso){
@@ -93,7 +90,6 @@ function fmtTime(iso){
 
 function render(){
   if(!DATA) return;
-  // flatten all groups into a tag->value map
   const map = {};
   Object.values(DATA.groups||{}).forEach(arr=>arr.forEach(it=>{ map[it.tag]=it.value; }));
   TAGS.forEach(tag=>{
@@ -116,7 +112,6 @@ async function load(){
 }
 
 // ---- shared 5-min countdown (persists across pages via localStorage) ----
-// stores the wall-clock time of the next update so switching table<->SPD keeps counting
 const PERIOD = 5 * 60 * 1000;   // ms
 const CD_KEY = 'ith_temp_next_update';
 function cdGet(){ const v = parseInt(localStorage.getItem(CD_KEY)||'0',10); return isNaN(v)?0:v; }
@@ -128,7 +123,7 @@ function drawCountdown(){
   el.textContent = m + ':' + String(s).padStart(2,'0');
   box.classList.toggle('soon', rem <= 60000);
 }
-function resetCountdown(){ cdSet(Date.now() + PERIOD); drawCountdown(); }   // manual Refresh restarts the cycle
+function resetCountdown(){ cdSet(Date.now() + PERIOD); drawCountdown(); }
 function tickCountdown(){
   const next = cdGet();
   if(!next || next <= Date.now()){ load(); cdSet(Date.now() + PERIOD); }
