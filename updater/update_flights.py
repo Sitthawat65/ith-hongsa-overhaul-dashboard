@@ -12,7 +12,7 @@ ITH Flight Price Watch - auto updater (Nan / Chiang Mai <-> Bangkok)
       python update_flights.py --days 2                 (ทดสอบเร็ว)
       python update_flights.py --routes CNX_BKK,BKK_CNX (อัปเดตเฉพาะบางเส้นทาง - เส้นทางอื่นคงข้อมูลเดิม)
 """
-import json, os, re, sys, subprocess, datetime, pathlib, argparse
+import json, os, re, sys, time, asyncio, subprocess, datetime, pathlib, argparse
 
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -28,6 +28,10 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
 TOP_N = 4          # เก็บกี่อันดับต่อวัน (1 สายการบิน = 1 อันดับ)
+WORKERS = 5        # เปิดกี่หน้าพร้อมกัน (540 หน้าแบบเรียงทีละหน้าใช้ ~2.5 ชม. ซึ่งนานเกิน
+                   # กว่ารอบอัปเดตทุก 2 ชม. จะไล่ทัน)
+LOCK = pathlib.Path(__file__).resolve().parent / ".update_flights.lock"
+LOCK_STALE_SEC = 3 * 3600      # ล็อกเก่ากว่านี้ถือว่าค้าง ให้รันทับได้
 
 # เส้นทางที่ติดตาม
 ROUTES = [
@@ -58,6 +62,10 @@ AIRLINES = {
     "bangkok airways":  ("bangkokair", "Bangkok Airways"),
 }
 
+# เที่ยวบินตรงในเส้นทางพวกนี้ใช้เวลา ~1 ชม. 10-35 นาที ถ้ายาวกว่านี้มากแปลว่าเป็น
+# เที่ยวบินต่อเครื่องที่บังเอิญต้นทาง-ปลายทางตรงกัน (เช่น กทม.->ย่างกุ้ง->เชียงใหม่ 15 ชม.)
+MAX_MINUTES = 240
+
 # ตัวแทนออกตั๋ว ไม่ใช่สายการบินที่ทำการบินเอง - ไม่เอามาแสดง
 SKIP_AIRLINES = {"hahn air systems", "hahn air", "trip.com"}
 
@@ -81,6 +89,13 @@ FLIGHT_RE = re.compile(
 def search_url(frm, to, date_iso):
     return (f"https://th.trip.com/flights/showfarefirst?dcity={frm}&acity={to}"
             f"&ddate={date_iso}&triptype=ow&class=y&quantity=1&locale=th-TH&curr=THB")
+
+
+def leg_minutes(dep, arr):
+    """ระยะเวลาบินเป็นนาที (เผื่อกรณีถึงหลังเที่ยงคืน)"""
+    dh, dm = (int(x) for x in dep.split(":"))
+    ah, am = (int(x) for x in arr.split(":"))
+    return ((ah * 60 + am) - (dh * 60 + dm)) % 1440
 
 
 def airline_of(raw):
@@ -108,6 +123,8 @@ def parse_page_text(txt, frm, to):
             continue
         if ok_to and arr_ap not in ok_to:
             continue
+        if leg_minutes(dep, arr) > MAX_MINUTES:      # เที่ยวบินต่อเครื่อง ไม่ใช่บินตรง
+            continue
         air = airline_of(raw)
         if not air:
             continue
@@ -132,61 +149,109 @@ def top_fares(best, n=TOP_N):
     return sorted(best.values(), key=lambda f: f["price"])[:n]
 
 
-def scroll_and_parse(page, frm, to, rounds=20, settle=2):
+async def _grab(page, route, d):
+    """โหลดหน้าค้นหาของ 1 เส้นทาง 1 วัน แล้วคืน 4 อันดับถูกสุด"""
+    frm, to = route["from"], route["to"]
+    await page.goto(search_url(frm, to, d), wait_until="domcontentloaded", timeout=60000)
+    for _ in range(14):                       # รอผลค้นหาขึ้น (สูงสุด ~35 วิ)
+        await page.wait_for_timeout(2500)
+        txt = await page.evaluate("()=>document.body?document.body.innerText:''")
+        if parse_page_text(txt, frm, to):
+            break
+    # เลื่อนหน้าลงจนสุดเพื่อโหลดเที่ยวบินให้ครบ เส้นทางที่มีสายการบินเยอะ
+    # อย่าง CNX-BKK ต้องเลื่อนหลายรอบกว่าเที่ยวบินราคาถูกจะโผล่ครบ
+    best = await _scroll_and_parse(page, frm, to)
+    if len(best) < 3:                         # ยังเห็นน้อย -> เลื่อนต่ออีกชุด
+        more = await _scroll_and_parse(page, frm, to, rounds=12)
+        for k, v in more.items():
+            if k not in best or v["price"] < best[k]["price"]:
+                best[k] = v
+    return top_fares(best)
+
+
+async def _scroll_and_parse(page, frm, to, rounds=20, settle=2):
     """เลื่อนหน้าลงจนความสูงไม่เพิ่มแล้ว (หรือครบ rounds) แล้วอ่านผลทั้งหน้า"""
     last_h, stable = -1, 0
     for _ in range(rounds):
-        page.evaluate("()=>window.scrollTo(0,document.body.scrollHeight)")
-        page.wait_for_timeout(1100)
-        h = page.evaluate("()=>document.body?document.body.scrollHeight:0")
+        await page.evaluate("()=>window.scrollTo(0,document.body.scrollHeight)")
+        await page.wait_for_timeout(1100)
+        h = await page.evaluate("()=>document.body?document.body.scrollHeight:0")
         stable = stable + 1 if h == last_h else 0
         last_h = h
-        if stable >= settle:                 # ความสูงนิ่งแล้ว = โหลดครบ
+        if stable >= settle:                  # ความสูงนิ่งแล้ว = โหลดครบ
             break
-    txt = page.evaluate("()=>document.body?document.body.innerText:''")
+    txt = await page.evaluate("()=>document.body?document.body.innerText:''")
     return parse_page_text(txt, frm, to)
 
 
-def scrape(days=90, headless=True, only=None):
-    from playwright.sync_api import sync_playwright
+async def _scrape_async(days, only, workers, headless=True):
+    from playwright.async_api import async_playwright
     today = datetime.date.today()
     dates = [(today + datetime.timedelta(days=i)).isoformat() for i in range(days)]
-    todo = [r for r in ROUTES if not only or r["key"] in only]
+    todo  = [r for r in ROUTES if not only or r["key"] in only]
     out = {r["key"]: {"label": r["label"], "from_name": r["from_name"],
                       "to_name": r["to_name"], "days": {}} for r in todo}
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
-        ctx = browser.new_context(locale="th-TH", user_agent=UA,
-                                  viewport={"width": 1400, "height": 1000})
-        page = ctx.new_page()
-        for route in todo:
-            frm, to = route["from"], route["to"]
-            for d in dates:
+    jobs = asyncio.Queue()
+    for route in todo:
+        for d in dates:
+            jobs.put_nowait((route, d))
+    total = jobs.qsize()
+    done = [0]
+
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(headless=headless)
+
+        async def worker(n):
+            # แต่ละ worker ใช้ context ของตัวเอง จะได้ไม่แย่ง cookie/สถานะกัน
+            ctx = await browser.new_context(locale="th-TH", user_agent=UA,
+                                            viewport={"width": 1400, "height": 1000})
+            page = await ctx.new_page()
+            while True:
+                try:
+                    route, d = jobs.get_nowait()
+                except asyncio.QueueEmpty:
+                    break
                 fares = []
                 try:
-                    page.goto(search_url(frm, to, d), wait_until="domcontentloaded", timeout=60000)
-                    for _ in range(14):                 # รอผลค้นหาขึ้น (สูงสุด ~35 วิ)
-                        page.wait_for_timeout(2500)
-                        txt = page.evaluate("()=>document.body?document.body.innerText:''")
-                        if parse_page_text(txt, frm, to):
-                            break
-                    # เลื่อนหน้าลงจนสุดเพื่อโหลดเที่ยวบินให้ครบ เส้นทางที่มีสายการบินเยอะ
-                    # อย่าง CNX-BKK ต้องเลื่อนหลายรอบกว่าเที่ยวบินราคาถูกจะโผล่ครบ
-                    best = scroll_and_parse(page, frm, to)
-                    if len(best) < 3:                   # ยังเห็นน้อย -> เลื่อนต่ออีกชุด
-                        more = scroll_and_parse(page, frm, to, rounds=12)
-                        for k, v in more.items():
-                            if k not in best or v["price"] < best[k]["price"]:
-                                best[k] = v
-                    fares = top_fares(best)
+                    fares = await _grab(page, route, d)
                 except Exception as e:
                     print(f"   [warn] {route['key']} {d}: {type(e).__name__}")
                 out[route["key"]]["days"][d] = fares
+                done[0] += 1
                 got = ", ".join(f"{f['name']}={f['price']}" for f in fares) or "-"
-                print(f"  {route['key']} {d}: {got}")
-        browser.close()
+                print(f"  [{done[0]:>3}/{total}] {route['key']} {d}: {got}", flush=True)
+            await ctx.close()
+
+        await asyncio.gather(*[worker(i) for i in range(max(1, workers))])
+        await browser.close()
+
+    for r in out.values():                    # ให้วันเรียงตามลำดับเสมอ
+        r["days"] = {d: r["days"][d] for d in sorted(r["days"])}
     return out
+
+
+def scrape(days=90, headless=True, only=None, workers=WORKERS):
+    return asyncio.run(_scrape_async(days, only, workers, headless))
+
+
+def acquire_lock():
+    """กันไม่ให้รอบใหม่เริ่มทับรอบเดิมที่ยังทำงานอยู่ (รอบเต็มนานกว่าช่วงตั้งเวลา)"""
+    if LOCK.exists():
+        age = time.time() - LOCK.stat().st_mtime
+        if age < LOCK_STALE_SEC:
+            print(f"!! another run started {int(age/60)} min ago - skipping this one")
+            return False
+        print(f"(warn) stale lock ({int(age/60)} min old) - taking over")
+    LOCK.write_text(str(os.getpid()), encoding="utf-8")
+    return True
+
+
+def release_lock():
+    try:
+        LOCK.unlink()
+    except OSError:
+        pass
 
 
 def main():
@@ -195,6 +260,9 @@ def main():
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--routes", default="",
                     help="อัปเดตเฉพาะเส้นทางนี้ คั่นด้วย , เช่น CNX_BKK,BKK_CNX (ว่าง = ทุกเส้นทาง)")
+    ap.add_argument("--workers", type=int, default=WORKERS,
+                    help=f"เปิดกี่หน้าพร้อมกัน (ค่าเริ่มต้น {WORKERS})")
+    ap.add_argument("--no-lock", action="store_true", help="ข้ามการเช็คล็อกกันรันซ้อน")
     args = ap.parse_args()
 
     only = [k.strip() for k in args.routes.split(",") if k.strip()] or None
@@ -205,7 +273,16 @@ def main():
             print(f"!! unknown route key(s): {', '.join(bad)} (valid: {', '.join(sorted(valid))})")
             sys.exit(2)
 
-    fresh = scrape(days=args.days, only=only)
+    if not args.no_lock and not acquire_lock():
+        sys.exit(0)
+    t0 = time.time()
+    try:
+        fresh = scrape(days=args.days, only=only, workers=args.workers)
+    finally:
+        if not args.no_lock:
+            release_lock()
+    print(f">> scraped in {int(time.time()-t0)//60} min {int(time.time()-t0)%60} s "
+          f"({args.workers} workers)")
     total = sum(1 for r in fresh.values() for d in r["days"].values() if d)
     print(f">> got fares for {total} route-days")
     if total == 0:

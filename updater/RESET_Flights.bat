@@ -20,7 +20,7 @@ if errorlevel 1 (
 )
 
 echo [1/2] Fetching cheapest fares for the next 90 days (3 months)...
-echo       ^(6 routes x 90 days = 540 pages - about 2 to 2.5 hours^)
+echo       ^(6 routes x 90 days = 540 pages, 5 at a time - about 35 minutes^)
 python "%SCRIPT%" --days 90
 if errorlevel 1 (
   echo.
@@ -31,14 +31,14 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/2] Checking auto-update schedule ^(every 12 hours^)...
+echo [2/2] Checking auto-update schedule ^(every 2 hours^)...
 schtasks /query /tn "ITH_Flight_Price_Update" 1>nul 2>nul
 if errorlevel 1 (
   set "PYW="
   for /f "delims=" %%i in ('where pythonw 2^>nul') do if not defined PYW set "PYW=%%i"
   if not defined PYW for /f "delims=" %%i in ('where python 2^>nul') do if not defined PYW set "PYW=%%i"
-  schtasks /create /tn "ITH_Flight_Price_Update" /tr "\"!PYW!\" \"%SCRIPT%\"" /sc hourly /mo 12 /f
-  echo   Created auto-update task ^(every 12 hours^).
+  schtasks /create /tn "ITH_Flight_Price_Update" /tr "\"!PYW!\" \"%SCRIPT%\"" /sc hourly /mo 2 /f
+  echo   Created auto-update task ^(every 2 hours^).
 ) else (
   schtasks /change /tn "ITH_Flight_Price_Update" /enable 1>nul 2>nul
   echo   Auto-update task present and enabled.
