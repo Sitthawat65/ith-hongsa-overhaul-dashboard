@@ -2,7 +2,7 @@
    แจ้งเตือนอุณหภูมิ Bearing Pulley เกินกำหนด — ใช้ร่วมกันทุกหน้า
    ------------------------------------------------------------
    - เฝ้าดู temps.json ทุก 60 วินาที (ไฟล์เล็ก ~1.5 KB)
-   - จุดไหน >= 80 °C จะเด้งป๊อปอัปให้กด "รับทราบ"
+   - จุดไหน >= 80 °C จะเด้งป๊อปอัป เสียงดังถี่ต่อเนื่องและกะพริบจนกว่าจะกด "รับทราบ"
    - กดรับทราบแล้ว ถ้ายังร้อนอยู่จะเตือนซ้ำอีกใน 15 นาที
    - ถ้าอุณหภูมิลดต่ำกว่า 80 การรับทราบจะถูกล้าง เริ่มนับใหม่เมื่อร้อนอีก
    - สถานะรับทราบเก็บใน localStorage จึงใช้ร่วมกันทุกหน้าในเว็บนี้
@@ -47,13 +47,17 @@
    + '.tal-ov{position:fixed;inset:0;z-index:9998;background:rgba(6,10,16,.72);'
    +   'backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;padding:16px}'
    + '.tal-ov.on{display:flex}'
-   + '.tal-bx{width:100%;max-width:460px;background:#16212e;color:#e7eef6;border:2px solid #e02424;'
-   +   'border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.55);overflow:hidden;'
-   +   'font-family:"Segoe UI",Tahoma,Arial,sans-serif;animation:tal-pop .18s ease-out}'
+   + '.tal-bx{width:100%;max-width:460px;background:#16212e;color:#e7eef6;border:3px solid #ff4d4f;'
+   +   'border-radius:18px;overflow:hidden;font-family:"Segoe UI",Tahoma,Arial,sans-serif;'
+   +   'animation:tal-pop .18s ease-out, tal-glow .7s steps(1,end) infinite}'
    + '@keyframes tal-pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}'
-   + '.tal-hd{background:#e02424;padding:14px 18px;display:flex;align-items:center;gap:10px}'
-   + '.tal-hd .ic{font-size:24px;animation:tal-bl 1s steps(1,end) infinite}'
-   + '@keyframes tal-bl{0%,49%{opacity:1}50%,100%{opacity:.25}}'
+   + '@keyframes tal-glow{0%,49%{border-color:#ff4d4f;box-shadow:0 0 0 6px rgba(255,77,79,.30),0 24px 60px rgba(0,0,0,.6)}'
+   +   '50%,100%{border-color:#5c1010;box-shadow:0 0 0 0 rgba(255,77,79,0),0 24px 60px rgba(0,0,0,.6)}}'
+   + '.tal-hd{padding:14px 18px;display:flex;align-items:center;gap:10px;'
+   +   'animation:tal-hdbl .7s steps(1,end) infinite}'
+   + '@keyframes tal-hdbl{0%,49%{background:#e02424}50%,100%{background:#7a1414}}'
+   + '.tal-hd .ic{font-size:24px;animation:tal-bl .7s steps(1,end) infinite}'
+   + '@keyframes tal-bl{0%,49%{opacity:1}50%,100%{opacity:.2}}'
    + '.tal-hd b{font-size:16px;color:#fff;letter-spacing:.3px}'
    + '.tal-bd{padding:16px 18px}'
    + '.tal-bd .sub{font-size:12.5px;color:#8aa0b6;margin:0 0 12px;line-height:1.7}'
@@ -61,7 +65,8 @@
    +   'background:rgba(224,36,36,.12);border:1px solid rgba(224,36,36,.35);margin-bottom:8px}'
    + '.tal-it .nm{flex:1;min-width:0;font-size:13.5px;font-weight:600}'
    + '.tal-it .nm small{display:block;font-weight:400;color:#ffb4b4;font-size:11px;margin-top:2px}'
-   + '.tal-it .vl{font-size:20px;font-weight:800;color:#ff6b6b;font-variant-numeric:tabular-nums;white-space:nowrap}'
+   + '.tal-it .vl{font-size:20px;font-weight:800;color:#ff6b6b;font-variant-numeric:tabular-nums;'
+   +   'white-space:nowrap;animation:tal-bl .7s steps(1,end) infinite}'
    + '.tal-ft{padding:0 18px 18px;display:flex;gap:10px;align-items:center}'
    + '.tal-ack{flex:1;padding:15px;border:0;border-radius:14px;background:#e02424;color:#fff;'
    +   'font-family:inherit;font-size:16px;font-weight:800;cursor:pointer}'
@@ -119,34 +124,72 @@
   }
 
   // ---------- เสียงเตือน ----------
-  var actx = null;
-  var siren = null;                    // ตัวจับเวลาเสียงเตือนวนซ้ำ
-  var SIREN_MS = 2200;                 // เว้นระยะระหว่างชุดเสียง
+  var actx     = null;
+  var sched    = null;                 // ตัวจับเวลาสำหรับจองเสียงล่วงหน้า
+  var pending  = [];                   // เสียงที่จองไว้แล้วแต่ยังไม่ดัง (ไว้สั่งหยุด)
+  var nextAt   = 0;                    // เวลาของเสียงถัดไป (นาฬิกาของ AudioContext)
+  var BEEP_GAP = 0.42;                 // วินาที — ตี๊ด...ตี๊ด...ตี๊ด ถี่ๆ ไม่มีช่วงเงียบยาว
+  var HORIZON  = 2.5;                  // จองเสียงล่วงหน้ากี่วินาที
 
-  function startSiren(){
-    stopSiren();
-    beep();
-    siren = setInterval(beep, SIREN_MS);   // ดังไปเรื่อยๆ จนกว่าจะกดรับทราบ
-  }
-  function stopSiren(){
-    if (siren) { clearInterval(siren); siren = null; }
-  }
-  function beep(){
-    if (!soundOn) return;
+  function ensureCtx(){
     try {
       if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
       if (actx.state === 'suspended') actx.resume();
-      [0, 0.36, 0.72].forEach(function (t) {
-        var o = actx.createOscillator(), g = actx.createGain();
-        o.type = 'square'; o.frequency.value = 880;
-        g.gain.setValueAtTime(0.0001, actx.currentTime + t);
-        g.gain.exponentialRampToValueAtTime(0.18, actx.currentTime + t + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + t + 0.24);
-        o.connect(g); g.connect(actx.destination);
-        o.start(actx.currentTime + t); o.stop(actx.currentTime + t + 0.26);
-      });
-    } catch (e) { /* เบราว์เซอร์อาจบล็อกเสียงจนกว่าจะมีการคลิกครั้งแรก */ }
+    } catch (e) { actx = null; }
+    return actx;
   }
+
+  // เสียง "ตี๊ด" หนึ่งครั้ง จองไว้ที่เวลา at ของ AudioContext
+  function tone(at){
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'square';
+    o.frequency.value = 1000;
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.exponentialRampToValueAtTime(0.22, at + 0.012);
+    g.gain.setValueAtTime(0.22, at + 0.14);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + 0.19);
+    o.connect(g); g.connect(actx.destination);
+    o.start(at); o.stop(at + 0.21);
+    pending.push(o);
+    o.onended = function () {
+      var i = pending.indexOf(o);
+      if (i >= 0) pending.splice(i, 1);
+    };
+  }
+
+  // จองเสียงล่วงหน้าเป็นชุด — ทำแบบนี้เพราะเบราว์เซอร์หน่วง setInterval เมื่อสลับไปแท็บอื่น
+  // ถ้าพึ่ง setInterval อย่างเดียว เสียงจะห่างออกทันทีที่ผู้ใช้สลับแท็บ
+  function schedule(){
+    if (!soundOn || !ensureCtx()) return;
+    var horizon = actx.currentTime + HORIZON;
+    if (nextAt < actx.currentTime) nextAt = actx.currentTime + 0.02;
+    while (nextAt < horizon) {
+      tone(nextAt);
+      nextAt += BEEP_GAP;
+    }
+  }
+
+  function startSiren(){
+    stopSiren();
+    if (!ensureCtx()) return;
+    nextAt = actx.currentTime + 0.02;
+    schedule();
+    sched = setInterval(schedule, 1000);
+  }
+
+  function stopSiren(){
+    if (sched) { clearInterval(sched); sched = null; }
+    pending.forEach(function (o) { try { o.stop(); } catch (e) {} });
+    pending = [];
+    nextAt = 0;
+  }
+
+  // เสียงสั้นๆ ครั้งเดียว (ใช้ตอนกดเปิดเสียงเพื่อลองฟัง)
+  function beep(){
+    if (!soundOn || !ensureCtx()) return;
+    tone(actx.currentTime + 0.02);
+  }
+
   function drawSound(){
     document.getElementById('talSnd').textContent = soundOn ? '🔊' : '🔇';
   }
@@ -165,7 +208,7 @@
     document.getElementById('talSub').innerHTML =
         'ตรวจพบเมื่อ <b>' + now.toLocaleString('th-TH', {hour:'2-digit', minute:'2-digit'})
       + ' น.</b> · เกณฑ์แจ้งเตือน ' + ALARM + ' °C<br>'
-      + 'เสียงจะดังต่อเนื่องจนกว่าจะกด “รับทราบ” · ถ้ายังร้อนอยู่จะเตือนซ้ำอีกใน 15 นาที';
+      + 'เสียงและไฟจะเตือนต่อเนื่องจนกว่าจะกด “รับทราบ” · ถ้ายังร้อนอยู่จะเตือนซ้ำอีกใน 15 นาที';
     document.getElementById('talList').innerHTML = items.map(function (it) {
       var faulty = it.v >= FAULTY
         ? '<small>ค่าสูงผิดปกติ — ควรตรวจสอบเซนเซอร์ด้วย</small>' : '';
