@@ -9,6 +9,8 @@ master_data.json
 
 # Local updater secrets & browser profile (NEVER push these)
 updater/credentials.txt
+updater/line_config.json
+updater/.line_alert_state.json
 updater/browser_profile/
 
 # OS / editor cruft

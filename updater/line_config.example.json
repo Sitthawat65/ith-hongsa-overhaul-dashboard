@@ -1,0 +1,15 @@
+{
+  "_readme": [
+    "คัดลอกไฟล์นี้เป็น line_config.json แล้วใส่ token ของคุณ",
+    "line_config.json ถูก gitignore ไว้แล้ว จะไม่ขึ้น GitHub (repo นี้เป็น public ห้าม commit token เด็ดขาด)",
+    "ทดสอบด้วย: python line_alert.py --test"
+  ],
+  "enabled": true,
+  "token": "ใส่ Channel access token (long-lived) จาก LINE Developers Console ตรงนี้",
+  "to": "",
+  "_to_note": "เว้นว่าง = broadcast ส่งหาทุกคนที่เพิ่ม LINE OA เป็นเพื่อน / ถ้าจะส่งเข้าห้องใดห้องหนึ่งให้ใส่ groupId หรือ userId",
+  "threshold": 80,
+  "repeat_minutes": 15,
+  "notify_recovery": true,
+  "dashboard_url": "https://sitthawat65.github.io/ith-hongsa-overhaul-dashboard/spreader.html"
+}

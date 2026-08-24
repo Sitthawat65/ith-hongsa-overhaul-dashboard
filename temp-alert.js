@@ -120,6 +120,17 @@
 
   // ---------- เสียงเตือน ----------
   var actx = null;
+  var siren = null;                    // ตัวจับเวลาเสียงเตือนวนซ้ำ
+  var SIREN_MS = 2200;                 // เว้นระยะระหว่างชุดเสียง
+
+  function startSiren(){
+    stopSiren();
+    beep();
+    siren = setInterval(beep, SIREN_MS);   // ดังไปเรื่อยๆ จนกว่าจะกดรับทราบ
+  }
+  function stopSiren(){
+    if (siren) { clearInterval(siren); siren = null; }
+  }
   function beep(){
     if (!soundOn) return;
     try {
@@ -143,7 +154,8 @@
     soundOn = !soundOn;
     try { localStorage.setItem(SND_KEY, soundOn ? 'on' : 'off'); } catch (e) {}
     drawSound();
-    if (soundOn) beep();
+    if (!soundOn) { stopSiren(); return; }
+    if (ov.classList.contains('on')) startSiren(); else beep();
   }
 
   // ---------- ป๊อปอัป ----------
@@ -153,7 +165,7 @@
     document.getElementById('talSub').innerHTML =
         'ตรวจพบเมื่อ <b>' + now.toLocaleString('th-TH', {hour:'2-digit', minute:'2-digit'})
       + ' น.</b> · เกณฑ์แจ้งเตือน ' + ALARM + ' °C<br>'
-      + 'กด “รับทราบ” เพื่อปิดหน้าต่างนี้ ถ้ายังร้อนอยู่ระบบจะเตือนซ้ำอีกใน 15 นาที';
+      + 'เสียงจะดังต่อเนื่องจนกว่าจะกด “รับทราบ” · ถ้ายังร้อนอยู่จะเตือนซ้ำอีกใน 15 นาที';
     document.getElementById('talList').innerHTML = items.map(function (it) {
       var faulty = it.v >= FAULTY
         ? '<small>ค่าสูงผิดปกติ — ควรตรวจสอบเซนเซอร์ด้วย</small>' : '';
@@ -161,10 +173,11 @@
            + '<span class="vl">' + it.v.toFixed(1) + ' °C</span></div>';
     }).join('');
     ov.classList.add('on');
-    beep();
+    startSiren();
     flashTitle(true);
   }
   function hidePopup(){
+    stopSiren();
     ov.classList.remove('on');
     shown = [];
     flashTitle(false);
