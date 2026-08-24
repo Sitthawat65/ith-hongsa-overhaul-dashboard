@@ -61,7 +61,32 @@
 
   .wrap{max-width:1150px;margin:0 auto}
   .routes{display:grid;grid-template-columns:1fr;gap:22px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .datebtn{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:999px;background:var(--plain-bg);border:1px solid var(--line);color:var(--btn-ink);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s,border-color .15s}
+  .datebtn:hover,.datebtn.on{background:var(--btn-hover);border-color:var(--btn-line-hover)}
+  .datebtn .caret{font-size:10px;opacity:.8}
+  .calpop{display:none;position:absolute;top:56px;left:14px;right:14px;z-index:40;background:var(--panel);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 20px 46px rgba(0,0,0,.38);padding:14px 16px 16px}
+  .calpop.open{display:block}
+  .caltop{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px}
+  .caltop b{color:var(--ink-strong)}
+  .calclose{margin-left:auto;border:1px solid var(--line);background:var(--plain-bg);color:var(--btn-ink);border-radius:999px;width:24px;height:24px;line-height:1;cursor:pointer;font-family:inherit;font-size:13px}
+  .calclose:hover{background:var(--btn-hover)}
+  .calwrap{display:grid;grid-template-columns:1fr;gap:20px;max-height:min(620px,70vh);overflow-y:auto;padding-right:4px}
+  @media(min-width:820px){.calwrap{grid-template-columns:1fr 1fr}}
+  .calhd{font-size:13px;font-weight:800;color:var(--ink-strong);text-align:center;margin-bottom:9px}
+  .calrow,.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .calw{font-size:10px;color:var(--muted);text-align:center;font-weight:700;padding-bottom:5px}
+  .calday{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:44px;border-radius:8px;padding:3px 1px}
+  .calday b{font-size:12px;font-weight:700;color:var(--na)}
+  .calday i{font-style:normal;font-size:10px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .calday.has{cursor:pointer;background:var(--plain-bg)}
+  .calday.has b{color:var(--ink-strong)}
+  .calday.has:hover{background:var(--btn-hover);box-shadow:inset 0 0 0 1px var(--btn-line-hover)}
+  .calday.cheap{background:var(--tag-bg)}
+  .calday.cheap i{color:var(--tag-ink);font-weight:800}
+  .calday.today{box-shadow:inset 0 0 0 1px var(--cd-line)}
+  tr.flash{animation:flash 1.8s ease-out}
+  @keyframes flash{0%,35%{background:var(--tag-bg)}100%{background:transparent}}
+  .card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
   .card h2{margin:0;padding:14px 18px;font-size:15px;letter-spacing:.4px;background:var(--head);border-bottom:2px solid var(--line-strong);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .card h2 .sub{margin-left:auto;font-size:12px;font-weight:500;color:var(--muted)}
   .alogo{height:18px;width:auto;max-width:74px;flex:none;vertical-align:-4px;object-fit:contain;background:none;border:0}
@@ -268,6 +293,60 @@ const SITE = {
   thai      :'https://www.thaiairways.com/th_TH/index.page',
   bangkokair:'https://www.bangkokair.com/'
 };
+const THMONF = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const CALDOW = ['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
+
+// ปฏิทินเลือกวันที่ของเส้นทางหนึ่ง - ใต้เลขวันคือราคาถูกสุดของวันนั้น
+function buildCal(key, r){
+  const days = r.days || {}, dates = Object.keys(days).sort();
+  if(!dates.length) return '';
+  const price = {};
+  let lo = Infinity;
+  dates.forEach(function(d){
+    const fs = fareList(days[d]);
+    if(fs.length){
+      price[d] = fs[0].price;
+      if(fs[0].price < lo) lo = fs[0].price;
+    }
+  });
+  if(lo === Infinity) return '';
+  // ไฮไลต์เขียว = วันที่ถูกที่สุด 20% แรกของเส้นทางนี้ (ใช้เปอร์เซ็นไทล์ ไม่ใช่ช่วงราคา
+  // เพราะถ้ามีวันแพงผิดปกติแค่ไม่กี่วัน ช่วงราคาจะกว้างจนเกือบทุกวันกลายเป็นเขียว)
+  const sortedP = Object.keys(price).map(function(k){ return price[k]; }).sort(function(a,b){ return a-b; });
+  const cut = sortedP[Math.max(0, Math.ceil(sortedP.length * 0.2) - 1)];
+  const today = new Date().toISOString().slice(0,10);
+  const months = [];
+  dates.forEach(function(d){
+    const ym = d.slice(0,7);
+    if(!months.length || months[months.length-1] !== ym) months.push(ym);
+  });
+  const grids = months.map(function(ym){
+    const y = +ym.slice(0,4), mo = +ym.slice(5,7) - 1;
+    const lead  = (new Date(y, mo, 1).getDay() + 6) % 7;   // ให้จันทร์เป็นคอลัมน์แรก
+    const total = new Date(y, mo + 1, 0).getDate();
+    let cells = '';
+    for(let i = 0; i < lead; i++) cells += '<span class="calday"></span>';
+    for(let n = 1; n <= total; n++){
+      const iso = ym + '-' + String(n).padStart(2,'0');
+      const pr  = price[iso];
+      const cls = 'calday' + (pr != null ? ' has' : '')
+                + (pr != null && pr <= cut ? ' cheap' : '')
+                + (iso === today ? ' today' : '');
+      cells += '<span class="' + cls + '"' + (pr != null ? ' data-d="' + iso + '"' : '') + '>'
+             + '<b>' + n + '</b>'
+             + (pr != null ? '<i>' + Number(pr).toLocaleString('th-TH') + '</i>' : '')
+             + '</span>';
+    }
+    return '<div class="calmon"><div class="calhd">' + THMONF[mo] + ' ' + (y + 543) + '</div>'
+         + '<div class="calrow">' + CALDOW.map(function(w){ return '<span class="calw">' + w + '</span>'; }).join('') + '</div>'
+         + '<div class="calgrid">' + cells + '</div></div>';
+  }).join('');
+  return '<div class="calpop" data-route="' + key + '">'
+       + '<div class="caltop">📅 เลือกวันที่ · <b>' + r.label + '</b> · ตัวเลขใต้วันคือราคาถูกสุดของวันนั้น'
+       + '<button class="calclose" type="button" title="ปิด">✕</button></div>'
+       + '<div class="calwrap">' + grids + '</div></div>';
+}
+
 const RANKLBL = ['ถูกสุด','อันดับ 2','อันดับ 3','อันดับ 4','อันดับ 5','อันดับ 6'];
 const ORDER   = ['NNT_BKK','BKK_NNT','CNX_BKK','BKK_CNX','KOP_BKK','BKK_KOP'];
 const TAB_KEY = 'ith_flight_route_tab';
@@ -354,7 +433,7 @@ function render(){
       const fares = fareList(r.days[d]), f = fmtDay(d);
       let tds = '';
       for(let i=0; i<topN; i++) tds += fareCell(fares[i]||null, key, d, i);
-      return '<tr class="'+(d===today?'today':'')+'">'
+      return '<tr id="r_'+key+'_'+d+'" class="'+(d===today?'today':'')+'">'
         + '<td><span class="d">'+f.d+'</span><span class="dow">'+f.dow+'</span></td>'
         + tds
         + '<td class="num"><a class="book plain" href="'+tripUrl(key,d)+'" target="_blank" rel="noopener">ดูทั้งหมด ↗</a></td>'
@@ -367,7 +446,10 @@ function render(){
         + (LOGO[a] ? '<img class="alogo" src="'+LOGO[a]+'" alt="">' : '') + seen[a] + ' ↗</a>' : '';
     }).join('');
     host.insertAdjacentHTML('beforeend',
-      '<div class="card"><h2>✈️ '+r.label+cheapChip+'<span class="sub">'+(r.from_name||'')+' → '+(r.to_name||'')+'</span></h2>'
+      '<div class="card"><h2>✈️ '+r.label+cheapChip
+      + '<button class="datebtn" type="button" data-route="'+key+'">📅 เลือกวันที่<span class="caret">▼</span></button>'
+      + '<span class="sub">'+(r.from_name||'')+' → '+(r.to_name||'')+'</span></h2>'
+      + buildCal(key, r)
       + '<div class="tw"><table><thead><tr><th>วันที่</th>'+ths+'<th class="num">ทุกเที่ยวบิน</th></tr></thead>'
       + '<tbody>'+rows+'</tbody></table></div>'
       + '<div class="foot-book"><span>จองตั๋ว:</span>' + siteBtns
@@ -438,6 +520,37 @@ async function refresh(){
   setTimeout(function(){ b.classList.remove('spin'); b.disabled=false; }, 500);
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
+
+// ---- ปฏิทินเลือกวันที่ในแต่ละการ์ดเส้นทาง ----
+function closeCals(){
+  document.querySelectorAll('.calpop.open').forEach(function(el){ el.classList.remove('open'); });
+  document.querySelectorAll('.datebtn.on').forEach(function(el){ el.classList.remove('on'); });
+}
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.datebtn');
+  if(btn){
+    const pop = document.querySelector('.calpop[data-route="'+btn.dataset.route+'"]');
+    const wasOpen = pop && pop.classList.contains('open');
+    closeCals();
+    if(pop && !wasOpen){ pop.classList.add('open'); btn.classList.add('on'); }
+    return;
+  }
+  const day = e.target.closest('.calday.has');
+  if(day){
+    const pop = day.closest('.calpop');
+    const row = document.getElementById('r_'+pop.dataset.route+'_'+day.dataset.d);
+    closeCals();
+    if(row){
+      row.scrollIntoView({block:'center', behavior:'smooth'});
+      row.classList.remove('flash');
+      void row.offsetWidth;                 // รีสตาร์ต animation
+      row.classList.add('flash');
+    }
+    return;
+  }
+  if(e.target.closest('.calclose') || !e.target.closest('.calpop')) closeCals();
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeCals(); });
 
 // ---- ปุ่มเลือกเส้นทาง (จำค่าไว้ใน localStorage) ----
 function paintTabs(){
