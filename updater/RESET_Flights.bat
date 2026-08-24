@@ -19,9 +19,9 @@ if errorlevel 1 (
   echo.
 )
 
-echo [1/2] Fetching cheapest fares for the next 30 days...
-echo       ^(6 routes: NNT / CNX / KOP ^<-^> Bangkok - about 45-60 minutes^)
-python "%SCRIPT%" --days 30
+echo [1/2] Fetching cheapest fares for the next 90 days (3 months)...
+echo       ^(6 routes x 90 days = 540 pages - about 2 to 2.5 hours^)
+python "%SCRIPT%" --days 90
 if errorlevel 1 (
   echo.
   echo   !! Could not read fares. Check your internet connection and try again.

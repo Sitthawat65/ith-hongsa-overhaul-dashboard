@@ -5,7 +5,7 @@ ITH Flight Price Watch - auto updater (Nan / Chiang Mai <-> Bangkok)
 --------------------------------------------------------------------
 ดึงราคาตั๋วเครื่องบินถูกสุดของ "ทุกสายการบิน" ที่บินเส้นทาง
 น่าน (NNT) / เชียงใหม่ (CNX) / นครพนม (KOP) <-> กรุงเทพ (DMK/BKK)
-ล่วงหน้า 30 วัน จาก Trip.com เก็บ 4 อันดับที่ถูกที่สุดของแต่ละวัน
+ล่วงหน้า 90 วัน (3 เดือน) จาก Trip.com เก็บ 4 อันดับที่ถูกที่สุดของแต่ละวัน
 (อันดับละ 1 สายการบิน) แล้วเขียน flights.json + push ขึ้น GitHub Pages
 
 รัน:  python update_flights.py                          (ปกติ - Task Scheduler ทุก 12 ชม.)
@@ -147,7 +147,7 @@ def scroll_and_parse(page, frm, to, rounds=20, settle=2):
     return parse_page_text(txt, frm, to)
 
 
-def scrape(days=30, headless=True, only=None):
+def scrape(days=90, headless=True, only=None):
     from playwright.sync_api import sync_playwright
     today = datetime.date.today()
     dates = [(today + datetime.timedelta(days=i)).isoformat() for i in range(days)]
@@ -191,7 +191,7 @@ def scrape(days=30, headless=True, only=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--days", type=int, default=30)
+    ap.add_argument("--days", type=int, default=90)
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--routes", default="",
                     help="อัปเดตเฉพาะเส้นทางนี้ คั่นด้วย , เช่น CNX_BKK,BKK_CNX (ว่าง = ทุกเส้นทาง)")

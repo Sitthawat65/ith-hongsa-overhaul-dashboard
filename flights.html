@@ -67,13 +67,14 @@
   .alogo{height:18px;width:auto;max-width:74px;flex:none;vertical-align:-4px;object-fit:contain;background:none;border:0}
   .book .alogo,.cheap .alogo,.badge .alogo{height:15px;max-width:62px;vertical-align:-3px}
   thead th .alogo,.book .alogo,.cheap .alogo,.badge .alogo{margin-right:5px}
-  .badge .alogo{vertical-align:-4px}
+  .badge .alogo{vertical-align:-4px;background:#fff;border-radius:4px;padding:2px 4px;box-sizing:content-box;margin-right:7px}
   .book{align-items:center}
   .cheap{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:999px;background:var(--tag-bg);color:var(--tag-ink);font-size:11px;font-weight:800;text-decoration:none;letter-spacing:.2px;white-space:nowrap}
   .cheap:hover{filter:brightness(1.12)}
+  .tw{max-height:620px;overflow-y:auto}
   table{width:100%;border-collapse:separate;border-spacing:0}
   th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
-  thead th{background:var(--panel2);color:var(--thead);font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase}
+  thead th{position:sticky;top:0;z-index:2;background:var(--panel2);color:var(--thead);font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;box-shadow:0 1px 0 var(--line-strong)}
   th.num,td.num{text-align:right;white-space:nowrap}
   tbody tr:last-child td{border-bottom:none}
   tbody tr:hover{background:var(--row-hover)}
@@ -100,13 +101,27 @@
   .foot-book{padding:13px 18px;background:var(--panel2);border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .foot-book span{font-size:12px;color:var(--muted);margin-right:2px}
 
-  .promos{max-width:1150px;margin:24px auto 0}
+  .promos{max-width:1150px;margin:28px auto 0}
+  .promos h2 .hint{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0}
+  .dgrid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:640px){.dgrid{grid-template-columns:1fr 1fr}}
+  @media(min-width:1000px){.dgrid{grid-template-columns:repeat(3,1fr)}}
+  .dcard{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+  .dcard:hover{border-color:var(--btn-line-hover);transform:translateY(-1px)}
+  .dhead{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+  .dhead .alogo{height:17px;max-width:66px}
+  .dhead b{font-size:12px;font-weight:700;color:var(--ink-strong)}
+  .dprice{display:block;font-size:22px;font-weight:800;color:var(--best);font-variant-numeric:tabular-nums;line-height:1.15}
+  .dmeta{display:block;font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6}
+  .dmeta b{color:var(--ink)}
+  .pnote{max-width:1150px;margin:14px auto 0;font-size:12px;color:var(--muted);line-height:1.8}
+  .badge{display:inline-flex;align-items:center;background:var(--plain-bg);color:var(--ink-strong)}
   .promos h2{font-size:15px;margin:0 0 12px;letter-spacing:.4px}
   .pgrid{display:grid;grid-template-columns:1fr;gap:14px}
   @media(min-width:760px){.pgrid{grid-template-columns:1fr 1fr}}
   .pcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
   .pcard h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
-  .badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.5px}
+  .badge{font-size:10px;font-weight:800;padding:4px 11px 4px 5px;border-radius:999px;letter-spacing:.5px}
   .badge.aa{background:rgba(255,45,85,.18);color:#ff7a90}
   .badge.nok{background:rgba(245,166,35,.18);color:#ffc46b}
   .pcard ul{margin:10px 0 0;padding-left:18px;color:var(--btn-ink);font-size:13px;line-height:1.85}
@@ -119,7 +134,7 @@
     <div class="logo">✈</div>
     <div class="titles">
       <h1>Flight Price Watch · น่าน &amp; เชียงใหม่ &amp; นครพนม ⇄ กรุงเทพ</h1>
-      <p>ราคาถูกที่สุดรายวัน ล่วงหน้า 30 วัน · เทียบ<b>ทุกสายการบิน</b> แสดง 4 อันดับถูกสุดของแต่ละวัน</p>
+      <p>ราคาถูกที่สุดรายวัน <b>ล่วงหน้า 3 เดือน</b> · เทียบ<b>ทุกสายการบิน</b> แสดง 4 อันดับถูกสุดของแต่ละวัน</p>
     </div>
     <div class="nav">
       <div id="countdown" class="cd" title="เวลาจนถึงการอัปเดตราคารอบถัดไป">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
@@ -146,36 +161,70 @@
   <div class="wrap"><div class="routes" id="routes"></div></div>
 
   <div class="promos">
-    <h2>🎫 โปรโมชั่น &amp; ตั๋วบุฟเฟ่ต์ (ในประเทศ / ต่างประเทศ)</h2>
+    <h2>💸 ดีลถูกที่สุดของแต่ละสายการบิน <span class="hint">— คิดจากราคาจริงทุกเส้นทางในช่วง 3 เดือน อัปเดตทุก 12 ชม.</span></h2>
+    <div class="dgrid" id="deals"></div>
+
+    <h2 style="margin-top:26px">🎫 ตั๋วบุฟเฟ่ต์ &amp; โปรโมชั่นทางการ <span class="hint">— เปิดขายเป็นรอบ กดเข้าไปดูรอบล่าสุดของแต่ละสายการบิน</span></h2>
     <div class="pgrid">
+
       <div class="pcard">
-        <h3><span class="badge aa"><img class="alogo" src="logos/airasia.svg" alt="">AIR ASIA</span> ตั๋วบุฟเฟ่ต์ &amp; โปรฯ เด่น</h3>
+        <h3><span class="badge"><img class="alogo" src="logos/airasia.svg" alt="">THAI AIRASIA</span></h3>
         <ul>
-          <li><b>FD Unlimited Pass</b> — บินไม่อั้นทั่วไทย จ่ายครั้งเดียว/ปี
-            (<a href="https://promotion.airasia.com/campaign/th/th/fd-unlimited-pass.html" target="_blank" rel="noopener">ดูรอบขายล่าสุด</a>)</li>
-          <li><b>SUPER+ / SUPER+ Premium</b> — แพ็กเหมาจ่ายรายปี ครอบคลุมทั้งในและต่างประเทศ
-            (<a href="https://www.airasia.com/superapp/superplus/th/th/" target="_blank" rel="noopener">รายละเอียด</a>)</li>
-          <li><b>BIG SALE</b> — ตั๋วเริ่มต้น 0 บาท ลดสูงสุด 80%
-            (<a href="https://www.airasia.com/flights/th/th/campaign-free-seat/" target="_blank" rel="noopener">หน้าโปรฯ</a>)</li>
-          <li><a href="https://www.airasia.com/flights/campaign-discount-all-seats/" target="_blank" rel="noopener">ส่วนลด 10% ทุกที่นั่งทุกเที่ยวบิน</a> (ตามรอบแคมเปญ)</li>
+          <li><b>SUPER+</b> — แพ็กเกจเหมาจ่ายรายปี บินได้ทั้งในและต่างประเทศ
+            (<a href="https://www.airasia.com/superapp/superplus/th/th/" target="_blank" rel="noopener">ดูแพ็กเกจ</a>)</li>
+          <li><b>Unlimited Pass / BIG SALE</b> — ตั๋วบุฟเฟ่ต์และตั๋วลดราคา เปิดขายเป็นรอบ
+            (<a href="https://www.airasia.com/flights/th/th/" target="_blank" rel="noopener">หน้าโปรโมชั่น</a>)</li>
         </ul>
       </div>
+
       <div class="pcard">
-        <h3><span class="badge nok"><img class="alogo" src="logos/nokair-badge.svg" alt="">NOK AIR</span> โปรโมชั่น &amp; แพ็กเกจ</h3>
+        <h3><span class="badge"><img class="alogo" src="logos/nokair-badge.svg" alt="">NOK AIR</span></h3>
         <ul>
-          <li><b>Nok Promotion</b> — โปรฯ ตั๋วลดราคาตามรอบ เส้นทางในประเทศ
-            (<a href="https://nokair.com/promotions" target="_blank" rel="noopener">ดูโปรฯ ทั้งหมด</a>)</li>
-          <li><b>Nok Fan Club</b> — สะสมไมล์ &amp; ดีลเฉพาะสมาชิก
+          <li><b>โปรโมชั่นนกแอร์</b> — ตั๋วลดราคาตามรอบ เส้นทางในประเทศ
+            (<a href="https://content.nokair.com/th/Promotion.aspx" target="_blank" rel="noopener">ดูโปรฯ ทั้งหมด</a>)</li>
+          <li><b>นกแฟนคลับ</b> — สะสมแต้ม &amp; ดีลเฉพาะสมาชิก
             (<a href="https://nokair.com/nokfanclub" target="_blank" rel="noopener">สมัคร / ดูสิทธิ์</a>)</li>
-          <li><b>แพ็กเกจเที่ยวบินเหมา / Nok Pass</b> — เปิดขายเป็นช่วง โปรดเช็กหน้าโปรฯ ตามรอบ</li>
-          <li>ตารางบิน:
-              <a href="https://nokair.com/flights/en/flights-from-nan-to-bangkok" target="_blank" rel="noopener">น่าน–กรุงเทพ</a> ·
-              <a href="https://nokair.com/flights/en/flights-from-bangkok-to-nan" target="_blank" rel="noopener">กรุงเทพ–น่าน</a> ·
-              <a href="https://nokair.com/flights/en/flights-from-chiang-mai-to-bangkok" target="_blank" rel="noopener">เชียงใหม่–กรุงเทพ</a> ·
-              <a href="https://nokair.com/flights/en/flights-from-bangkok-to-chiang-mai" target="_blank" rel="noopener">กรุงเทพ–เชียงใหม่</a></li>
         </ul>
       </div>
+
+      <div class="pcard">
+        <h3><span class="badge"><img class="alogo" src="logos/vietjet.svg" alt="">THAI VIETJET</span></h3>
+        <ul>
+          <li><b>Power Pass</b> — บัตรโดยสารเหมาจ่าย บินได้หลายเที่ยวตามแพ็กเกจ เปิดขายเป็นรอบ</li>
+          <li><b>โปรโมชั่น &amp; Deal Zero</b> — ตั๋วเริ่มต้น 0 บาท (ไม่รวมภาษี/ค่าธรรมเนียม)
+            (<a href="https://www.vietjetair.com/th/" target="_blank" rel="noopener">หน้าโปรโมชั่น</a>)</li>
+        </ul>
+      </div>
+
+      <div class="pcard">
+        <h3><span class="badge"><img class="alogo" src="logos/lionair.png" alt="">THAI LION AIR</span></h3>
+        <ul>
+          <li><b>โปรโมชั่นไทยไลอ้อนแอร์</b> — ตั๋วลดราคาตามรอบ เส้นทางในประเทศและต่างประเทศ
+            (<a href="https://www.lionairthai.com/th/" target="_blank" rel="noopener">หน้าโปรโมชั่น</a>)</li>
+          <li>ถูกที่สุดบ่อยในเส้นทาง <b>นครพนม</b> และ <b>เชียงใหม่</b> จากข้อมูลที่เก็บได้</li>
+        </ul>
+      </div>
+
+      <div class="pcard">
+        <h3><span class="badge"><img class="alogo" src="logos/bangkokair.svg" alt="">BANGKOK AIRWAYS</span></h3>
+        <ul>
+          <li><b>โปรโมชั่นบางกอกแอร์เวย์ส</b> — ตั๋วลดราคาและแพ็กเกจท่องเที่ยว
+            (<a href="https://www.bangkokair.com/" target="_blank" rel="noopener">หน้าโปรโมชั่น</a>)</li>
+          <li>ราคารวมน้ำหนักกระเป๋าและใช้เลานจ์ได้ — เทียบราคาสุทธิก่อนตัดสินใจ</li>
+        </ul>
+      </div>
+
+      <div class="pcard">
+        <h3><span class="badge"><img class="alogo" src="logos/thai.svg" alt="">THAI AIRWAYS</span></h3>
+        <ul>
+          <li><b>โปรโมชั่นการบินไทย</b> — ตั๋วลดราคาตามรอบ และดีลสำหรับสมาชิก Royal Orchid Plus
+            (<a href="https://www.thaiairways.com/th_TH/index.page" target="_blank" rel="noopener">หน้าโปรโมชั่น</a>)</li>
+          <li>ราคารวมกระเป๋าโหลดและอาหาร — มักแพงกว่าโลว์คอสต์แต่เทียบสุทธิแล้วต่างกันน้อยลง</li>
+        </ul>
+      </div>
+
     </div>
+    <p class="pnote">หน้าโปรโมชั่นของสายการบินเปลี่ยนบ่อยและบล็อกการดึงข้อมูลอัตโนมัติ ลิงก์ข้างบนจึงพาไปหน้าทางการให้กดดูรอบล่าสุดเอง ส่วน “ดีลถูกที่สุดของแต่ละสายการบิน” ด้านบนคำนวณจากราคาจริงที่ระบบเก็บได้ และอัปเดตเองทุก 12 ชั่วโมง</p>
   </div>
 
   <footer>
@@ -295,7 +344,7 @@ function render(){
       });
     });
     const cheapChip = minFare
-      ? '<a class="cheap" href="'+bookUrl(minFare,key,minDate)+'" target="_blank" rel="noopener" title="จองเที่ยวบินที่ถูกที่สุดในช่วง 30 วัน">💰 ถูกสุด ฿'
+      ? '<a class="cheap" href="'+bookUrl(minFare,key,minDate)+'" target="_blank" rel="noopener" title="จองเที่ยวบินที่ถูกที่สุดในช่วง 3 เดือน">💰 ถูกสุด ฿'
         + Number(min).toLocaleString('th-TH') + ' · ' + fmtDay(minDate).d + ' · '
         + logoImg(minFare) + minFare.name + ' ↗</a>'
       : '';
@@ -317,13 +366,42 @@ function render(){
     }).join('');
     host.insertAdjacentHTML('beforeend',
       '<div class="card"><h2>✈️ '+r.label+cheapChip+'<span class="sub">'+(r.from_name||'')+' → '+(r.to_name||'')+'</span></h2>'
-      + '<table><thead><tr><th>วันที่</th>'+ths+'<th class="num">ทุกเที่ยวบิน</th></tr></thead>'
-      + '<tbody>'+rows+'</tbody></table>'
+      + '<div class="tw"><table><thead><tr><th>วันที่</th>'+ths+'<th class="num">ทุกเที่ยวบิน</th></tr></thead>'
+      + '<tbody>'+rows+'</tbody></table></div>'
       + '<div class="foot-book"><span>จองตั๋ว:</span>' + siteBtns
       + '<a class="book plain" href="'+tripUrl(key, dates[0]||today)+'" target="_blank" rel="noopener">Trip.com ↗</a>'
       + '</div></div>');
   });
   document.getElementById('updated').textContent = fmtTime(DATA.updated);
+  renderDeals();
+}
+
+// ดีลถูกที่สุดของแต่ละสายการบิน - หาจากทุกเส้นทาง ทุกวันที่เก็บมาได้
+function renderDeals(){
+  const host = document.getElementById('deals');
+  if(!host || !DATA) return;
+  const best = {};
+  Object.keys(DATA.routes||{}).forEach(function(key){
+    const r = DATA.routes[key];
+    Object.keys(r.days||{}).forEach(function(d){
+      fareList(r.days[d]).forEach(function(f){
+        const cur = best[f.airline];
+        if(!cur || f.price < cur.f.price) best[f.airline] = {f:f, date:d, route:key, label:r.label};
+      });
+    });
+  });
+  const items = Object.keys(best).map(function(a){ return best[a]; })
+                      .sort(function(x,y){ return x.f.price - y.f.price; });
+  if(!items.length){ host.innerHTML = ''; return; }
+  host.innerHTML = items.map(function(it){
+    const f = it.f, day = fmtDay(it.date);
+    return '<a class="dcard" href="'+bookUrl(f,it.route,it.date)+'" target="_blank" rel="noopener">'
+      + '<span class="dhead">'+logoImg(f)+'<b>'+f.name+'</b></span>'
+      + '<span class="dprice">฿'+Number(f.price).toLocaleString('th-TH')+'</span>'
+      + '<span class="dmeta"><b>'+it.label+'</b><br>'+day.d+' ('+day.dow+') · '
+      + (f.depart||'')+' → '+(f.arrive||'')+(f.to?' · '+f.to:'')+' ↗</span>'
+      + '</a>';
+  }).join('');
 }
 
 async function load(){
