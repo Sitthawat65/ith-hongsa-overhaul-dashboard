@@ -67,6 +67,8 @@
   .alogo{height:18px;width:auto;max-width:74px;flex:none;vertical-align:-4px;object-fit:contain;background:none;border:0}
   .book .alogo,.cheap .alogo,.badge .alogo{height:15px;max-width:62px;vertical-align:-3px}
   thead th .alogo,.book .alogo,.cheap .alogo,.badge .alogo{margin-right:5px}
+  /* โลโก้ที่เป็นตัวอักษรสีเข้ม อ่านยากบนธีมมืด -> วางบนพื้นขาวเล็กๆ */
+  .alogo[src*="thai.svg"],.alogo[src*="bangkokair"]{background:#fff;border-radius:3px;padding:1px 3px;box-sizing:content-box}
   .badge .alogo{vertical-align:-4px;background:#fff;border-radius:4px;padding:2px 4px;box-sizing:content-box;margin-right:7px}
   .book{align-items:center}
   .cheap{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:999px;background:var(--tag-bg);color:var(--tag-ink);font-size:11px;font-weight:800;text-decoration:none;letter-spacing:.2px;white-space:nowrap}
