@@ -202,5 +202,6 @@ load();            // show data right away
 if(!cdGet() || cdGet() <= Date.now()) cdSet(Date.now() + PERIOD);   // start a cycle only if none is running
 drawCountdown();   // continue the shared countdown (do NOT reset on page switch)
 </script>
+<script src="temp-alert.js" defer></script>
 </body>
 </html>
