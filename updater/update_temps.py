@@ -63,9 +63,21 @@ def _bwe_tags(group):
 BWE1_TAGS = _bwe_tags("BWE1")
 BWE2_TAGS = _bwe_tags("BWE2")
 
+# CR1 / CR2 (Crusher) — 5 แบริ่ง x ซ้ายขวา ตามกล่องบนแผนภาพ
+CR_BASES = ["NDE_SPL", "DE_SPL", "NDE_DCV", "SNUB", "DE_DCV"]
+
+
+def _cr_tags(group):
+    return [f"{group}_{base}_{side}" for base in CR_BASES for side in ("L", "R")]
+
+
+CR1_TAGS = _cr_tags("CR1")
+CR2_TAGS = _cr_tags("CR2")
+
 # ลำดับกลุ่มที่จะเขียนลง temps.json (หน้าเว็บอ่านตามนี้)
-GROUP_TAGS = {"SPD": SPD_TAGS, "BWE1": BWE1_TAGS, "BWE2": BWE2_TAGS}
-WANTED_TAGS = set(SPD_TAGS) | set(BWE1_TAGS) | set(BWE2_TAGS)
+GROUP_TAGS = {"SPD": SPD_TAGS, "BWE1": BWE1_TAGS, "BWE2": BWE2_TAGS,
+              "CR1": CR1_TAGS, "CR2": CR2_TAGS}
+WANTED_TAGS = set().union(*GROUP_TAGS.values())
 
 TAG_COLORS = {
     "DCV_TC_L": "#008000",  "DCV_TC_R": "#008000",   # เขียวเข้ม
@@ -86,6 +98,14 @@ for _side in ("L", "R"):
     TAG_COLORS[f"BWE2_NDE_WCV_{_side}"] = "#e6d800"   # เหลือง
     TAG_COLORS[f"BWE2_DE_DCV_{_side}"]  = "#cc00cc"   # ม่วงบานเย็น
     TAG_COLORS[f"BWE2_NDE_DCV_{_side}"] = "#8b5a2b"   # น้ำตาล
+# สีหัวการ์ดของ CR บน Primus
+for _side in ("L", "R"):
+    for _g in ("CR1", "CR2"):
+        TAG_COLORS[f"{_g}_DE_SPL_{_side}"]  = "#f5a623"   # ส้ม
+        TAG_COLORS[f"{_g}_NDE_SPL_{_side}"] = "#f8e71c"   # เหลือง
+        TAG_COLORS[f"{_g}_DE_DCV_{_side}"]  = "#2f7d32"   # เขียวเข้ม
+        TAG_COLORS[f"{_g}_NDE_DCV_{_side}"] = "#7ed321"   # เขียวอ่อน
+        TAG_COLORS[f"{_g}_SNUB_{_side}"]    = "#9013fe"   # ม่วง
 
 # JS ติดตั้งตอนโหลดหน้า: หลอกว่าหน้า visible + ดักเฟรม socket.io (update_tag_value)
 INIT_JS = r"""

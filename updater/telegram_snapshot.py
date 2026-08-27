@@ -58,6 +58,8 @@ PAGES = {
     "Tripper car": ("tripper.png",  "tripper.html",  "Tripper car"),
     "BWE1":        ("BWE1.PNG",     "BWE1.html",     "Bucket Wheel Excavator 1"),
     "BWE2":        ("BWE2.PNG",     "BWE2.html",     "Bucket Wheel Excavator 2"),
+    "CR1":         ("CR1.PNG",      "CR1.html",      "Crusher 1"),
+    "CR2":         ("CR2.PNG",      "CR2.html",      "Crusher 2"),
 }
 DEFAULT_PAGES = ["SPD", "Tripper car", "BWE2"]
 

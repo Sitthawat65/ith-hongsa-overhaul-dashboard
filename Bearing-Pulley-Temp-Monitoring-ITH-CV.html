@@ -103,9 +103,10 @@
 const STALE_MS = 20 * 60 * 1000;   // ไม่มีค่าใหม่เกินเท่านี้ = แสดงจางลง
 const WARN = 70, ALARM = 80;   // °C thresholds: <70 เขียว, 70-79 ส้ม, >=80 แดงกะพริบ
 // ชื่อแถวของ BWE ให้ตรงกับกล่องบนแผนภาพ (CVW บนรูป = WCV ใน Primus) และตัด prefix กลุ่มออก
-const BASE_NAMES = {DE_WCV:'CVW DE', NDE_WCV:'CVW NDE', DE_DCV:'DCV DE', NDE_DCV:'DCV NDE'};
+const BASE_NAMES = {DE_WCV:'CVW DE', NDE_WCV:'CVW NDE', DE_DCV:'DCV DE', NDE_DCV:'DCV NDE',
+                    NDE_SPL:'SPL NDE', DE_SPL:'SPL DE', SNUB:'Snub'};
 function baseLabel(base){
-  const m = /^BWE[12]_(.+)$/.exec(base);
+  const m = /^(?:BWE|CR)[12]_(.+)$/.exec(base);
   return m ? (BASE_NAMES[m[1]] || m[1].replace(/_/g,' ')) : base;
 }
 let DATA = null, activeGroup = null;

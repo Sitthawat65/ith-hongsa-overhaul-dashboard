@@ -60,6 +60,12 @@ for _g in ("BWE1", "BWE2"):
                         ("DE_DCV", "DCV DE"), ("NDE_DCV", "DCV NDE")):
         LABELS[f"{_g}_{_base}_L"] = f"{_g} · {_box} (ซ้าย)"
         LABELS[f"{_g}_{_base}_R"] = f"{_g} · {_box} (ขวา)"
+# CR1/CR2 (Crusher)
+for _g in ("CR1", "CR2"):
+    for _base, _box in (("NDE_SPL", "SPL NDE"), ("DE_SPL", "SPL DE"),
+                        ("NDE_DCV", "DCV NDE"), ("SNUB", "Snub"), ("DE_DCV", "DCV DE")):
+        LABELS[f"{_g}_{_base}_L"] = f"{_g} · {_box} (ซ้าย)"
+        LABELS[f"{_g}_{_base}_R"] = f"{_g} · {_box} (ขวา)"
 
 
 def label(tag):
