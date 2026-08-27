@@ -35,7 +35,9 @@
   .tv.ok{color:#0a6b2d}
   .tv.warn{color:#e07d00}
   .tv.alarm{color:#d10000;animation:blink 1s steps(1,end) infinite}
-  .tv.stale{opacity:.45}
+  /* ค่าเก่า: ใช้สีเทาแทนการทำจาง จะได้ยังอ่านตัวเลขออกชัดๆ */
+  .tv.stale{color:#6b7683}
+  .tv.alarm.stale{color:#d10000}   /* จุดร้อนต้องเห็นเป็นสีแดงเสมอ แม้ค่าจะเก่า */
   @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}
 
   footer{max-width:1100px;margin:22px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
