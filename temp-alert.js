@@ -27,6 +27,16 @@
     BEND_L:'Tripper car · Bend (ซ้าย)',     BEND_R:'Tripper car · Bend (ขวา)',
     TAKE_UP_L:'Tripper car · Take-up (ซ้าย)', TAKE_UP_R:'Tripper car · Take-up (ขวา)'
   };
+  // BWE1/BWE2 — กล่อง CVW บนแผนภาพ = tag WCV ในระบบ Primus
+  (function(){
+    var box = {DE_WCV:'CVW DE', NDE_WCV:'CVW NDE', DE_DCV:'DCV DE', NDE_DCV:'DCV NDE'};
+    ['BWE1','BWE2'].forEach(function(g){
+      Object.keys(box).forEach(function(b){
+        LABELS[g+'_'+b+'_L'] = g + ' · ' + box[b] + ' (ซ้าย)';
+        LABELS[g+'_'+b+'_R'] = g + ' · ' + box[b] + ' (ขวา)';
+      });
+    });
+  })();
   function label(tag){ return LABELS[tag] || tag.replace(/_/g, ' '); }
 
   // ---------- สถานะการรับทราบ ----------

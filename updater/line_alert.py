@@ -54,6 +54,12 @@ LABELS = {
     "BEND_L":    "Tripper car · Bend (ซ้าย)",    "BEND_R":    "Tripper car · Bend (ขวา)",
     "TAKE_UP_L": "Tripper car · Take-up (ซ้าย)", "TAKE_UP_R": "Tripper car · Take-up (ขวา)",
 }
+# BWE1/BWE2 -- กล่อง CVW บนแผนภาพ = tag WCV ในระบบ Primus
+for _g in ("BWE1", "BWE2"):
+    for _base, _box in (("DE_WCV", "CVW DE"), ("NDE_WCV", "CVW NDE"),
+                        ("DE_DCV", "DCV DE"), ("NDE_DCV", "DCV NDE")):
+        LABELS[f"{_g}_{_base}_L"] = f"{_g} · {_box} (ซ้าย)"
+        LABELS[f"{_g}_{_base}_R"] = f"{_g} · {_box} (ขวา)"
 
 
 def label(tag):

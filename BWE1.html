@@ -66,28 +66,57 @@
 
   <div class="stage">
     <img src="BWE1.PNG" alt="Bucket Wheel Excavator 1 bearing temperature monitoring">
-    <!-- Value overlays pending: tags not yet mapped. Boxes left blank on purpose.
-         When ready, measure cell centers (PIL script) and add <span class="tv" id="TAG"> like SPD/Tripper.
-         Boxes on this diagram: CVW DE, DCV DE, DCV NDE, CVW NDE (each L/R). -->
+    <!-- CVW DE -->
+    <span class="tv" id="BWE1_DE_WCV_L" style="left:32.25%;top:17.74%"></span>
+    <span class="tv" id="BWE1_DE_WCV_R" style="left:36.54%;top:17.74%"></span>
+    <!-- DCV DE -->
+    <span class="tv" id="BWE1_DE_DCV_L" style="left:71.94%;top:20.22%"></span>
+    <span class="tv" id="BWE1_DE_DCV_R" style="left:76.28%;top:20.22%"></span>
+    <!-- DCV NDE -->
+    <span class="tv" id="BWE1_NDE_DCV_L" style="left:77.33%;top:48.42%"></span>
+    <span class="tv" id="BWE1_NDE_DCV_R" style="left:81.66%;top:48.42%"></span>
+    <!-- CVW NDE -->
+    <span class="tv" id="BWE1_NDE_WCV_L" style="left:21.76%;top:67.68%"></span>
+    <span class="tv" id="BWE1_NDE_WCV_R" style="left:26.09%;top:67.68%"></span>
   </div>
 
   <footer>
     <div>เกณฑ์สี: <span style="color:#2ecc71">0–69 ปกติ</span> · <span style="color:#f5a623">70–79 เตือน</span> · <span style="color:#e02424">≥ 80 แจ้งเตือน (กะพริบ + ป๊อปอัปให้กดรับทราบ เตือนซ้ำทุก 15 นาที)</span></div>
-    <div style="margin-top:6px"><span class="pending">ค่าอุณหภูมิ: รอเชื่อมต่อ tag (ยังไม่อัปเดต)</span> · แหล่งข้อมูลอัปเดตทุก ~5 นาที · หน่วย °C</div>
+    <div style="margin-top:6px">แหล่งข้อมูลอัปเดตทุก ~5 นาที · หน่วย °C · กล่อง CVW = tag WCV ในระบบ Primus</div>
   </footer>
 
 <script>
+const WARN = 70, ALARM = 80;
+const GROUP = "BWE1";
+const TAGS = ["BWE1_DE_WCV_L", "BWE1_DE_WCV_R", "BWE1_DE_DCV_L", "BWE1_DE_DCV_R", "BWE1_NDE_DCV_L", "BWE1_NDE_DCV_R", "BWE1_NDE_WCV_L", "BWE1_NDE_WCV_R"];
 let DATA = null;
+
 function fmtTime(iso){
   try{ const d=new Date(iso);
     return d.toLocaleString('th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' น.';
   }catch(e){ return iso; }
 }
+
+function render(){
+  if(!DATA) return;
+  const map = {};
+  ((DATA.groups||{})[GROUP]||[]).forEach(it=>{ map[it.tag]=it.value; });
+  TAGS.forEach(tag=>{
+    const el = document.getElementById(tag);
+    if(!el) return;
+    const v = Number(map[tag]);
+    if(map[tag]==null || isNaN(v)){ el.textContent='—'; el.className='tv'; return; }
+    let cls='tv'; if(v>=ALARM)cls+=' alarm'; else if(v>=WARN)cls+=' warn'; else cls+=' ok';
+    el.className=cls; el.textContent=v.toFixed(1);
+  });
+  document.getElementById('updated').textContent = fmtTime(DATA.updated);
+}
+
 async function load(){
   try{
     const r = await fetch('temps.json?_=' + Date.now(), {cache:'no-store'});
     DATA = await r.json();
-    if(DATA && DATA.updated) document.getElementById('updated').textContent = fmtTime(DATA.updated);
+    render();
   }catch(e){ console.error('load failed', e); }
 }
 
@@ -119,7 +148,7 @@ async function refresh(){
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
 
-load();            // show updated time right away
+load();            // show data right away
 if(!cdGet() || cdGet() <= Date.now()) cdSet(Date.now() + PERIOD);   // start a cycle only if none is running
 drawCountdown();   // continue the shared countdown (do NOT reset on page switch)
 </script>
