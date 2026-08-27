@@ -80,6 +80,16 @@ def alarm_text(cfg, hot, st, nag_no):
 ACK_MARKUP = {"inline_keyboard": [[{"text": "✅ รับทราบ (Acknowledge)", "callback_data": "ack"}]]}
 
 
+def save_chat_ids(cfg, ids):
+    """บันทึกรายชื่อแชทปลายทางลง config (ทั้งภาพและการแจ้งเตือนอ่านจากที่เดียวกัน)"""
+    cfg["chat_ids"] = ids
+    try:
+        TA.save_config(cfg)
+        print(f"(alarm) ปลายทางตอนนี้ {len(ids)} แชท: {ids}")
+    except Exception as e:
+        print(f"(alarm) บันทึก config ไม่ได้: {type(e).__name__} {e}")
+
+
 def send_msg(cfg, chat, text, markup=None):
     body = {"chat_id": chat, "text": text[:4000], "disable_web_page_preview": True}
     if markup:
@@ -197,17 +207,76 @@ def handle_update(cfg, st, upd):
         return True
 
     msg = upd.get("message") or {}
-    text = (msg.get("text") or "").strip().lower()
-    chat = (msg.get("chat") or {}).get("id")
-    if chat and text.startswith("/status"):
+    chat_obj = msg.get("chat") or {}
+    chat = chat_obj.get("id")
+
+    # กลุ่มธรรมดาถูกอัปเกรดเป็น supergroup -> chat id เปลี่ยน ต้องย้ายทะเบียนตาม
+    moved = msg.get("migrate_to_chat_id")
+    if chat and moved:
+        ids = [c for c in (cfg.get("chat_ids") or []) if int(c) != int(chat)]
+        if int(moved) not in [int(c) for c in ids]:
+            ids.append(int(moved))
+        save_chat_ids(cfg, ids)
+        return True
+
+    # ถูกเชิญเข้ากลุ่มโดยผู้ดูแล -> ลงทะเบียนให้เลย ไม่ต้องพิมพ์ /join
+    members = msg.get("new_chat_members") or []
+    if chat and any(m.get("is_bot") for m in members):
+        who = (msg.get("from") or {}).get("id")
+        ids = [int(c) for c in (cfg.get("chat_ids") or [])]
+        if (not ids or who in ids) and int(chat) not in ids:
+            ids.append(int(chat))
+            save_chat_ids(cfg, ids)
+            name = chat_obj.get("title") or "แชทนี้"
+            send_msg(cfg, chat,
+                     f"✅ เพิ่ม “{name}” เข้าระบบแล้ว\n\n"
+                     f"จะได้รับภาพอุณหภูมิทุก ~5 นาที และการแจ้งเตือนเมื่อมีจุดใดเกิน "
+                     f"{cfg['threshold']}°C\n\nพิมพ์ /status เพื่อดูค่าล่าสุดได้ตลอด")
+            return True
+
+    text = (msg.get("text") or "").strip()
+    low = text.lower().split("@")[0]          # รองรับ /status@ชื่อบอท ที่พิมพ์ในกลุ่ม
+    if not chat or not low.startswith("/"):
+        return False
+
+    if low.startswith("/status"):
         send_msg(cfg, chat, status_text(cfg))
         return True
-    if chat and text.startswith("/help"):
+
+    if low.startswith("/join"):
+        who = (msg.get("from") or {}).get("id")
+        ids = [int(c) for c in (cfg.get("chat_ids") or [])]
+        # ให้เฉพาะคนที่ลงทะเบียนไว้แล้วเป็นคนเพิ่มกลุ่ม กันคนอื่นลากบอทไปดูข้อมูลโรงงาน
+        if ids and who not in ids:
+            send_msg(cfg, chat, "ขออภัย เพิ่มกลุ่มได้เฉพาะผู้ดูแลระบบเท่านั้น")
+            return True
+        if int(chat) in ids:
+            send_msg(cfg, chat, "แชทนี้รับข้อมูลอยู่แล้วครับ")
+            return True
+        ids.append(int(chat))
+        save_chat_ids(cfg, ids)
+        name = chat_obj.get("title") or "แชทนี้"
+        send_msg(cfg, chat,
+                 f"✅ เพิ่ม “{name}” เข้าระบบแล้ว\n\n"
+                 f"จากนี้จะได้รับภาพอุณหภูมิทุก ~5 นาที และการแจ้งเตือนเมื่อมีจุดใด "
+                 f"เกิน {cfg['threshold']}°C\n\nพิมพ์ /status เพื่อดูค่าล่าสุดได้ตลอด")
+        return True
+
+    if low.startswith("/leave"):
+        ids = [int(c) for c in (cfg.get("chat_ids") or []) if int(c) != int(chat)]
+        save_chat_ids(cfg, ids)
+        send_msg(cfg, chat, "เอาแชทนี้ออกจากระบบแล้ว — พิมพ์ /join เพื่อเพิ่มกลับ")
+        return True
+
+    if low.startswith("/help") or low.startswith("/start"):
         send_msg(cfg, chat,
                  "คำสั่งที่ใช้ได้\n"
-                 "/status — ดูอุณหภูมิล่าสุดเดี๋ยวนี้\n\n"
-                 f"ระบบจะเตือนเองเมื่อมีจุดใดเกิน {cfg['threshold']}°C "
-                 f"และเตือนซ้ำทุก {cfg.get('nag_minutes', 2)} นาที จนกว่าจะกดปุ่มรับทราบ")
+                 "/status — ดูอุณหภูมิล่าสุดเดี๋ยวนี้\n"
+                 "/join — ให้แชท/กลุ่มนี้เริ่มรับข้อมูล\n"
+                 "/leave — เลิกรับข้อมูลในแชทนี้\n\n"
+                 f"ระบบส่งภาพอุณหภูมิทุก ~5 นาที และเตือนเมื่อมีจุดใดเกิน "
+                 f"{cfg['threshold']}°C โดยเตือนซ้ำทุก {cfg.get('nag_minutes', 2)} นาที "
+                 f"จนกว่าจะกดปุ่มรับทราบ")
         return True
     return False
 
