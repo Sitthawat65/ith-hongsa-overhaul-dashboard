@@ -22,3 +22,4 @@ desktop.ini
 updater/telegram_config.json
 updater/.telegram_alert_state.json
 updater/.telegram_snapshot_state.json
+updater/.telegram_alarm_state.json

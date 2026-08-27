@@ -487,7 +487,7 @@ def main():
 
     # แจ้งเตือนถ้ามีจุดไหนเกินเกณฑ์ (ทำก่อน push เผื่อ git มีปัญหา จะได้ยังแจ้งทัน)
     # ช่องทางไหนไม่ได้ตั้งค่าไว้ = ข้ามไปเงียบๆ ไม่กระทบการอัปเดต
-    for module in ("telegram_alert", "line_alert"):
+    for module in ("telegram_alarm", "line_alert"):
         try:
             __import__(module).check_and_notify(data)
         except Exception as e:
