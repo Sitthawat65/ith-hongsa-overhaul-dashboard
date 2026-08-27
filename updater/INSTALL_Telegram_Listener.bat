@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
 cd /d "%~dp0"
 title ITH Bearing Temp - Telegram acknowledge listener
 echo ============================================================
@@ -12,32 +12,36 @@ echo   repeat alerts instantly instead of up to 5 minutes later.
 echo   It also answers /status in the chat at any time.
 echo.
 echo   It starts automatically every time you log in to Windows.
+echo   No administrator rights are needed.
 echo.
 pause
-schtasks /Query /TN "ITH_Telegram_Listener" >nul 2>&1
-if not errorlevel 1 (
-  echo   Removing the previous listener task...
-  schtasks /End    /TN "ITH_Telegram_Listener" >nul 2>&1
-  schtasks /Delete /TN "ITH_Telegram_Listener" /F >nul 2>&1
-)
-for /f "delims=" %%P in ('where pythonw') do set PYW=%%P& goto :got
-:got
-if "%PYW%"=="" (
+
+for /f "delims=" %%P in ('where pythonw 2^>nul') do set "PYW=%%P"
+if not defined PYW (
   echo   ERROR: pythonw was not found on PATH.
   goto end
 )
-echo   Using: %PYW%
-schtasks /Create /TN "ITH_Telegram_Listener" /SC ONLOGON /RL LIMITED /F ^
-  /TR "\"%PYW%\" \"%~dp0telegram_listener.py\"" >nul
+echo   Using: !PYW!
+
+set "VBS=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\ITH_Telegram_Listener.vbs"
+
+REM stop any copy that is already running, then rebuild the startup entry
+taskkill /F /IM pythonw.exe >nul 2>&1
+if exist "!VBS!" del /f /q "!VBS!" >nul 2>&1
+
+python "%~dp0install_listener.py" "!PYW!"
 if errorlevel 1 (
-  echo   ERROR: could not create the scheduled task.
+  echo   ERROR: could not write the startup entry.
   goto end
 )
-echo   Task created. Starting it now...
-schtasks /Run /TN "ITH_Telegram_Listener" >nul
+
+echo   Starting it now...
+wscript.exe "!VBS!"
 echo.
+echo ============================================================
 echo   Done. Send /status to your bot in Telegram to check it.
 echo   To remove it later, run UNINSTALL_Telegram_Listener.bat
+echo ============================================================
 :end
 echo.
 pause
