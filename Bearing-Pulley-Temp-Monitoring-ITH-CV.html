@@ -56,6 +56,7 @@
   .num.warn .v{color:var(--warn)}
   .num.alarm .v{color:var(--alarm);animation:blink 1s steps(1,end) infinite}
   .num.empty .v{color:#4a5a6b;font-weight:500}
+  .num.stale .v{opacity:.45}
   @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.18}}
   footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
   .legend{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:6px}
@@ -97,6 +98,7 @@
   </footer>
 
 <script>
+const STALE_MS = 20 * 60 * 1000;   // ไม่มีค่าใหม่เกินเท่านี้ = แสดงจางลง
 const WARN = 70, ALARM = 80;   // °C thresholds: <70 เขียว, 70-79 ส้ม, >=80 แดงกะพริบ
 // ชื่อแถวของ BWE ให้ตรงกับกล่องบนแผนภาพ (CVW บนรูป = WCV ใน Primus) และตัด prefix กลุ่มออก
 const BASE_NAMES = {DE_WCV:'CVW DE', NDE_WCV:'CVW NDE', DE_DCV:'DCV DE', NDE_DCV:'DCV NDE'};
@@ -137,17 +139,22 @@ function render(){
     const m = /^(.*)_(L|R)$/.exec(item.tag);
     const base = m ? m[1] : item.tag;
     const side = m ? m[2] : 'L';
-    if(!byBase[base]){ byBase[base] = {color:item.color, L:null, R:null}; order.push(base); }
+    if(!byBase[base]){ byBase[base] = {color:item.color, L:null, R:null, Ls:null, Rs:null}; order.push(base); }
     byBase[base][side] = item.value;
+    byBase[base][side+'s'] = item.seen;
     if(item.color) byBase[base].color = item.color;
   });
 
-  const cell = (val)=>{
+  const cell = (val, seen)=>{
     const v = Number(val);
     if(val==null || isNaN(v)) return '<td class="num empty"><span class="v">—</span></td>';
     let cls = 'num';
     if(v>=ALARM) cls+=' alarm'; else if(v>=WARN) cls+=' warn'; else cls+=' ok';
-    return '<td class="'+cls+'"><span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span></td>';
+    // จุดที่ระบบยังไม่ส่งค่าใหม่มานาน -> แสดงจางลง พร้อมบอกเวลาที่เห็นค่าล่าสุด
+    const t = Date.parse(seen || DATA.updated);
+    let title = '';
+    if(!isNaN(t) && (Date.now() - t) > STALE_MS){ cls+=' stale'; title = ' title="ค่าล่าสุดเมื่อ '+fmtTime(seen || DATA.updated)+'"'; }
+    return '<td class="'+cls+'"'+title+'><span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span></td>';
   };
 
   const rows = document.getElementById('rows');
@@ -155,7 +162,7 @@ function render(){
     const b = byBase[base];
     return '<tr>'+
       '<td><span class="bng"><span class="sw-b" style="background:'+(b.color||'#334')+'"></span>'+baseLabel(base)+'</span></td>'+
-      cell(b.L)+cell(b.R)+
+      cell(b.L, b.Ls)+cell(b.R, b.Rs)+
     '</tr>';
   }).join('');
 

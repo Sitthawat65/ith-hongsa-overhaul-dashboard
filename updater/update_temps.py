@@ -157,8 +157,14 @@ def parse_socket_frames(frames):
 
     เฟรมเดียวมีครบทุกเครื่อง แยกด้วย port: 1=SPD, 3=BWE1, 5=BWE2, 999=ตัวจำลอง (_sim) ที่ต้องข้าม
     ชื่อ tag ของ BWE มี prefix กลุ่มอยู่แล้ว จึงกรองด้วยชื่อ tag ได้ตรงๆ ไม่ต้องยึด port
+
+    อุปกรณ์ BWE สื่อสารไม่ต่อเนื่อง (เจอ value=null พร้อม count_timeout>0 บ่อย) เซิร์ฟเวอร์จะส่ง
+    ค่าล่าสุดที่อ่านได้พร้อมฟิลด์ `time` ซึ่งเป็นเวลาที่อ่านค่านั้นได้จริง (เก่ากว่า ts ได้หลายนาที)
+    จึงคืน read_ms มาด้วย เพื่อบอกบนหน้าเว็บได้ว่าค่านั้นเก่าแค่ไหน
+
+    คืนค่าเป็น {tag: {"value": float, "read_ms": int}}
     """
-    latest = {}  # tag -> (ts, value)
+    latest = {}  # tag -> (read_ms, value)
     for fr in frames:
         i = fr.find('["update_tag_value",')
         if i < 0:
@@ -180,16 +186,30 @@ def parse_socket_frames(frames):
                         fval = float(val)
                     except (TypeError, ValueError):
                         continue
-                    if name not in latest or ts >= latest[name][0]:
-                        latest[name] = (ts, fval)
-    return {k: v for k, (t, v) in latest.items()}
+                    read_ms = dev.get("time") or ts
+                    try:
+                        read_ms = int(read_ms)
+                    except (TypeError, ValueError):
+                        read_ms = ts
+                    if name not in latest or read_ms >= latest[name][0]:
+                        latest[name] = (read_ms, fval)
+    return {k: {"value": v, "read_ms": r} for k, (r, v) in latest.items()}
+
+
+def iso_from_ms(ms):
+    """epoch ms -> ISO เวลาไทย"""
+    try:
+        return datetime.datetime.fromtimestamp(ms / 1000, TZ).isoformat(timespec="seconds")
+    except Exception:
+        return datetime.datetime.now(TZ).isoformat(timespec="seconds")
 
 
 def groups_from_socket(vals):
     """จัดค่าที่อ่านได้เข้ากลุ่ม ตามลำดับ+สีมาตรฐานของแต่ละหน้า (กลุ่มที่ไม่มีค่าเลยจะถูกข้าม)"""
     out = {}
     for group, tags in GROUP_TAGS.items():
-        cards = [{"tag": t, "value": vals[t], "color": TAG_COLORS[t]}
+        cards = [{"tag": t, "value": vals[t]["value"], "color": TAG_COLORS[t],
+                  "seen": iso_from_ms(vals[t]["read_ms"])}
                  for t in tags if t in vals]
         if cards:
             out[group] = cards
@@ -202,7 +222,49 @@ def enough(vals):
     return have(SPD_TAGS) >= 12 and have(BWE1_TAGS) >= 6 and have(BWE2_TAGS) >= 6
 
 
-def poll_socket(page, tries=20, interval=2000):
+def load_previous():
+    """ค่ารอบก่อน -> {tag: (value, seen_iso)}
+
+    BWE1 (port 3) ส่งค่ามาห่างกว่า SPD/BWE2 มาก บางรอบจึงไม่มีค่าใหม่เลย
+    ถ้าปล่อยให้หาย กล่องบนแผนภาพจะกลายเป็น "—" สลับไปมา จึงคงค่าล่าสุดไว้
+    พร้อมเวลาที่เห็นค่านั้นจริง เพื่อให้หน้าเว็บบอกได้ว่าค่าเก่าแค่ไหน
+    """
+    try:
+        old = json.loads(TEMPS_JSON.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    fallback = old.get("updated", "")
+    out = {}
+    for cards in (old.get("groups") or {}).values():
+        for c in cards:
+            if isinstance(c.get("value"), (int, float)):
+                out[c["tag"]] = (c["value"], c.get("seen") or fallback)
+    return out
+
+
+def merge_previous(groups, now_iso):
+    """เติม tag ที่รอบนี้ไม่ส่งมาด้วยค่าล่าสุดของรอบก่อน แล้วเรียงตามลำดับมาตรฐาน"""
+    prev = load_previous()
+    for cards in groups.values():
+        for c in cards:
+            c.setdefault("seen", now_iso)      # วิธีสำรอง (DOM) ไม่มีเวลาอ่านค่า ใช้เวลาปัจจุบัน
+    carried = 0
+    for group, tags in GROUP_TAGS.items():
+        cards = groups.get(group, [])
+        have = {c["tag"] for c in cards}
+        for t in tags:
+            if t not in have and t in prev:
+                value, seen = prev[t]
+                cards.append({"tag": t, "value": value, "color": TAG_COLORS[t], "seen": seen})
+                carried += 1
+        if cards:
+            order = {t: i for i, t in enumerate(tags)}
+            cards.sort(key=lambda c: order.get(c["tag"], 999))
+            groups[group] = cards
+    return groups, carried
+
+
+def poll_socket(page, tries=40, interval=1500):
     """รอ+อ่านค่าจาก socket.io จนครบทุกกลุ่ม หรือหมดจำนวนรอบ (เก็บรอบที่ได้มากที่สุดไว้)"""
     best = {}
     for _ in range(tries):
@@ -355,7 +417,7 @@ def scrape(login_mode=False):
         page.goto(SPD_URL, wait_until="domcontentloaded", timeout=60000)
 
         # 1) PRIMARY: อ่านค่าจาก socket.io (ทำงานได้แม้หน้าจะ 403)
-        cards = poll_socket(page, tries=20)
+        cards = poll_socket(page)
         if cards:
             ctx.close()
             return cards
@@ -409,14 +471,19 @@ def main():
         print(f"!! Only got {spd_n} SPD cards (expected 14) - session may have a problem")
         sys.exit(1)
 
+    now_iso = datetime.datetime.now(TZ).isoformat(timespec="seconds")
+    fresh = sum(len(c) for c in groups.values())
+    groups, carried = merge_previous(groups, now_iso)
+
     data = {
-        "updated": datetime.datetime.now(TZ).isoformat(timespec="seconds"),
+        "updated": now_iso,
         "source": "Primus dashboards (socket.io): SPD + BWE1 + BWE2",
         "groups": groups,
     }
     TEMPS_JSON.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     summary = ", ".join(f"{g}={len(c)}" for g, c in groups.items())
-    print(f">> Updated temps.json: {summary} @ {data['updated']}")
+    note = f" ({fresh} fresh, {carried} kept from last round)" if carried else ""
+    print(f">> Updated temps.json: {summary}{note} @ {now_iso}")
 
     # แจ้งเตือนเข้า LINE ถ้ามีจุดไหนเกินเกณฑ์ (ทำก่อน push เผื่อ git มีปัญหา จะได้ยังแจ้งทัน)
     # ไม่ตั้งค่า line_config.json ไว้ = ข้ามไปเงียบๆ ไม่กระทบการอัปเดต
