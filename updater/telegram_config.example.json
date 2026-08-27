@@ -1,0 +1,16 @@
+{
+  "_readme": [
+    "1) เปิด Telegram คุยกับ @BotFather -> /newbot -> ได้ token มา",
+    "2) วาง token ในช่อง token ข้างล่าง",
+    "3) ทักบอท 1 ข้อความ (หรือเชิญบอทเข้ากลุ่มแล้วพิมพ์อะไรก็ได้)",
+    "4) รัน: python telegram_alert.py --setup   แล้ว --test",
+    "ไฟล์นี้ถูก gitignore ไว้ จะไม่ขึ้น GitHub"
+  ],
+  "enabled": true,
+  "token": "",
+  "chat_ids": [],
+  "threshold": 80,
+  "repeat_minutes": 15,
+  "notify_recovery": true,
+  "dashboard_url": "https://sitthawat65.github.io/ith-hongsa-overhaul-dashboard/home.html"
+}

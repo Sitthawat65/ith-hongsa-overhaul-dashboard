@@ -485,13 +485,13 @@ def main():
     note = f" ({fresh} fresh, {carried} kept from last round)" if carried else ""
     print(f">> Updated temps.json: {summary}{note} @ {now_iso}")
 
-    # แจ้งเตือนเข้า LINE ถ้ามีจุดไหนเกินเกณฑ์ (ทำก่อน push เผื่อ git มีปัญหา จะได้ยังแจ้งทัน)
-    # ไม่ตั้งค่า line_config.json ไว้ = ข้ามไปเงียบๆ ไม่กระทบการอัปเดต
-    try:
-        import line_alert
-        line_alert.check_and_notify(data)
-    except Exception as e:
-        print(f"(line) ข้ามการแจ้งเตือน: {type(e).__name__} {e}")
+    # แจ้งเตือนถ้ามีจุดไหนเกินเกณฑ์ (ทำก่อน push เผื่อ git มีปัญหา จะได้ยังแจ้งทัน)
+    # ช่องทางไหนไม่ได้ตั้งค่าไว้ = ข้ามไปเงียบๆ ไม่กระทบการอัปเดต
+    for module in ("telegram_alert", "line_alert"):
+        try:
+            __import__(module).check_and_notify(data)
+        except Exception as e:
+            print(f"({module}) ข้ามการแจ้งเตือน: {type(e).__name__} {e}")
 
     # push ขึ้น GitHub
     try:

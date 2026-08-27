@@ -19,3 +19,5 @@ desktop.ini
 .DS_Store
 *~
 *.tmp
+updater/telegram_config.json
+updater/.telegram_alert_state.json
