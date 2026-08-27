@@ -63,7 +63,7 @@ PAGES = {
 }
 DEFAULT_PAGES = ["SPD", "Tripper car", "BWE2"]
 
-COL_OK, COL_WARN, COL_ALARM, COL_STALE = (10, 143, 60), (224, 125, 0), (209, 0, 0), (150, 155, 160)
+COL_OK, COL_WARN, COL_ALARM, COL_STALE = (10, 107, 45), (224, 125, 0), (209, 0, 0), (150, 155, 160)
 SPAN_RE = re.compile(r'<span class="tv"\s+id="([A-Za-z0-9_]+)"\s+style="left:([\d.]+)%;top:([\d.]+)%"')
 
 try:
