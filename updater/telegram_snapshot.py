@@ -208,22 +208,29 @@ def save_state(s):
         print(f"(snapshot) เขียน state ไม่ได้: {e}")
 
 
-def deliver(cfg, chat, page, jpeg, cap, state, mode, silent, fresh_every=0):
+def deliver(cfg, chat, page, jpeg, cap, state, mode, silent, fresh_every=0, updated=""):
     """ส่งรูป หรือแก้รูปเดิมถ้าเคยส่งไว้แล้ว
 
     fresh_every : ทุกกี่นาทีให้ส่งรูป "ใหม่" ลงมาในแชท (0 = แก้รูปเดิมอย่างเดียว)
-                  มีไว้เพราะการแก้รูปเดิมไม่มีอะไรโผล่ในแชท จนดูเหมือนระบบหยุดทำงาน
+                  <= 5 หมายถึง "ทุกครั้งที่ข้อมูลอัปเดต" ซึ่งเป็นค่าที่ใช้จริง
+
+    การตัดสินใจว่าถึงเวลาส่งรูปใหม่หรือยัง ยึด "เวลาของข้อมูล" ไม่ใช่นาฬิกาผนัง
+    เพราะถ้านับเป็นนาที แต่ละแชทจะเดินคนละจังหวะทันทีที่มีการส่งแทรก (เช่นสั่งด้วยมือ)
+    แล้วบางแชทจะโดนข้ามรอบไปเงียบๆ  ยึดเวลาข้อมูลแทน = ทุกแชทได้รูปใหม่พร้อมกันเสมอ
     """
     key = str(chat)
     mine = state.setdefault(key, {})
     files = {"photo": (f"{page}.jpg", jpeg, "image/jpeg")}
 
-    # ถึงรอบส่งรูปใหม่หรือยัง (เก็บเวลาส่งครั้งล่าสุดแยกตามหน้า)
-    stamps = state.setdefault("_sent_at", {})
+    stamps = state.setdefault("_sent_at", {})     # นาฬิกาผนัง (ใช้เมื่อตั้งเป็นราย 15/30/60 นาที)
+    marks  = state.setdefault("_sent_for", {})    # เวลาของข้อมูลที่ส่งไปแล้ว
+    slot = f"{key}|{page}"
     due_fresh = False
     if fresh_every > 0:
-        last = stamps.get(f"{key}|{page}", 0)
-        due_fresh = (time.time() - last) >= fresh_every * 60
+        if fresh_every <= 5:                      # ทุกครั้งที่ข้อมูลอัปเดต
+            due_fresh = bool(updated) and marks.get(slot) != updated
+        else:
+            due_fresh = (time.time() - stamps.get(slot, 0)) >= fresh_every * 60
 
     if mode == "edit" and mine.get(page) and not due_fresh:
         r = api(cfg, "editMessageMedia", {
@@ -246,7 +253,8 @@ def deliver(cfg, chat, page, jpeg, cap, state, mode, silent, fresh_every=0):
         "disable_notification": "true" if silent else "false",
     }, files)
     if r.get("ok"):
-        stamps[f"{key}|{page}"] = time.time()
+        stamps[slot] = time.time()
+        marks[slot] = updated
         if mode == "edit":
             mine[page] = r["result"]["message_id"]
         return True
@@ -283,7 +291,7 @@ def post_snapshots(cfg=None):
                 continue
             cap = caption(page, items, updated, hot, shown)
             for chat in chats:
-                deliver(cfg, chat, page, jpeg, cap, state, mode, silent, fresh_every)
+                deliver(cfg, chat, page, jpeg, cap, state, mode, silent, fresh_every, updated)
         save_state(state)
         print(f"(snapshot) ส่งภาพ {len(pages)} หน้า x {len(chats)} ปลายทาง "
               f"(mode={mode}, รูปใหม่ทุก {fresh_every:g} นาที)")
