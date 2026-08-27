@@ -23,5 +23,6 @@
   "snapshot_mode": "edit",
   "snapshot_silent": true,
   "nag_minutes": 2,
-  "snapshot_new_message_minutes": 30
+  "snapshot_new_message_minutes": 4,
+  "_snapshot_note": "snapshot_new_message_minutes: how often a genuinely NEW photo is posted. Use 4 (not 5) for one per 5-minute cycle - an exact 5 skips a round whenever a cycle lands a few seconds early. 0 = only edit the existing photo."
 }
