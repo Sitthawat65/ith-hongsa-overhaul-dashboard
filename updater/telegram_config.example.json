@@ -22,5 +22,6 @@
   ],
   "snapshot_mode": "edit",
   "snapshot_silent": true,
-  "nag_minutes": 2
+  "nag_minutes": 2,
+  "snapshot_new_message_minutes": 30
 }

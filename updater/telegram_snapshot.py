@@ -17,7 +17,7 @@
   python telegram_snapshot.py --now      สร้างรูปแล้วส่งเข้า Telegram เดี๋ยวนี้
   python telegram_snapshot.py --save     สร้างรูปเก็บไว้ดูเฉยๆ ไม่ส่ง
 """
-import json, sys, re, io, pathlib, datetime, argparse, uuid
+import json, sys, re, io, time, pathlib, datetime, argparse, uuid
 import urllib.request, urllib.error
 
 try:
@@ -208,13 +208,24 @@ def save_state(s):
         print(f"(snapshot) เขียน state ไม่ได้: {e}")
 
 
-def deliver(cfg, chat, page, jpeg, cap, state, mode, silent):
-    """ส่งรูป หรือแก้รูปเดิมถ้าเคยส่งไว้แล้ว"""
+def deliver(cfg, chat, page, jpeg, cap, state, mode, silent, fresh_every=0):
+    """ส่งรูป หรือแก้รูปเดิมถ้าเคยส่งไว้แล้ว
+
+    fresh_every : ทุกกี่นาทีให้ส่งรูป "ใหม่" ลงมาในแชท (0 = แก้รูปเดิมอย่างเดียว)
+                  มีไว้เพราะการแก้รูปเดิมไม่มีอะไรโผล่ในแชท จนดูเหมือนระบบหยุดทำงาน
+    """
     key = str(chat)
     mine = state.setdefault(key, {})
     files = {"photo": (f"{page}.jpg", jpeg, "image/jpeg")}
 
-    if mode == "edit" and mine.get(page):
+    # ถึงรอบส่งรูปใหม่หรือยัง (เก็บเวลาส่งครั้งล่าสุดแยกตามหน้า)
+    stamps = state.setdefault("_sent_at", {})
+    due_fresh = False
+    if fresh_every > 0:
+        last = stamps.get(f"{key}|{page}", 0)
+        due_fresh = (time.time() - last) >= fresh_every * 60
+
+    if mode == "edit" and mine.get(page) and not due_fresh:
         r = api(cfg, "editMessageMedia", {
             "chat_id": chat,
             "message_id": mine[page],
@@ -235,6 +246,7 @@ def deliver(cfg, chat, page, jpeg, cap, state, mode, silent):
         "disable_notification": "true" if silent else "false",
     }, files)
     if r.get("ok"):
+        stamps[f"{key}|{page}"] = time.time()
         if mode == "edit":
             mine[page] = r["result"]["message_id"]
         return True
@@ -259,6 +271,7 @@ def post_snapshots(cfg=None):
         pages = [p for p in cfg.get("snapshot_pages", DEFAULT_PAGES) if p in PAGES]
         mode = cfg.get("snapshot_mode", "edit")
         silent = bool(cfg.get("snapshot_silent", True))
+        fresh_every = float(cfg.get("snapshot_new_message_minutes", 30))
         items, updated = load_temps()
         state = load_state()
 
@@ -270,9 +283,10 @@ def post_snapshots(cfg=None):
                 continue
             cap = caption(page, items, updated, hot, shown)
             for chat in chats:
-                deliver(cfg, chat, page, jpeg, cap, state, mode, silent)
+                deliver(cfg, chat, page, jpeg, cap, state, mode, silent, fresh_every)
         save_state(state)
-        print(f"(snapshot) ส่งภาพ {len(pages)} หน้า x {len(chats)} ปลายทาง (mode={mode})")
+        print(f"(snapshot) ส่งภาพ {len(pages)} หน้า x {len(chats)} ปลายทาง "
+              f"(mode={mode}, รูปใหม่ทุก {fresh_every:g} นาที)")
     except Exception as e:
         print(f"(snapshot) ข้าม: {type(e).__name__} {e}")
 
