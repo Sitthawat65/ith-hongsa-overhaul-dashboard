@@ -481,13 +481,22 @@ def main():
     login_mode = "--login" in sys.argv
     force_browser = "--browser" in sys.argv
 
+    no_browser = "--no-browser" in sys.argv   # บนคลาวด์ไม่มี Chromium ให้เปิด
+
     result = {}
     if not login_mode and not force_browser:
         result = scrape_ws()            # เร็ว ไม่เปิดเบราว์เซอร์
     if not result:
+        if no_browser:
+            print("!! อ่านค่าไม่ได้ และโหมดนี้ห้ามเปิดเบราว์เซอร์")
+            sys.exit(1)
         if not login_mode:
             print(">> ทางเร็วไม่สำเร็จ — เปิดเบราว์เซอร์เพื่อต่ออายุ session")
-        result = scrape(login_mode=login_mode)
+        try:
+            result = scrape(login_mode=login_mode)
+        except ImportError as e:
+            print(f"!! ไม่มี Playwright ให้ใช้เป็นทางสำรอง: {e}")
+            sys.exit(1)
     if login_mode:
         print(">> Login step done." if result else ">> Login step finished (data not confirmed).")
         return

@@ -74,15 +74,13 @@ def collect(wanted, enough=None, max_secs=20, quiet=False):
             print("(ws) ไม่มีไลบรารี websocket-client — ข้ามไปใช้เบราว์เซอร์")
         return {}
 
+    # endpoint นี้ไม่ตรวจสอบตัวตนเลย ไม่มี cookie ก็อ่านค่าได้ (ทดสอบแล้ว 2026-08-27)
+    # ยังส่ง cookie ไปด้วยถ้ามี เผื่อวันหลังฝั่ง Primus เปิดการตรวจสอบขึ้นมา
     jar, ua = load_session()
-    if not jar:
-        if not quiet:
-            print("(ws) ยังไม่มี session ที่บันทึกไว้ — ต้องใช้เบราว์เซอร์ก่อนหนึ่งครั้ง")
-        return {}
-
-    hdr = [f"Cookie: {jar}", f"Origin: https://{HOST}"]
-    if ua:
-        hdr.append(f"User-Agent: {ua}")
+    hdr = [f"Origin: https://{HOST}"]
+    if jar:
+        hdr.append(f"Cookie: {jar}")
+    hdr.append(f"User-Agent: {ua or 'ITH-BearingTemp/1.0'}")
 
     try:
         ws = websocket.create_connection(WS_URL, timeout=20, header=hdr, suppress_origin=True)

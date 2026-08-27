@@ -50,9 +50,35 @@ except Exception:                            # pragma: no cover - เผื่�
 
 
 # ---------------------------------------------------------------- config/state
+def _config_from_env():
+    """สร้าง config จาก environment variable — ใช้ตอนรันบนคลาวด์ที่ไม่มีไฟล์ config
+
+    ตั้ง TELEGRAM_TOKEN และ TELEGRAM_CHAT_IDS (คั่นด้วยจุลภาค) เป็น GitHub Secrets
+    """
+    import os
+    token = os.environ.get("TELEGRAM_TOKEN", "").strip()
+    if not token:
+        return None
+    ids = []
+    for part in os.environ.get("TELEGRAM_CHAT_IDS", "").replace(" ", "").split(","):
+        if part:
+            try:
+                ids.append(int(part))
+            except ValueError:
+                pass
+    return {"enabled": True, "token": token, "chat_ids": ids, "to": "",
+            "threshold": float(os.environ.get("TEMP_THRESHOLD", 80)),
+            "repeat_minutes": 15, "nag_minutes": 2, "notify_recovery": True,
+            "snapshot_enabled": True,
+            "snapshot_pages": ["SPD", "Tripper car", "BWE2"],
+            "snapshot_mode": "edit", "snapshot_silent": True,
+            "snapshot_new_message_minutes": 5,
+            "dashboard_url": HOME_URL}
+
+
 def load_config():
     if not CONFIG.exists():
-        return None
+        return _config_from_env()
     try:
         c = json.loads(CONFIG.read_text(encoding="utf-8"))
     except Exception as e:

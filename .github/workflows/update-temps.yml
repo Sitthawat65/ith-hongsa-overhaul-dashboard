@@ -1,0 +1,70 @@
+name: Update bearing temperatures
+
+# รันบนเครื่องของ GitHub ทุก ~5 นาที จึงไม่ต้องพึ่ง PC ที่ออฟฟิศเปิดค้างไว้
+#
+# หมายเหตุสำคัญเรื่องเวลา: cron ของ GitHub Actions เป็นแบบ "พยายามให้ใกล้เคียง"
+# ช่วงที่คนใช้งานเยอะอาจช้ากว่ากำหนดไป 5-15 นาที หรือข้ามรอบไปเลยก็มี
+# ถ้าต้องการความตรงเวลาระดับวินาที ต้องรันบนเครื่องที่เปิดตลอดแทน
+#
+# ต้องตั้ง Secrets 2 ตัวใน repo (Settings -> Secrets and variables -> Actions):
+#   TELEGRAM_TOKEN     token ของบอทจาก @BotFather
+#   TELEGRAM_CHAT_IDS  chat id ปลายทาง คั่นด้วยจุลภาค เช่น  6929839392,-5287516472
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:          # กดรันเองได้จากหน้า Actions
+
+permissions:
+  contents: write             # ให้ push temps.json กลับเข้า repo ได้
+
+concurrency:
+  group: update-temps         # กันสองรอบชนกันตอน GitHub รันช้าแล้วมาพร้อมกัน
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: ติดตั้งไลบรารี
+        run: pip install --quiet websocket-client pillow
+
+      # สถานะการแจ้งเตือน (ใครกดรับทราบไปแล้ว / ส่งรูปของข้อมูลชุดไหนไปแล้ว)
+      # เก็บใน cache ไม่ commit ลง repo เพราะ repo นี้เป็น public
+      # ถ้า cache หาย ระบบก็ยังทำงานได้ แค่จะส่งรูปใหม่และเตือนซ้ำอีกรอบเท่านั้น
+      - name: กู้สถานะการแจ้งเตือนรอบก่อน
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            updater/.telegram_alarm_state.json
+            updater/.telegram_snapshot_state.json
+          key: telegram-state-${{ github.run_id }}
+          restore-keys: telegram-state-
+
+      - name: ตั้งชื่อผู้ commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: ดึงอุณหภูมิ อัปเดตเว็บ และส่งเข้า Telegram
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+        run: python updater/update_temps.py --no-browser
+
+      - name: เก็บสถานะไว้ให้รอบถัดไป
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            updater/.telegram_alarm_state.json
+            updater/.telegram_snapshot_state.json
+          key: telegram-state-${{ github.run_id }}

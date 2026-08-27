@@ -34,7 +34,23 @@ TZ = datetime.timezone(datetime.timedelta(hours=7))
 
 WARN, ALARM = 70, 80
 STALE_MIN = 20                      # ไม่มีค่าใหม่เกินเท่านี้ (นาที) = ถือว่าเป็นค่าเก่า
-FONT = "C:/Windows/Fonts/arial.ttf"
+# หาฟอนต์ให้เจอทั้งบน Windows (เครื่องนี้) และ Linux (GitHub Actions)
+FONT_CANDIDATES = [
+    "C:/Windows/Fonts/arial.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+    "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+]
+
+
+def _font(size):
+    from PIL import ImageFont
+    for path in FONT_CANDIDATES:
+        try:
+            return ImageFont.truetype(path, size)
+        except Exception:
+            continue
+    return ImageFont.load_default()
 
 # ชื่อหน้า -> (ไฟล์รูป, ไฟล์ HTML ที่เก็บพิกัดช่อง, ชื่อเต็มไว้ขึ้นหัวข้อความ)
 PAGES = {
@@ -90,8 +106,8 @@ def render(page, items, updated):
     im = Image.open(REPO_DIR / img_name).convert("RGB")
     W, H = im.size
     d = ImageDraw.Draw(im)
-    font = ImageFont.truetype(FONT, max(12, round(W * 0.0140)))
-    small = ImageFont.truetype(FONT, max(10, round(W * 0.0105)))
+    font = _font(max(12, round(W * 0.0140)))
+    small = _font(max(10, round(W * 0.0105)))
 
     hot, shown = [], 0
     for tag, lx, ty in spans_of(html_name):
