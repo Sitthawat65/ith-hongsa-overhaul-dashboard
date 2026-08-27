@@ -1,10 +1,11 @@
 {
   "_readme": [
-    "1) เปิด Telegram คุยกับ @BotFather -> /newbot -> ได้ token มา",
-    "2) วาง token ในช่อง token ข้างล่าง",
-    "3) ทักบอท 1 ข้อความ (หรือเชิญบอทเข้ากลุ่มแล้วพิมพ์อะไรก็ได้)",
-    "4) รัน: python telegram_alert.py --setup   แล้ว --test",
-    "ไฟล์นี้ถูก gitignore ไว้ จะไม่ขึ้น GitHub"
+    "1) In Telegram talk to @BotFather -> /newbot -> it gives you a token",
+    "2) Paste that token between the quotes on the token line below",
+    "3) Open your bot in Telegram and press START (or add it to a group and post a message)",
+    "4) Run: python telegram_alert.py --setup    then    --test",
+    "Or just double-click SETUP_Telegram.bat which walks you through all of it.",
+    "This file is gitignored - the token never reaches GitHub."
   ],
   "enabled": true,
   "token": "",
