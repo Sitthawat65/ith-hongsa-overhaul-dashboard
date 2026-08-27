@@ -10,10 +10,14 @@ name: Update bearing temperatures
 #   TELEGRAM_TOKEN     token ของบอทจาก @BotFather
 #   TELEGRAM_CHAT_IDS  chat id ปลายทาง คั่นด้วยจุลภาค เช่น  6929839392,-5287516472
 
+# ปิดตารางเวลาไว้ก่อน — Cloudflare หน้า primus.ith.co.th ตอบ 403 managed challenge
+# ให้กับ IP ของศูนย์ข้อมูล (GitHub Actions ใช้ IP ของ Azure) ขณะที่ IP ที่ออฟฟิศผ่านปกติ
+# การหลบด่านตรวจบอทนั้นไม่ควรทำ ทางที่ถูกคือขอให้ IT/Prisoft อนุญาต IP หรือเปิด API ให้
+# ถ้าวันไหนได้รับอนุญาตแล้ว ค่อยเอา schedule ด้านล่างกลับมาใช้
 on:
-  schedule:
-    - cron: '*/5 * * * *'
-  workflow_dispatch:          # กดรันเองได้จากหน้า Actions
+  # schedule:
+  #   - cron: '*/5 * * * *'
+  workflow_dispatch:          # ตอนนี้กดรันเองเท่านั้น (ไว้ทดสอบเมื่อได้รับอนุญาต IP แล้ว)
 
 permissions:
   contents: write             # ให้ push temps.json กลับเข้า repo ได้
