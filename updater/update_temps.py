@@ -493,6 +493,13 @@ def main():
         except Exception as e:
             print(f"({module}) ข้ามการแจ้งเตือน: {type(e).__name__} {e}")
 
+    # ส่งภาพแผนภาพพร้อมค่าล่าสุดเข้า Telegram (ไม่ตั้งค่าไว้ = ข้ามเงียบๆ)
+    try:
+        import telegram_snapshot
+        telegram_snapshot.post_snapshots()
+    except Exception as e:
+        print(f"(snapshot) ข้าม: {type(e).__name__} {e}")
+
     # push ขึ้น GitHub
     try:
         subprocess.run(["git", "-C", str(REPO_DIR), "add", "temps.json"], check=True, creationflags=CREATE_NO_WINDOW)
