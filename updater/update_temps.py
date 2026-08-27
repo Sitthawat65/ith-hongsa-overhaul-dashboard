@@ -363,6 +363,29 @@ def kill_stale_browsers():
             pass
 
 
+def scrape_ws():
+    """ทางเร็ว: ต่อ WebSocket ตรงไปที่ Primus (ไม่กี่วินาที ไม่ต้องเปิดเบราว์เซอร์)"""
+    try:
+        import primus_ws
+    except Exception as e:
+        print(f"(ws) โหลดโมดูลไม่ได้: {type(e).__name__} {e}")
+        return {}
+    vals = primus_ws.collect(WANTED_TAGS, enough=enough, max_secs=20)
+    if sum(1 for t in SPD_TAGS if t in vals) >= 12:
+        return groups_from_socket(vals)
+    return {}
+
+
+def save_browser_session(ctx, page):
+    """เก็บ cookie ของ session ไว้ให้ทางเร็วใช้รอบหน้า (cf_clearance ผูกกับ user-agent)"""
+    try:
+        import primus_ws
+        n = primus_ws.save_session(ctx.cookies(), page.evaluate("() => navigator.userAgent"))
+        print(f"(ws) เก็บ session ไว้แล้ว ({n} cookie) รอบหน้าจะไม่ต้องเปิดเบราว์เซอร์")
+    except Exception as e:
+        print(f"(ws) เก็บ session ไม่ได้: {type(e).__name__} {e}")
+
+
 def scrape(login_mode=False):
     from playwright.sync_api import sync_playwright
     kill_stale_browsers()
@@ -409,6 +432,8 @@ def scrape(login_mode=False):
                         break
                 except Exception:
                     pass
+            if ok:
+                save_browser_session(ctx, page)
             ctx.close()
             print(">> Session saved successfully." if ok else "!! Timeout - data not found. Try again.")
             return ok
@@ -419,6 +444,7 @@ def scrape(login_mode=False):
         # 1) PRIMARY: อ่านค่าจาก socket.io (ทำงานได้แม้หน้าจะ 403)
         cards = poll_socket(page)
         if cards:
+            save_browser_session(ctx, page)
             ctx.close()
             return cards
 
@@ -453,7 +479,15 @@ def scrape(login_mode=False):
 
 def main():
     login_mode = "--login" in sys.argv
-    result = scrape(login_mode=login_mode)
+    force_browser = "--browser" in sys.argv
+
+    result = {}
+    if not login_mode and not force_browser:
+        result = scrape_ws()            # เร็ว ไม่เปิดเบราว์เซอร์
+    if not result:
+        if not login_mode:
+            print(">> ทางเร็วไม่สำเร็จ — เปิดเบราว์เซอร์เพื่อต่ออายุ session")
+        result = scrape(login_mode=login_mode)
     if login_mode:
         print(">> Login step done." if result else ">> Login step finished (data not confirmed).")
         return
