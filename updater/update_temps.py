@@ -278,10 +278,9 @@ def poll_socket(page, tries=40, interval=1500):
             best = vals
         if enough(best):
             break
-    # ถ้า BWE ยังไม่มา แต่ SPD ครบแล้ว ก็ยังเขียนไฟล์ได้ (ดีกว่าไม่อัปเดตเลย)
-    if sum(1 for t in SPD_TAGS if t in best) >= 12:
-        return groups_from_socket(best)
-    return {}
+    # ได้มากี่จุดก็เอาหมด — เครื่องไหนเงียบก็ใช้ค่าล่าสุดของเครื่องนั้นแทน (merge_previous)
+    # ห้ามตั้งเงื่อนไขว่าต้องครบถึงจะยอมรับ ไม่งั้นเครื่องเดียวเงียบจะล้มทั้งระบบ
+    return groups_from_socket(best) if best else {}
 
 
 def poll_cards(page, tries=15, interval=2000):
@@ -291,7 +290,7 @@ def poll_cards(page, tries=15, interval=2000):
         try:
             c = page.evaluate(SCRAPE_JS)
             numeric = [x for x in c if isinstance(x.get("value"), (int, float))]
-            if len(numeric) >= 10:
+            if numeric:
                 return {"SPD": c}          # วิธีสำรองอ่านได้เฉพาะการ์ดบนหน้า SPD
         except Exception:
             pass
@@ -371,9 +370,7 @@ def scrape_ws():
         print(f"(ws) โหลดโมดูลไม่ได้: {type(e).__name__} {e}")
         return {}
     vals = primus_ws.collect(WANTED_TAGS, enough=enough, max_secs=20)
-    if sum(1 for t in SPD_TAGS if t in vals) >= 12:
-        return groups_from_socket(vals)
-    return {}
+    return groups_from_socket(vals) if vals else {}
 
 
 def save_browser_session(ctx, page):
@@ -509,10 +506,9 @@ def main():
     groups = {g: [c for c in cards if isinstance(c.get("value"), (int, float))]
               for g, cards in groups.items()}
     groups = {g: cards for g, cards in groups.items() if cards}
-    spd_n = len(groups.get("SPD", []))
-    if spd_n < 10:
-        print(f"!! Only got {spd_n} SPD cards (expected 14) - session may have a problem")
-        sys.exit(1)
+    quiet = [g for g, tags in GROUP_TAGS.items() if not groups.get(g)]
+    if quiet:
+        print(f"   หมายเหตุ: รอบนี้ไม่มีค่าใหม่จาก {', '.join(quiet)} — ใช้ค่าล่าสุดแทน")
 
     now_iso = datetime.datetime.now(TZ).isoformat(timespec="seconds")
     fresh = sum(len(c) for c in groups.values())
