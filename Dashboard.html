@@ -222,6 +222,19 @@
   .mEditBtn:hover{filter:brightness(1.06)}
   html:not([data-medit="1"]) .hist-input{display:none}
   html:not([data-medit="1"]) .hist-act{display:none}
+  html:not([data-medit="1"]) .smu-act{display:none}
+  /* ปุ่มหยุด/เริ่มนับ SMU (เห็นเฉพาะโหมดแก้ไข) */
+  .smu-act{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;border-radius:10px;background:#0f1d3c;border:1px dashed var(--line2)}
+  .smu-act .lbl{font-size:11.5px;color:var(--muted);flex:1 1 auto;min-width:180px}
+  .smu-btn{font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:6px 13px;border-radius:999px;border:1px solid #fbbf24;background:transparent;color:#fbbf24}
+  .smu-btn:hover{background:rgba(251,191,36,.14)}
+  .smu-btn.go{border-color:#34d399;color:#34d399}
+  .smu-btn.go:hover{background:rgba(52,211,153,.14)}
+  .smu-btn.rst{border-color:var(--line2);color:var(--muted)}
+  .smu-btn.rst:hover{background:rgba(148,163,184,.14)}
+  .smu-hold{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(251,191,36,.16);color:#fbbf24;border:1px solid rgba(251,191,36,.45);white-space:nowrap}
+  .motor.smupaused .lifebar i{opacity:.45}
+  .motor.smupaused .h-name>b{color:#fbbf24}
   .movl{position:fixed;inset:0;z-index:200;background:rgba(4,8,14,.62);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px}
   .movl.show{display:flex}
   .mlogin{width:100%;max-width:360px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:24px}
@@ -1959,16 +1972,83 @@ const SMU_ANCHOR   = new Date(2026,5,20,0,0,0);   // 20 มิ.ย. 2026 = ว�
 const HOURS_PER_DAY = 13;                          // อัตราเดินเครื่อง (ชม./วัน) เฉลี่ย 13 ชม./วัน
 const SMU_ADD = Math.max(0,(Date.now()-SMU_ANCHOR.getTime())/86400000) * HOURS_PER_DAY;
 
+/* --- หยุดนับ SMU รายมอเตอร์ (โหมดแก้ไข) ---------------------------------
+   เก็บใน localStorage คีย์เดียว: { <คีย์มอเตอร์>: {off:<ชม.ที่หยุดสะสม>, since:<epoch ms หรือ 0>} }
+   off  = ชั่วโมง SMU ที่ "ไม่ถูกนับ" สะสมจากช่วงที่หยุดไปแล้ว
+   since= เวลาที่กดหยุดครั้งล่าสุด (0 = กำลังนับอยู่)
+   ค่าที่แสดง = ค่าฐานจาก Excel + (SMU_ADD - off) ดังนั้นกดหยุด/เริ่มกี่ครั้งก็คำนวณย้อนหลังได้ถูกเสมอ */
+const SMU_PAUSE_KEY = "smu_pause_v1";
+let SMU_PAUSE = (function(){try{return JSON.parse(localStorage.getItem(SMU_PAUSE_KEY)||"{}");}catch(e){return {};}})();
+function smuK(d){return ((d.serial||(d.system+"-"+d.item))+"").replace(/[^A-Za-z0-9]/g,"_");}
+function smuSavePause(){try{localStorage.setItem(SMU_PAUSE_KEY,JSON.stringify(SMU_PAUSE));}catch(e){alert("บันทึกไม่สำเร็จ: "+e.message);}}
+/* ชั่วโมง SMU ที่ถูกกันออกไปแล้วของมอเตอร์ตัวนี้ ณ ตอนนี้ */
+function smuOffHours(d,now){
+  const s=SMU_PAUSE[smuK(d)]; if(!s) return 0;
+  let h=+s.off||0;
+  if(s.since) h += Math.max(0,(now-s.since)/86400000)*HOURS_PER_DAY;   // ช่วงที่ยังหยุดค้างอยู่
+  return h;
+}
+function smuIsPaused(d){const s=SMU_PAUSE[smuK(d)];return !!(s&&s.since);}
+
 DATA.forEach((d,i)=>{
-  if(d.status==="Running" && d.smu_now!=null){
-    d.smu_now += SMU_ADD;                                   // SMU ปัจจุบัน (ประมาณการสด)
-    if(d.smu_oh1!=null)  d.smu_after_oh1 = d.smu_now - d.smu_oh1;
-    if(d.plan_oh2!=null) d.remain_oh2    = d.plan_oh2 - d.smu_after_oh1;
-  }
-  d.lifeUsed=(d.smu_after_oh1!=null&&d.plan_oh2)?(d.smu_after_oh1/d.plan_oh2*100):null;
-  d.tier=d.remain_oh2==null?"na":d.remain_oh2<=0?"over":d.remain_oh2<=5000?"soon":"ok";
+  d._smu_now0       = d.smu_now;          // ค่าตั้งต้นจาก Excel — เก็บไว้คำนวณใหม่ได้ทุกครั้ง
+  d._smu_after_oh10 = d.smu_after_oh1;
+  d._remain_oh20    = d.remain_oh2;
   d._id=d.system+"_"+d.item+"_"+i;
 });
+
+function recalcSMU(){
+  const now=Date.now();
+  DATA.forEach(d=>{
+    d.smuPaused = smuIsPaused(d);
+    d.smuOffH   = smuOffHours(d,now);
+    d.smu_now       = d._smu_now0;
+    d.smu_after_oh1 = d._smu_after_oh10;
+    d.remain_oh2    = d._remain_oh20;
+    if(d.status==="Running" && d._smu_now0!=null){
+      const add = Math.max(0, SMU_ADD - d.smuOffH);         // หักชั่วโมงช่วงที่สั่งหยุดนับออก
+      d.smuAddH = add;
+      d.smu_now = d._smu_now0 + add;                        // SMU ปัจจุบัน (ประมาณการสด)
+      if(d.smu_oh1!=null)  d.smu_after_oh1 = d.smu_now - d.smu_oh1;
+      if(d.plan_oh2!=null) d.remain_oh2    = d.plan_oh2 - d.smu_after_oh1;
+    } else { d.smuAddH = 0; }
+    d.lifeUsed=(d.smu_after_oh1!=null&&d.plan_oh2)?(d.smu_after_oh1/d.plan_oh2*100):null;
+    d.tier=d.remain_oh2==null?"na":d.remain_oh2<=0?"over":d.remain_oh2<=5000?"soon":"ok";
+  });
+}
+recalcSMU();
+
+/* กดหยุด = จำเวลาที่กด · กดเริ่ม = ปิดยอดช่วงนั้นเข้า off แล้วเดินต่อจากค่าที่ค้างไว้ */
+function smuToggle(id){
+  const d=DATA.find(x=>x._id===id); if(!d) return;
+  const k=smuK(d), s=SMU_PAUSE[k]||{off:0,since:0}, now=Date.now();
+  if(s.since){ s.off=(+s.off||0)+Math.max(0,(now-s.since)/86400000)*HOURS_PER_DAY; s.since=0; }
+  else { s.since=now; }
+  if(!s.since && s.off<0.01) delete SMU_PAUSE[k];      // หยุดแล้วเริ่มทันที = ไม่ต้องเก็บอะไร
+  else SMU_PAUSE[k]=s;
+  smuSavePause(); recalcSMU(); renderAll();
+}
+function smuReset(id){
+  const d=DATA.find(x=>x._id===id); if(!d) return;
+  if(!confirm('ล้างประวัติการหยุดนับของ ' + (d.name||'') + ' ทั้งหมด?\nSMU จะกลับไปนับเต็มตั้งแต่วันฐาน')) return;
+  delete SMU_PAUSE[smuK(d)]; smuSavePause(); recalcSMU(); renderAll();
+}
+function smuStampTxt(ms){const n=new Date(ms),p=x=>String(x).padStart(2,"0");return p(n.getDate())+"/"+p(n.getMonth()+1)+"/"+n.getFullYear()+" "+p(n.getHours())+":"+p(n.getMinutes());}
+/* แถบควบคุมใต้ไทม์ไลน์ — CSS ซ่อนไว้จนกว่าจะเข้าโหมดแก้ไข */
+function smuActHTML(d){
+  if(d._smu_now0==null) return "";
+  const s=SMU_PAUSE[smuK(d)]||null, off=d.smuOffH||0;
+  const note = d.status!=="Running"
+      ? `สถานะ <b>${esc(d.status||"–")}</b> — ไม่ได้นับ SMU อยู่แล้ว`
+      : (d.smuPaused ? `หยุดนับตั้งแต่ <b>${smuStampTxt(s.since)}</b>` : `กำลังนับ <b>${HOURS_PER_DAY} ชม./วัน</b>`);
+  const tally = off>=0.05 ? ` · กันออกแล้วรวม <b>${fmt(off)}</b> ชม.` : "";
+  const canToggle = d.status==="Running";                  // สถานะอื่นหยุดนิ่งอยู่แล้ว ไม่มีอะไรให้หยุด
+  return `<div class="smu-act">
+    <div class="lbl">⏱ การนับ SMU · ${note}${tally}</div>
+    ${canToggle?`<button type="button" class="smu-btn ${d.smuPaused?"go":""}" onclick="smuToggle('${d._id}')">${d.smuPaused?"▶ เริ่มนับ SMU":"⏸ หยุดนับ SMU"}</button>`:""}
+    ${(s&&((+s.off||0)>=0.05||s.since))?`<button type="button" class="smu-btn rst" onclick="smuReset('${d._id}')">↺ ล้างประวัติ</button>`:""}
+  </div>`;
+}
 
 const PAGE={ALL:"ALL SYSTEMS",SPD:"SPREADER MOTOR",BWE1:"BUCKET WHEEL EXCAVATOR 01",BWE2:"BUCKET WHEEL EXCAVATOR 02",BW1:"BELT WAGON EXCAVATOR 01",BW2:"BELT WAGON EXCAVATOR 02",CR1:"CRUSHER 01",CR2:"CRUSHER 02",CR3:"CRUSHER 03",BW2200:"CONVEYOR LINE BW 2200",BW1800:"CONVEYOR LINE BW 1800"};
 let cur="ALL", q="", schedFilter="", typeFilter="", brandFilter="", statusFilter="", openSet=new Set();
@@ -2094,14 +2174,18 @@ function motorCard(d){
     ["ระบบ / System",esc(d.system)],["ติดตั้งที่ (เครื่อง·ตำแหน่ง)",esc(inst)],["ตำแหน่ง Drive",esc(d.position?posLabel(d.position):"–")],
     ["แรงดัน / Voltage",d.voltage!=null?fmt(d.voltage)+" V":"–"],
     ["SMU OH#1",fmt(d.smu_oh1)+" ชม."],["SMU ปัจจุบัน / Present",fmt(d.smu_now)+" ชม."],
+    ["การนับ SMU", d.status!=="Running" ? '<span style="color:var(--muted)">ไม่นับ (สถานะ '+esc(d.status||"–")+')</span>'
+        : d.smuPaused ? '<span style="color:#fbbf24">⏸ หยุดนับอยู่</span>'
+        : '<span style="color:#34d399">▶ กำลังนับ '+HOURS_PER_DAY+' ชม./วัน</span>'],
+    ["ชม.ที่กันออก (หยุดนับ)", (d.smuOffH||0)>=0.05 ? fmt(d.smuOffH)+" ชม." : "–"],
     ["SMU หลัง OH#1",fmt(d.smu_after_oh1)+" ชม."],["Plan SMU OH#2",fmt(d.plan_oh2)+" ชม."],
     ["คงเหลือถึง OH#2",fmt(d.remain_oh2)+" ชม."],["วันที่ OH ครั้งหน้า",esc(d.next_oh||"–")],
     ["Serial No.",esc(d.serial||"–")],["Item #",d.item],
   ];
-  return `<div class="motor ${d.tier==='over'?'over':''} ${open?'open':''}" data-id="${d._id}">
+  return `<div class="motor ${d.tier==='over'?'over':''} ${open?'open':''} ${d.smuPaused?'smupaused':''}" data-id="${d._id}">
     <div class="mhead">
       <div class="sdot ${(d.status==='Running'||d.status==='PRE OH')?'sdot-pulse':''}" style="background:${SC[d.status]||'#94a3b8'};--sc:${SC[d.status]||'#94a3b8'}"></div>
-      <div class="h-name"><b>${esc(d.name)}</b><span class="meta"><span class="loc">${esc(inst)}</span>${d.serial?` <span class="ser">· S/N ${esc(d.serial)}</span>`:''}</span></div>
+      <div class="h-name"><b>${esc(d.name)}</b><span class="meta"><span class="loc">${esc(inst)}</span>${d.serial?` <span class="ser">· S/N ${esc(d.serial)}</span>`:''}${d.smuPaused?' <span class="smu-hold">⏸ หยุดนับ SMU</span>':''}</span></div>
       <div class="h-brand">${brandImg(d.brand)}<br>${fmtP(d.power)} kW · ${fmt(d.voltage)} V</div>
       <div><span class="bg ${SB[d.status]||'b-stb'}">${esc(d.status||'')}</span></div>
       <div class="lifewrap"><div class="lifebar"><i style="width:${lw}%;background:${lc}"></i></div>
@@ -2112,6 +2196,7 @@ function motorCard(d){
     </div>
     <div class="mbody">
       ${lifecycleHTML(d)}
+      ${smuActHTML(d)}
       <div class="dgrid">${det.map(x=>`<div class="dcell"><div class="k">${x[0]}</div><div class="v">${x[1]}</div></div>`).join("")}</div>
       <div class="histsec">
         <div class="hist-head">📝 ประวัติการใช้งาน / History <span>· บันทึกในเบราว์เซอร์นี้</span></div>
@@ -2176,7 +2261,7 @@ function buildMotorFilters(){
   sched.value=schedFilter;
   updateBrandBtn();
 }
-function renderAll(){renderTabs();renderKPIs();renderDonut();renderUrg();renderBrand();renderBrk();renderMotors();}
+function renderAll(){recalcSMU();renderTabs();renderKPIs();renderDonut();renderUrg();renderBrand();renderBrk();renderMotors();}
 document.getElementById("q").addEventListener("input",e=>{q=e.target.value;renderMotors();});
 document.getElementById("typeFilter").addEventListener("change",e=>{typeFilter=e.target.value;renderMotors();});
 document.getElementById("statusFilter").addEventListener("change",e=>{statusFilter=e.target.value;renderMotors();});
