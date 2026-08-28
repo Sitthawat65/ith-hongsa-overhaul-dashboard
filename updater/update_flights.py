@@ -30,6 +30,8 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 TOP_N = 4          # เก็บกี่อันดับต่อวัน (1 สายการบิน = 1 อันดับ)
 WORKERS = 5        # เปิดกี่หน้าพร้อมกัน (540 หน้าแบบเรียงทีละหน้าใช้ ~2.5 ชม. ซึ่งนานเกิน
                    # กว่ารอบอัปเดตทุก 2 ชม. จะไล่ทัน)
+STRIP_STEP = 13   # ยิงแถบปฏิทินทุกกี่วัน (1 หน้าครอบ ~14 วัน)
+GF_DAYS    = 30   # เติมชื่อสายการบินจาก Google Flights กี่วันแรก (ทั้ง 90 วันจะช้าเกินรอบ)
 LOCK = pathlib.Path(__file__).resolve().parent / ".update_flights.lock"
 LOCK_STALE_SEC = 3 * 3600      # ล็อกเก่ากว่านี้ถือว่าค้าง ให้รันทับได้
 
@@ -60,7 +62,20 @@ AIRLINES = {
     "thai airways":     ("thai",       "Thai Airways"),
     "thai smile":       ("thai",       "Thai Smile"),
     "bangkok airways":  ("bangkokair", "Bangkok Airways"),
+    # Google Flights แสดงชื่อเป็นภาษาไทย
+    "แอร์เอเชีย":        ("airasia",    "Thai AirAsia"),
+    "ไทยแอร์เอเชีย":     ("airasia",    "Thai AirAsia"),
+    "นกแอร์":            ("nokair",     "Nok Air"),
+    "ไทยเวียตเจ็ท":      ("vietjet",    "Thai Vietjet"),
+    "เวียตเจ็ท":         ("vietjet",    "Thai Vietjet"),
+    "ไทยไลอ้อนแอร์":     ("lionair",    "Thai Lion Air"),
+    "ไลอ้อนแอร์":        ("lionair",    "Thai Lion Air"),
+    "การบินไทย":         ("thai",       "Thai Airways"),
+    "บางกอกแอร์เวย์ส":   ("bangkokair", "Bangkok Airways"),
+    "บางกอกแอร์เวย์":    ("bangkokair", "Bangkok Airways"),
 }
+# สนามบินหลักของแต่ละเมือง ใช้กับ Google Flights ที่ต้องระบุสนามบินตรงๆ
+GF_AIRPORT = {"nnt": "NNT", "cnx": "CNX", "kop": "KOP", "bkk": "DMK"}
 
 # เที่ยวบินตรงในเส้นทางพวกนี้ใช้เวลา ~1 ชม. 10-35 นาที ถ้ายาวกว่านี้มากแปลว่าเป็น
 # เที่ยวบินต่อเครื่องที่บังเอิญต้นทาง-ปลายทางตรงกัน (เช่น กทม.->ย่างกุ้ง->เชียงใหม่ 15 ชม.)
@@ -149,15 +164,107 @@ def top_fares(best, n=TOP_N):
     return sorted(best.values(), key=lambda f: f["price"])[:n]
 
 
+TH_MONTHS = {"ม.ค.":1,"ก.พ.":2,"มี.ค.":3,"เม.ย.":4,"พ.ค.":5,"มิ.ย.":6,
+             "ก.ค.":7,"ส.ค.":8,"ก.ย.":9,"ต.ค.":10,"พ.ย.":11,"ธ.ค.":12}
+STRIP_RE = re.compile(
+    r"(?:จ|อ|พ|พฤ|ศ|ส|อา)\.\s*(\d{1,2})\s*"
+    r"(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s*\n\s*฿\s*([\d,]+)")
+
+
+def parse_strip(txt, anchor_date):
+    """อ่าน 'แถบปฏิทินราคา' -> {วันที่: ราคาถูกสุด}
+
+    แถบนี้แสดงราคาต่ำสุดของแต่ละวันรอบๆ วันที่ค้นหา (ครั้งละ ~14 วัน)
+    ตัวเลขในแถบไม่มีปี จึงเดาปีจากวันที่ที่ใช้ค้นหา
+    """
+    out = {}
+    a = datetime.date.fromisoformat(anchor_date)
+    for day, mon, price in STRIP_RE.findall(txt):
+        m = TH_MONTHS[mon]
+        for y in (a.year, a.year + 1, a.year - 1):      # เลือกปีที่ใกล้วันค้นหาที่สุด
+            try:
+                d = datetime.date(y, m, int(day))
+            except ValueError:
+                continue
+            if abs((d - a).days) <= 30:
+                out[d.isoformat()] = int(price.replace(",", ""))
+                break
+    return out
+
+
+GF_ROW_RE = re.compile(
+    r"(\d{1,2}:\d{2})\s*\n\s*[–-]\s*\n\s*(\d{1,2}:\d{2})\s*\n"      # เวลาออก-ถึง
+    r"(.{0,60}?)\n"                                                        # ชื่อสายการบิน
+    r"(\d+)\s*ชม\.\s*(?:(\d+)\s*นาที)?\s*\n"                            # ระยะเวลา
+    r"([A-Z]{3})[–-]([A-Z]{3})\s*\n"                                       # เส้นทาง
+    r"(.{0,120}?)฿\s*([\d,]+)", re.S)                                      # ... ราคา
+
+
+def parse_google(txt, frm, to):
+    """อ่านผล Google Flights -> ราคาถูกสุดของแต่ละสายการบิน (โครงเดียวกับ parse_page_text)"""
+    ok_from, ok_to = CITY_AIRPORTS.get(frm, set()), CITY_AIRPORTS.get(to, set())
+    best = {}
+    for m in GF_ROW_RE.finditer(txt):
+        dep, arr, raw, hh, mm, dep_ap, arr_ap, mid, price = m.groups()
+        if ok_from and dep_ap not in ok_from:  continue
+        if ok_to   and arr_ap not in ok_to:    continue
+        if int(hh) * 60 + int(mm or 0) > MAX_MINUTES: continue
+        if "บินตรง" not in mid and "nonstop" not in mid.lower(): continue   # เอาเฉพาะบินตรง
+        air = airline_of(raw)
+        if not air: continue
+        key, name = air
+        try:
+            baht = int(price.replace(",", ""))
+        except ValueError:
+            continue
+        cur = best.get(key)
+        if cur is None or baht < cur["price"]:
+            best[key] = {"airline": key, "name": name, "price": baht,
+                         "depart": dep, "arrive": arr,
+                         "from": dep_ap, "to": arr_ap, "promos": [],
+                         "src": "google"}
+    return best
+
+
+def google_url(frm, to, d):
+    a, b = GF_AIRPORT.get(frm, frm.upper()), GF_AIRPORT.get(to, to.upper())
+    return ("https://www.google.com/travel/flights?hl=th&gl=TH&curr=THB"
+            f"&q=Flights%20from%20{a}%20to%20{b}%20on%20{d}%20oneway")
+
+
+async def dismiss_consent(page):
+    """ปิดแบนเนอร์คุกกี้ของ Trip.com — เลือก "ปฏิเสธทั้งหมด" เพื่อไม่ให้ตามเก็บข้อมูล
+
+    ตั้งแต่ปลายเดือน ส.ค. 2026 Trip.com ขึ้นแบนเนอร์นี้คลุมหน้าไว้
+    ถ้าไม่ปิด ผลการค้นหาจะไม่ถูกเรนเดอร์เลย (หน้าเหลือแต่เนื้อหาโฆษณา)
+    """
+    for sel in ('button:has-text("ปฏิเสธทั้งหมด")',
+                'button:has-text("Reject all")',
+                '[data-testid="reject-all"]',
+                '#onetrust-reject-all-handler'):
+        try:
+            btn = page.locator(sel).first
+            if await btn.count() and await btn.is_visible():
+                await btn.click(timeout=3000)
+                await page.wait_for_timeout(600)
+                return True
+        except Exception:
+            pass
+    return False
+
+
 async def _grab(page, route, d):
     """โหลดหน้าค้นหาของ 1 เส้นทาง 1 วัน แล้วคืน 4 อันดับถูกสุด"""
     frm, to = route["from"], route["to"]
     await page.goto(search_url(frm, to, d), wait_until="domcontentloaded", timeout=60000)
+    await page.wait_for_timeout(1200)
+    await dismiss_consent(page)               # ไม่ปิดแบนเนอร์ = ไม่มีผลค้นหาให้อ่าน
     for _ in range(14):                       # รอผลค้นหาขึ้น (สูงสุด ~35 วิ)
         await page.wait_for_timeout(2500)
         txt = await page.evaluate("()=>document.body?document.body.innerText:''")
         if parse_page_text(txt, frm, to):
             break
+        await dismiss_consent(page)           # เผื่อแบนเนอร์เพิ่งโผล่
     # เลื่อนหน้าลงจนสุดเพื่อโหลดเที่ยวบินให้ครบ เส้นทางที่มีสายการบินเยอะ
     # อย่าง CNX-BKK ต้องเลื่อนหลายรอบกว่าเที่ยวบินราคาถูกจะโผล่ครบ
     best = await _scroll_and_parse(page, frm, to)
@@ -184,7 +291,54 @@ async def _scroll_and_parse(page, frm, to, rounds=20, settle=2):
     return parse_page_text(txt, frm, to)
 
 
+async def _grab_strip(page, route, anchor):
+    """โหลดหน้า Trip.com 1 ครั้ง -> ราคาถูกสุด ~14 วันรอบวันที่ anchor"""
+    await page.goto(search_url(route["from"], route["to"], anchor),
+                    wait_until="domcontentloaded", timeout=60000)
+    await page.wait_for_timeout(1500)
+    await dismiss_consent(page)
+    for _ in range(6):
+        await page.wait_for_timeout(2000)
+        txt = await page.evaluate("()=>document.body?document.body.innerText:''")
+        got = parse_strip(txt, anchor)
+        if len(got) >= 5:
+            return got
+    return parse_strip(txt, anchor)
+
+
+async def _grab_google(page, route, d):
+    """โหลด Google Flights 1 วัน -> ราคาถูกสุดของแต่ละสายการบิน"""
+    await page.goto(google_url(route["from"], route["to"], d),
+                    wait_until="domcontentloaded", timeout=60000)
+    await page.wait_for_timeout(1800)
+    await dismiss_consent(page)
+    for _ in range(6):
+        await page.wait_for_timeout(2200)
+        txt = await page.evaluate("()=>document.body?document.body.innerText:''")
+        best = parse_google(txt, route["from"], route["to"])
+        if best:
+            return best
+    return {}
+
+
+def merge_day(strip_price, google_best):
+    """รวม 2 แหล่ง -> รายการ 4 อันดับ ถูกสุดอยู่หน้าสุด
+
+    Google ให้ชื่อสายการบิน ส่วนแถบปฏิทินของ Trip.com มักถูกกว่าแต่ไม่บอกสายการบิน
+    ถ้าราคาจากแถบถูกกว่าทุกสายการบินที่ Google เห็น ให้ใส่เป็นอันดับ 1 แยกไว้
+    """
+    fares = sorted(google_best.values(), key=lambda f: f["price"])
+    if strip_price:
+        cheapest_known = fares[0]["price"] if fares else None
+        if cheapest_known is None or strip_price < cheapest_known:
+            fares.insert(0, {"airline": "tripcom", "name": "ถูกสุดบน Trip.com",
+                             "price": strip_price, "depart": "", "arrive": "",
+                             "from": "", "to": "", "promos": [], "src": "trip"})
+    return fares[:TOP_N]
+
+
 async def _scrape_async(days, only, workers, headless=True):
+    """2 รอบ: (1) แถบปฏิทิน Trip.com ครอบทุกวัน  (2) Google Flights เติมสายการบิน"""
     from playwright.async_api import async_playwright
     today = datetime.date.today()
     dates = [(today + datetime.timedelta(days=i)).isoformat() for i in range(days)]
@@ -192,42 +346,68 @@ async def _scrape_async(days, only, workers, headless=True):
     out = {r["key"]: {"label": r["label"], "from_name": r["from_name"],
                       "to_name": r["to_name"], "days": {}} for r in todo}
 
-    jobs = asyncio.Queue()
-    for route in todo:
-        for d in dates:
-            jobs.put_nowait((route, d))
-    total = jobs.qsize()
+    # วันที่ใช้ยิงแถบปฏิทิน: ห่างกัน STRIP_STEP วัน (1 หน้าครอบ ~14 วัน จึงเหลื่อมกันเล็กน้อย)
+    anchors = {r["key"]: dates[STRIP_STEP // 2::STRIP_STEP] for r in todo}
+    gf_days = min(GF_DAYS, days)
+
+    strip_jobs = asyncio.Queue()
+    for r in todo:
+        for a in anchors[r["key"]]:
+            strip_jobs.put_nowait((r, a))
+    gf_jobs = asyncio.Queue()
+    for r in todo:
+        for d in dates[:gf_days]:
+            gf_jobs.put_nowait((r, d))
+
+    strips = {r["key"]: {} for r in todo}     # {route: {date: price}}
+    googles = {r["key"]: {} for r in todo}    # {route: {date: {airline: fare}}}
+    n_strip, n_gf = strip_jobs.qsize(), gf_jobs.qsize()
     done = [0]
 
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(headless=headless)
 
-        async def worker(n):
-            # แต่ละ worker ใช้ context ของตัวเอง จะได้ไม่แย่ง cookie/สถานะกัน
+        async def run_queue(q, kind, total):
             ctx = await browser.new_context(locale="th-TH", user_agent=UA,
-                                            viewport={"width": 1400, "height": 1000})
+                                            viewport={"width": 1400, "height": 1100})
             page = await ctx.new_page()
             while True:
                 try:
-                    route, d = jobs.get_nowait()
+                    route, d = q.get_nowait()
                 except asyncio.QueueEmpty:
                     break
-                fares = []
                 try:
-                    fares = await _grab(page, route, d)
+                    if kind == "strip":
+                        got = await _grab_strip(page, route, d)
+                        strips[route["key"]].update(got)
+                        info = f"{len(got)} days"
+                    else:
+                        got = await _grab_google(page, route, d)
+                        googles[route["key"]][d] = got
+                        info = ", ".join(f"{f['name']}={f['price']}" for f in got.values()) or "-"
                 except Exception as e:
-                    print(f"   [warn] {route['key']} {d}: {type(e).__name__}")
-                out[route["key"]]["days"][d] = fares
+                    info = f"[warn] {type(e).__name__}"
                 done[0] += 1
-                got = ", ".join(f"{f['name']}={f['price']}" for f in fares) or "-"
-                print(f"  [{done[0]:>3}/{total}] {route['key']} {d}: {got}", flush=True)
+                print(f"  [{done[0]:>3}/{total}] {kind:<6} {route['key']} {d}: {info}", flush=True)
             await ctx.close()
 
-        await asyncio.gather(*[worker(i) for i in range(max(1, workers))])
+        print(f">> รอบที่ 1: แถบปฏิทิน Trip.com  ({n_strip} หน้า ครอบ {days} วัน)")
+        done[0] = 0
+        await asyncio.gather(*[run_queue(strip_jobs, "strip", n_strip)
+                               for _ in range(max(1, workers))])
+
+        print(f">> รอบที่ 2: Google Flights เติมสายการบิน  ({n_gf} หน้า = {gf_days} วันแรก)")
+        done[0] = 0
+        await asyncio.gather(*[run_queue(gf_jobs, "google", n_gf)
+                               for _ in range(max(1, workers))])
+
         await browser.close()
 
-    for r in out.values():                    # ให้วันเรียงตามลำดับเสมอ
-        r["days"] = {d: r["days"][d] for d in sorted(r["days"])}
+    for r in todo:
+        k = r["key"]
+        for d in dates:
+            out[k]["days"][d] = merge_day(strips[k].get(d), googles[k].get(d, {}))
+        out[k]["days"] = {d: out[k]["days"][d] for d in sorted(out[k]["days"])}
     return out
 
 
