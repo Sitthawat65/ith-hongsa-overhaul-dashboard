@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bearing Pulley Temp — Chart ITH-CV</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#16212e; --muted:#8aa0b6; --line:#243244;
+    --shadow:0 6px 18px rgba(0,0,0,.25); --warn:#f5a623; --alarm:#e02424;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#0f1720,#0b1017);color:#e7eef6;min-height:100vh;padding:18px 16px 40px}
+  header{max-width:1200px;margin:0 auto 18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+  .logo{height:46px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;padding:4px 8px;box-shadow:var(--shadow)}.logo img{height:100%;width:auto;display:block;object-fit:contain}
+  .titles h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.3px}
+  .titles p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .cd{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(31,111,235,.12);border:1px solid rgba(31,111,235,.35);color:#9cc2ff;font-size:13px;font-weight:600;white-space:nowrap}
+  .cd b{color:#dbe9ff;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+  .cd.soon{background:rgba(245,166,35,.14);border-color:rgba(245,166,35,.45);color:#ffd591}
+  .lnk,.refresh{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border-radius:999px;background:var(--panel);color:#cdd9e5;border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;text-decoration:none;transition:background .15s,border-color .15s}
+  .lnk:hover,.refresh:hover{background:#1c2a3a;border-color:#31465c}
+  .refresh:active{transform:translateY(1px)}
+  .refresh.spin .ic{animation:spin .7s linear infinite;display:inline-block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .status{text-align:right;font-size:13px;color:var(--muted)}
+  .status .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2ecc71;margin-right:6px;animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.5)}70%{box-shadow:0 0 0 8px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+  .status b{color:#e7eef6}
+
+  .bar{max-width:1200px;margin:0 auto 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .tab{padding:7px 16px;border-radius:999px;background:var(--panel);color:var(--muted);border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600}
+  .tab.active{background:#1f6feb;color:#fff;border-color:#1f6feb}
+  .spacer{flex:1 1 auto}
+  .rng{display:inline-flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
+  .rng button{border:none;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer}
+  .rng button.on{background:#1f6feb;color:#fff}
+
+  .panel{max-width:1200px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 14px 6px}
+  .chartwrap{position:relative;width:100%}
+  svg.chart{width:100%;height:auto;display:block;touch-action:none}
+  .tip{position:absolute;pointer-events:none;z-index:5;background:#0b1220;border:1px solid #31465c;border-radius:10px;padding:8px 10px;font-size:12px;color:#e7eef6;box-shadow:0 8px 20px rgba(0,0,0,.5);min-width:150px;opacity:0;transition:opacity .08s}
+  .tip .tt{color:var(--muted);font-size:11px;margin-bottom:5px}
+  .tip .row{display:flex;align-items:center;gap:7px;justify-content:space-between;line-height:1.5}
+  .tip .row .nm{display:inline-flex;align-items:center;gap:6px}
+  .tip .row .sw{width:9px;height:9px;border-radius:2px;flex:none}
+  .tip .row b{font-variant-numeric:tabular-nums}
+
+  .legend{max-width:1200px;margin:12px auto 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .legend .lgctrl{font-size:12px;color:var(--muted);margin-right:2px}
+  .chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--line);cursor:pointer;font-size:12.5px;font-weight:600;color:#cdd9e5;user-select:none;transition:opacity .12s,border-color .12s}
+  .chip .sw{width:11px;height:11px;border-radius:3px;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+  .chip.off{opacity:.4}
+  .chip.off .sw{background:#556!important}
+  .chip:hover{border-color:#31465c}
+  .mini{padding:5px 12px;border-radius:999px;background:transparent;border:1px dashed var(--line);color:var(--muted);cursor:pointer;font:inherit;font-size:12px;font-weight:600}
+  .mini:hover{border-color:#31465c;color:#cdd9e5}
+  .empty{color:var(--muted);text-align:center;padding:60px 10px;font-size:14px}
+
+  footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo"><img id="logo" src="data:image/jpeg;base64,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" alt="ITH Italian-Thai Hongsa"></div>
+    <div class="titles">
+      <h1>Temperature Chart · ITH-CV</h1>
+      <p>กราฟอุณหภูมิย้อนหลัง 3 วัน · เลือกดูได้ทีละจุด · อัปเดตทุก ~5 นาที</p>
+    </div>
+    <div id="countdown" class="cd" title="เวลาโดยประมาณจนถึงการอัปเดตค่ารอบถัดไป (ทุก ~5 นาที)">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
+    <button id="refreshBtn" class="refresh" type="button" title="ดึงข้อมูลล่าสุดทันที"><span class="ic">↻</span>รีเฟรช</button>
+    <a class="refresh" href="home.html" title="หน้าหลัก">⌂ Home</a>
+    <a class="refresh" href="Bearing-Pulley-Temp-Monitoring-ITH-CV.html" title="ตารางอุณหภูมิ">▤ Table</a>
+    <div class="status">
+      <div><span class="dot"></span>Live</div>
+      <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div id="tabs" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    <div class="spacer"></div>
+    <div class="rng" id="rng">
+      <button data-h="72" class="on">3 วัน</button>
+      <button data-h="24">24 ชม.</button>
+      <button data-h="12">12 ชม.</button>
+      <button data-h="3">3 ชม.</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="chartwrap" id="chartwrap">
+      <div class="empty" id="emptyMsg">กำลังโหลดข้อมูล…</div>
+    </div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <footer>
+    <div>เกณฑ์สี: <span style="color:#2ecc71">0–69°C ปกติ</span> · <span style="color:#f5a623">70–79°C เตือน</span> · <span style="color:#e02424">≥ 80°C แจ้งเตือน</span> — เส้นประในกราฟคือเกณฑ์ 70 / 80°C</div>
+    <div style="margin-top:6px">ข้อมูลย้อนหลังเก็บสูงสุด 3 วัน · แหล่งข้อมูลอัปเดตทุก ~5 นาที · แตะ/เลื่อนบนกราฟเพื่อดูค่าแต่ละช่วงเวลา</div>
+  </footer>
+
+<script>
+const WARN = 70, ALARM = 80;
+const HIST_URL = 'temps_history.json';
+// โลโก้ ITH ใช้ตัวเดียวกับหน้าอื่น (ดึงจากหน้า Table แบบ inline ผ่าน data-uri ที่ build มาแล้ว)
+/* logo set inline below */
+
+// ---------- ชื่อจุด (ตัด prefix กลุ่ม + map ชื่อกล่องบนแผนภาพ) ----------
+const BASE_NAMES = {DE_WCV:'CVW DE', NDE_WCV:'CVW NDE', DE_DCV:'DCV DE', NDE_DCV:'DCV NDE',
+                    NDE_SPL:'SPL NDE', DE_SPL:'SPL DE', SNUB:'Snub',
+                    DCV_TC:'DCV TC', BEND:'BEND', TAKE_UP:'TAKE UP',
+                    RCV_DE:'RCV DE', RCV_NDE:'RCV NDE'};
+function tagLabel(tag){
+  let t = tag.replace(/^(?:BWE|CR)[12]_/, '');
+  let side = '';
+  const m = /^(.*)_(L|R)$/.exec(t);
+  if(m){ t = m[1]; side = m[2]; }
+  const nm = BASE_NAMES[t] || t.replace(/_/g,' ');
+  return side ? (nm + ' ' + side) : nm;
+}
+// สีที่แยกเส้นได้ชัด (กระจาย hue ตามลำดับจุด)
+function seriesColor(i, n){
+  const hue = Math.round(360 * i / Math.max(1,n));
+  const sat = 68, lig = (i % 2 === 0) ? 60 : 46;   // สลับความสว่างช่วยแยกเส้นที่ hue ใกล้กัน
+  return 'hsl('+hue+' '+sat+'% '+lig+'%)';
+}
+
+let HIST = null, group = null, rangeH = 72;
+const hidden = {};    // { group: Set(tagIndex ที่ปิด) }
+
+function fmtTime(iso){
+  try{ return new Date(iso).toLocaleString('th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' น.'; }
+  catch(e){ return iso; }
+}
+function hiddenSet(g){ if(!hidden[g]) hidden[g]=new Set(); return hidden[g]; }
+
+function groups(){ return HIST ? Object.keys(HIST.series||{}) : []; }
+
+function renderTabs(){
+  const gs = groups();
+  if(!group || !gs.includes(group)) group = gs[0];
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  gs.forEach(g=>{
+    const b = document.createElement('div');
+    b.className = 'tab' + (g===group?' active':'');
+    b.textContent = g;
+    b.onclick = ()=>{ group=g; drawAll(); };
+    tabs.appendChild(b);
+  });
+}
+
+function renderLegend(){
+  const s = HIST.series[group];
+  const box = document.getElementById('legend');
+  box.innerHTML = '';
+  if(!s){ return; }
+  const hs = hiddenSet(group);
+  const ctrl = document.createElement('span');
+  ctrl.className='lgctrl'; ctrl.textContent='จุดวัด:';
+  box.appendChild(ctrl);
+  s.tags.forEach((tag,i)=>{
+    const chip = document.createElement('div');
+    const col = seriesColor(i, s.tags.length);
+    chip.className = 'chip' + (hs.has(i)?' off':'');
+    chip.innerHTML = '<span class="sw" style="background:'+col+'"></span>'+tagLabel(tag);
+    chip.onclick = ()=>{ if(hs.has(i)) hs.delete(i); else hs.add(i); drawChart(); renderLegend(); };
+    box.appendChild(chip);
+  });
+  const all = document.createElement('button');
+  all.className='mini'; all.textContent='ทั้งหมด';
+  all.onclick=()=>{ hs.clear(); drawChart(); renderLegend(); };
+  const none = document.createElement('button');
+  none.className='mini'; none.textContent='ล้าง';
+  none.onclick=()=>{ s.tags.forEach((_,i)=>hs.add(i)); drawChart(); renderLegend(); };
+  box.appendChild(all); box.appendChild(none);
+}
+
+// ค่าของ row ที่ดัชนี tag i (row = [iso, v0, v1, ...]); กันแถวเก่าที่สั้นกว่า
+function rowVal(row, i){ return (i+1 < row.length) ? row[i+1] : null; }
+
+function drawChart(){
+  const wrap = document.getElementById('chartwrap');
+  const s = HIST.series[group];
+  if(!s || !s.rows.length){ wrap.innerHTML = '<div class="empty">ยังไม่มีข้อมูลย้อนหลังของกลุ่มนี้</div>'; return; }
+
+  const nowMs = Date.now();
+  const minMs = nowMs - rangeH*3600*1000;
+  // เตรียมจุดของแต่ละ series ในช่วงเวลา
+  const rows = s.rows.map(r=>({t:Date.parse(r[0]), r})).filter(x=>!isNaN(x.t) && x.t>=minMs);
+  if(!rows.length){ wrap.innerHTML = '<div class="empty">ไม่มีข้อมูลในช่วงเวลานี้</div>'; return; }
+  const tMin = Math.min(rows[0].t, minMs), tMax = Math.max(rows[rows.length-1].t, nowMs);
+
+  const hs = hiddenSet(group);
+  const visIdx = s.tags.map((_,i)=>i).filter(i=>!hs.has(i));
+
+  // ช่วงแกน Y จากค่าที่มองเห็น
+  let vMin=Infinity, vMax=-Infinity;
+  visIdx.forEach(i=>rows.forEach(x=>{ const v=rowVal(x.r,i); if(v!=null && !isNaN(v)){ if(v<vMin)vMin=v; if(v>vMax)vMax=v; }}));
+  if(vMin===Infinity){ vMin=20; vMax=90; }
+  // ให้เห็นเส้นเกณฑ์เสมอ + เผื่อขอบ
+  vMin = Math.min(vMin, 60); vMax = Math.max(vMax, ALARM+3);
+  const pad = Math.max(2,(vMax-vMin)*0.08); vMin-=pad; vMax+=pad;
+
+  const W=1000, H=460, mL=46, mR=14, mT=14, mB=30;
+  const px = t => mL + (t - tMin)/(tMax - tMin || 1) * (W-mL-mR);
+  const py = v => mT + (vMax - v)/(vMax - vMin || 1) * (H-mT-mB);
+
+  const svgNS='http://www.w3.org/2000/svg';
+  const parts = [];
+  // gridlines + Y labels
+  const yTicks = 6;
+  for(let k=0;k<=yTicks;k++){
+    const v = vMin + (vMax-vMin)*k/yTicks;
+    const y = py(v);
+    parts.push('<line x1="'+mL+'" y1="'+y.toFixed(1)+'" x2="'+(W-mR)+'" y2="'+y.toFixed(1)+'" stroke="#223142" stroke-width="1"/>');
+    parts.push('<text x="'+(mL-6)+'" y="'+(y+4).toFixed(1)+'" fill="#6b7a89" font-size="12" text-anchor="end">'+v.toFixed(0)+'</text>');
+  }
+  // threshold lines
+  [[WARN,'#f5a623'],[ALARM,'#e02424']].forEach(([tv,c])=>{
+    if(tv>=vMin && tv<=vMax){ const y=py(tv);
+      parts.push('<line x1="'+mL+'" y1="'+y.toFixed(1)+'" x2="'+(W-mR)+'" y2="'+y.toFixed(1)+'" stroke="'+c+'" stroke-width="1.2" stroke-dasharray="5 5" opacity=".7"/>');
+      parts.push('<text x="'+(W-mR-2)+'" y="'+(y-4).toFixed(1)+'" fill="'+c+'" font-size="11" text-anchor="end">'+tv+'°C</text>');
+    }
+  });
+  // X ticks
+  const span = tMax - tMin;
+  let stepMs = 6*3600*1000;
+  if(rangeH<=3) stepMs=30*60*1000; else if(rangeH<=12) stepMs=2*3600*1000; else if(rangeH<=24) stepMs=3*3600*1000; else stepMs=12*3600*1000;
+  const first = Math.ceil(tMin/stepMs)*stepMs;
+  for(let t=first;t<=tMax;t+=stepMs){
+    const x=px(t); const d=new Date(t);
+    const p=n=>String(n).padStart(2,'0');
+    const lbl = (rangeH>24 ? (p(d.getDate())+'/'+p(d.getMonth()+1)+' ') : '') + p(d.getHours())+':'+p(d.getMinutes());
+    parts.push('<line x1="'+x.toFixed(1)+'" y1="'+mT+'" x2="'+x.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#1b2836" stroke-width="1"/>');
+    parts.push('<text x="'+x.toFixed(1)+'" y="'+(H-mB+16)+'" fill="#6b7a89" font-size="11" text-anchor="middle">'+lbl+'</text>');
+  }
+  // series polylines (แยกช่วงเมื่อเจอ null)
+  visIdx.forEach(i=>{
+    const col = seriesColor(i, s.tags.length);
+    let seg=[];
+    const flush=()=>{ if(seg.length>1) parts.push('<polyline fill="none" stroke="'+col+'" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" points="'+seg.join(' ')+'"/>'); else if(seg.length===1){const[x,y]=seg[0].split(',');parts.push('<circle cx="'+x+'" cy="'+y+'" r="1.8" fill="'+col+'"/>');} seg=[]; };
+    rows.forEach(x=>{ const v=rowVal(x.r,i); if(v==null||isNaN(v)){ flush(); } else { seg.push(px(x.t).toFixed(1)+','+py(v).toFixed(1)); } });
+    flush();
+  });
+  // hover overlay
+  parts.push('<line id="cross" x1="0" y1="'+mT+'" x2="0" y2="'+(H-mB)+'" stroke="#9cc2ff" stroke-width="1" opacity="0"/>');
+  parts.push('<g id="dots"></g>');
+  parts.push('<rect id="hit" x="'+mL+'" y="'+mT+'" width="'+(W-mL-mR)+'" height="'+(H-mT-mB)+'" fill="transparent"/>');
+
+  wrap.innerHTML = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+parts.join('')+'</svg><div class="tip" id="tip"></div>';
+
+  // ---- hover interaction ----
+  const svg = wrap.querySelector('svg');
+  const tip = document.getElementById('tip');
+  const cross = svg.querySelector('#cross');
+  const dots = svg.querySelector('#dots');
+  const hit = svg.querySelector('#hit');
+  const times = rows.map(x=>x.t);
+  function nearest(mx){ // mx in viewBox coords -> row index
+    const t = tMin + (mx-mL)/((W-mL-mR)||1)*(tMax-tMin);
+    let lo=0,hi=times.length-1;
+    if(t<=times[0]) return 0; if(t>=times[hi]) return hi;
+    while(hi-lo>1){ const md=(lo+hi)>>1; if(times[md]<t) lo=md; else hi=md; }
+    return (t-times[lo] < times[hi]-t) ? lo : hi;
+  }
+  function toVB(ev){
+    const rect = svg.getBoundingClientRect();
+    const cx = (ev.touches?ev.touches[0].clientX:ev.clientX) - rect.left;
+    return cx / rect.width * W;
+  }
+  function move(ev){
+    const mx = toVB(ev);
+    const idx = nearest(mx);
+    const x = px(times[idx]);
+    cross.setAttribute('x1',x); cross.setAttribute('x2',x); cross.setAttribute('opacity','1');
+    let d=''; const tipRows=[];
+    visIdx.forEach(i=>{ const v=rowVal(rows[idx].r,i); if(v!=null&&!isNaN(v)){
+      const y=py(v); const col=seriesColor(i,s.tags.length);
+      d+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3" fill="'+col+'" stroke="#0b1220" stroke-width="1"/>';
+      tipRows.push({col,label:tagLabel(s.tags[i]),v});
+    }});
+    dots.innerHTML=d;
+    tipRows.sort((a,b)=>b.v-a.v);
+    tip.innerHTML = '<div class="tt">'+fmtTime(rows[idx].r[0])+'</div>'+
+      tipRows.map(r=>'<div class="row"><span class="nm"><span class="sw" style="background:'+r.col+'"></span>'+r.label+'</span><b>'+r.v.toFixed(1)+'°</b></div>').join('') ||
+      '<div class="tt">ไม่มีค่า</div>';
+    tip.style.opacity='1';
+    // วางกล่อง tip โดยอิงพิกัดจริงบนจอ
+    const rect = svg.getBoundingClientRect();
+    const realX = rect.width * x / W;
+    let left = realX + 14; if(left + 180 > rect.width) left = realX - 180;
+    tip.style.left = Math.max(4,left)+'px';
+    tip.style.top = '10px';
+  }
+  function leave(){ cross.setAttribute('opacity','0'); dots.innerHTML=''; tip.style.opacity='0'; }
+  hit.addEventListener('mousemove',move);
+  hit.addEventListener('mouseleave',leave);
+  svg.addEventListener('touchstart',move,{passive:true});
+  svg.addEventListener('touchmove',move,{passive:true});
+  svg.addEventListener('touchend',leave);
+}
+
+function drawAll(){
+  document.getElementById('emptyMsg') && (document.getElementById('emptyMsg').style.display='none');
+  renderTabs(); renderLegend(); drawChart();
+}
+
+// ---------- range buttons ----------
+document.getElementById('rng').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  rangeH = parseInt(b.dataset.h,10);
+  [...document.querySelectorAll('#rng button')].forEach(x=>x.classList.toggle('on',x===b));
+  drawChart();
+});
+
+// ---------- shared 5-min countdown (เหมือนหน้า Table) ----------
+const PERIOD = 5*60*1000, CD_KEY='ith_temp_next_update';
+function cdGet(){ const v=parseInt(localStorage.getItem(CD_KEY)||'0',10); return isNaN(v)?0:v; }
+function cdSet(t){ try{ localStorage.setItem(CD_KEY,String(t)); }catch(e){} }
+function drawCountdown(){
+  const el=document.getElementById('cdVal'), box=document.getElementById('countdown');
+  let rem=cdGet()-Date.now(); if(rem<0) rem=0;
+  const sec=Math.floor(rem/1000), m=Math.floor(sec/60), s=sec%60;
+  el.textContent=m+':'+String(s).padStart(2,'0');
+  box.classList.toggle('soon', rem<=60000);
+}
+function resetCountdown(){ cdSet(Date.now()+PERIOD); drawCountdown(); }
+function tick(){ const next=cdGet(); if(!next||next<=Date.now()){ load(); cdSet(Date.now()+PERIOD); } drawCountdown(); }
+setInterval(tick,1000);
+
+async function load(){
+  try{
+    const r = await fetch(HIST_URL+'?_='+Date.now(), {cache:'no-store'});
+    HIST = await r.json();
+    document.getElementById('updated').textContent = fmtTime(HIST.updated);
+    drawAll();
+  }catch(e){
+    console.error('load failed', e);
+    document.getElementById('chartwrap').innerHTML = '<div class="empty">โหลดข้อมูลไม่สำเร็จ — ยังไม่มีไฟล์ temps_history.json หรือเครือข่ายมีปัญหา</div>';
+  }
+}
+async function refresh(){
+  const btn=document.getElementById('refreshBtn');
+  btn.classList.add('spin'); btn.disabled=true;
+  await load(); resetCountdown();
+  setTimeout(()=>{ btn.classList.remove('spin'); btn.disabled=false; },500);
+}
+document.getElementById('refreshBtn').addEventListener('click', refresh);
+window.addEventListener('resize', ()=>{ if(HIST) drawChart(); });
+
+load();
+if(!cdGet() || cdGet()<=Date.now()) cdSet(Date.now()+PERIOD);
+drawCountdown();
+</script>
+</body>
+</html>

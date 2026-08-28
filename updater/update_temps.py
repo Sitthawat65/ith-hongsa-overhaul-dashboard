@@ -552,6 +552,13 @@ def main():
         except Exception as e:
             print(f"({module}) ข้ามการแจ้งเตือน: {type(e).__name__} {e}")
 
+    # ต่อค่ารอบนี้เข้าไฟล์ประวัติย้อนหลัง (temps_history.json) ให้หน้า chart.html
+    try:
+        import history
+        history.append(data)
+    except Exception as e:
+        print(f"(history) ข้าม: {type(e).__name__} {e}")
+
     # ส่งภาพแผนภาพพร้อมค่าล่าสุดเข้า Telegram (ไม่ตั้งค่าไว้ = ข้ามเงียบๆ)
     try:
         import telegram_snapshot
@@ -561,7 +568,7 @@ def main():
 
     # push ขึ้น GitHub
     try:
-        subprocess.run(["git", "-C", str(REPO_DIR), "add", "temps.json"], check=True, creationflags=CREATE_NO_WINDOW)
+        subprocess.run(["git", "-C", str(REPO_DIR), "add", "temps.json", "temps_history.json"], check=True, creationflags=CREATE_NO_WINDOW)
         subprocess.run(["git", "-C", str(REPO_DIR), "commit", "-m",
                         f"Update temps {data['updated']}"], check=True, creationflags=CREATE_NO_WINDOW)
         subprocess.run(["git", "-C", str(REPO_DIR), "push", "origin", "main"], check=True, creationflags=CREATE_NO_WINDOW)
