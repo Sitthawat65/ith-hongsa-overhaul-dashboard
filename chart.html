@@ -67,6 +67,25 @@
   .tipx:hover{background:#31465c}
 
   footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+  .printonly{display:none}
+
+  /* ===== ตอนพิมพ์ / บันทึกเป็น PDF ===== */
+  @page{ size:A4 landscape; margin:10mm; }
+  @media print{
+    /* คงสีของกราฟไว้ให้ตรงกับหน้าจอ */
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    body{ padding:0; background:#0f1720 !important; }
+    /* ซ่อนตัวควบคุมที่ไม่ต้องมีในกระดาษ */
+    #countdown, #refreshBtn, #pdfBtn, header .status, .bar, .hint{ display:none !important; }
+    header a.refresh{ display:none !important; }
+    header{ margin:0 0 8px; }
+    .printonly{ display:block; color:#cdd9e5; font-size:12px; margin:0 0 10px; }
+    .printonly b{ color:#9cc2ff; }
+    .panel{ break-inside:avoid; box-shadow:none; }
+    .legend{ margin-top:10px; break-inside:avoid; }
+    .chip{ cursor:default; }
+    footer{ margin-top:12px; }
+  }
 </style>
 </head>
 <body>
@@ -78,6 +97,7 @@
     </div>
     <div id="countdown" class="cd" title="เวลาโดยประมาณจนถึงการอัปเดตค่ารอบถัดไป (ทุก ~5 นาที)">⏱ อัปเดตใหม่ใน <b id="cdVal">—</b></div>
     <button id="refreshBtn" class="refresh" type="button" title="ดึงข้อมูลล่าสุดทันที"><span class="ic">↻</span>รีเฟรช</button>
+    <button id="pdfBtn" class="refresh" type="button" title="บันทึกกราฟหน้านี้เป็นไฟล์ PDF (เลือกปลายทางเป็น Save as PDF)">🖨 Print / PDF</button>
     <a class="refresh" href="home.html" title="หน้าหลัก">⌂ Home</a>
     <a class="refresh" href="Bearing-Pulley-Temp-Monitoring-ITH-CV.html" title="ตารางอุณหภูมิ">▤ Table</a>
     <div class="status">
@@ -106,6 +126,7 @@
     </div>
   </div>
 
+  <div class="printonly" id="printhead"></div>
   <div class="hint">💡 <b>คลิกบนกราฟ</b> เพื่อ “ปักหมุด” ค่า ณ เวลานั้นให้ค้างไว้ (สำหรับแคปหน้าจอ) — คลิกจุดอื่นเพื่อย้ายหมุด · กด <b>✕</b> หรือปุ่ม <b>Esc</b> เพื่อเอาหมุดออก · คลิกชิป “จุดวัด” ด้านล่างเพื่อ <b>ซ่อน/แสดง</b> เส้นแต่ละจุด</div>
   <div class="panel">
     <div class="chartwrap" id="chartwrap">
@@ -404,6 +425,19 @@ async function refresh(){
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
 window.addEventListener('resize', ()=>{ if(HIST) drawChart(); });
+
+// ---------- Print / Save as PDF ----------
+const RNG_LABEL = {72:'3 วัน',24:'24 ชม.',12:'12 ชม.',3:'3 ชม.'};
+window.addEventListener('beforeprint', ()=>{
+  const s = HIST && HIST.series[group];
+  const total = s ? s.tags.length : 0;
+  const shown = s ? total - hiddenSet(group).size : 0;
+  document.getElementById('printhead').innerHTML =
+    'Temperature Chart · ITH-CV — เครื่องจักร <b>'+(group||'-')+'</b> · ช่วง <b>'+(RNG_LABEL[rangeH]||rangeH+' ชม.')+
+    '</b> · แสดง '+shown+'/'+total+' จุด · เพดานแกน Y '+(yMaxSel==='auto'?'อัตโนมัติ':yMaxSel+'°C')+
+    ' · ข้อมูลล่าสุด '+(HIST?fmtTime(HIST.updated):'-')+' · พิมพ์เมื่อ '+new Date().toLocaleString('th-TH');
+});
+document.getElementById('pdfBtn').addEventListener('click', ()=>{ window.print(); });
 
 setInterval(()=>load(false), POLL);   // ดึงข้อมูลถี่ๆ วาดใหม่เมื่อมีค่าใหม่
 setInterval(drawCountdown, 1000);     // เดินตัวนับทุกวินาที
