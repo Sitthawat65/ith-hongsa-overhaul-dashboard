@@ -33,8 +33,14 @@
   .tab{padding:7px 16px;border-radius:999px;background:var(--panel);color:var(--muted);border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600}
   .tab.active{background:#1f6feb;color:#fff;border-color:#1f6feb}
   .spacer{flex:1 1 auto}
-  .ycap{display:inline-flex;align-items:center;gap:6px}
+  .ycap{display:inline-flex;align-items:center;gap:6px;margin-right:8px}
   .ycap .lbl{font-size:12px;color:var(--muted)}
+
+  .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000}
+  .modal-content{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;max-width:300px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+  .modal-content h3{margin:0 0 12px;font-size:15px;color:#e7eef6}
+  .modal-close{position:absolute;top:12px;right:14px;cursor:pointer;font-size:20px;color:var(--muted);background:none;border:none;padding:0}
+  .modal-close:hover{color:#e7eef6}
   .rng{display:inline-flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
   .rng button{border:none;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer}
   .rng button.on{background:#1f6feb;color:#fff}
@@ -118,11 +124,30 @@
         <button data-y="100">100</button>
       </div>
     </div>
+    <button id="dateBtn" class="refresh" type="button" title="เลือกช่วงวันที่">📅 เลือกวันที่</button>
     <div class="rng" id="rng">
       <button data-h="72" class="on">3 วัน</button>
       <button data-h="24">24 ชม.</button>
       <button data-h="12">12 ชม.</button>
       <button data-h="3">3 ชม.</button>
+    </div>
+  </div>
+
+  <!-- Date Range Picker Modal -->
+  <div id="dateModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h3>เลือกช่วงวันที่</h3>
+      <div style="margin:12px 0">
+        <label style="display:block;margin-bottom:8px;font-size:13px;color:var(--muted)">วันเริ่มต้น</label>
+        <input type="date" id="dateFrom" style="width:100%;padding:6px;border:1px solid var(--line);background:var(--panel);color:#e7eef6;border-radius:6px;font-family:inherit">
+        <label style="display:block;margin-top:12px;margin-bottom:8px;font-size:13px;color:var(--muted)">วันสิ้นสุด</label>
+        <input type="date" id="dateTo" style="width:100%;padding:6px;border:1px solid var(--line);background:var(--panel);color:#e7eef6;border-radius:6px;font-family:inherit">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+        <button id="cancelDate" class="mini" type="button">ยกเลิก</button>
+        <button id="applyDate" class="refresh" type="button">ใช้ช่วงนี้</button>
+      </div>
     </div>
   </div>
 
@@ -438,6 +463,50 @@ window.addEventListener('beforeprint', ()=>{
     ' · ข้อมูลล่าสุด '+(HIST?fmtTime(HIST.updated):'-')+' · พิมพ์เมื่อ '+new Date().toLocaleString('th-TH');
 });
 document.getElementById('pdfBtn').addEventListener('click', ()=>{ window.print(); });
+
+// ---------- Date Range Picker ----------
+let customDateRange = null;   // {from, to} in ms, or null = use rangeH
+function openDatePicker(){
+  const modal = document.getElementById('dateModal');
+  const now = new Date();
+  document.getElementById('dateTo').valueAsDate = now;
+  const from = new Date(now.getTime() - 72*3600*1000);
+  document.getElementById('dateFrom').valueAsDate = from;
+  modal.style.display = 'flex';
+}
+function closeDatePicker(){
+  document.getElementById('dateModal').style.display = 'none';
+}
+function applyDateRange(){
+  const from = document.getElementById('dateFrom').valueAsDate;
+  const to = document.getElementById('dateTo').valueAsDate;
+  if(!from || !to){ alert('เลือกทั้งวันเริ่มต้นและวันสิ้นสุด'); return; }
+  if(from > to){ alert('วันเริ่มต้นต้องก่อนวันสิ้นสุด'); return; }
+  customDateRange = {from: from.getTime(), to: to.getTime()};
+  // Update button label
+  const days = Math.round((to - from) / (24*3600*1000));
+  document.getElementById('dateBtn').textContent = '📅 ' + days + ' วัน';
+  closeDatePicker();
+  drawChart();
+}
+document.getElementById('dateBtn').addEventListener('click', openDatePicker);
+document.getElementById('cancelDate').addEventListener('click', closeDatePicker);
+document.getElementById('applyDate').addEventListener('click', applyDateRange);
+document.querySelector('.modal-close').addEventListener('click', closeDatePicker);
+document.getElementById('dateModal').addEventListener('click', e=>{ if(e.target.id==='dateModal') closeDatePicker(); });
+
+// ใช้ custom range ถ้าเลือกไว้
+const originalDrawChart = drawChart;
+window.drawChart = function(){
+  if(customDateRange){
+    const s = HIST.series[group];
+    if(s && s.rows.length){
+      const rows = s.rows.map(r=>({t:Date.parse(r[0]), r})).filter(x=>!isNaN(x.t) && x.t>=customDateRange.from && x.t<=customDateRange.to);
+      if(rows.length) { tMin=Math.min(rows[0].t,customDateRange.from); tMax=Math.max(rows[rows.length-1].t,customDateRange.to); }
+    }
+  }
+  return originalDrawChart.call(this);
+};
 
 setInterval(()=>load(false), POLL);   // ดึงข้อมูลถี่ๆ วาดใหม่เมื่อมีค่าใหม่
 setInterval(drawCountdown, 1000);     // เดินตัวนับทุกวินาที
