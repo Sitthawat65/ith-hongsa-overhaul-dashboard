@@ -33,6 +33,8 @@
   .tab{padding:7px 16px;border-radius:999px;background:var(--panel);color:var(--muted);border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600}
   .tab.active{background:#1f6feb;color:#fff;border-color:#1f6feb}
   .spacer{flex:1 1 auto}
+  .ycap{display:inline-flex;align-items:center;gap:6px}
+  .ycap .lbl{font-size:12px;color:var(--muted)}
   .rng{display:inline-flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
   .rng button{border:none;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer}
   .rng button.on{background:#1f6feb;color:#fff}
@@ -51,12 +53,18 @@
   .legend .lgctrl{font-size:12px;color:var(--muted);margin-right:2px}
   .chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--line);cursor:pointer;font-size:12.5px;font-weight:600;color:#cdd9e5;user-select:none;transition:opacity .12s,border-color .12s}
   .chip .sw{width:11px;height:11px;border-radius:3px;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
-  .chip.off{opacity:.4}
+  .chip.off{opacity:.45;text-decoration:line-through}
   .chip.off .sw{background:#556!important}
   .chip:hover{border-color:#31465c}
   .mini{padding:5px 12px;border-radius:999px;background:transparent;border:1px dashed var(--line);color:var(--muted);cursor:pointer;font:inherit;font-size:12px;font-weight:600}
   .mini:hover{border-color:#31465c;color:#cdd9e5}
   .empty{color:var(--muted);text-align:center;padding:60px 10px;font-size:14px}
+  .hint{max-width:1200px;margin:0 auto 10px;color:var(--muted);font-size:12px;line-height:1.6}
+  .hint b{color:#9cc2ff}
+  .tip.pinned{pointer-events:auto}
+  .tip .tt.pin{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .tipx{border:none;background:#22344a;color:#cdd9e5;width:20px;height:20px;border-radius:6px;cursor:pointer;font-size:12px;line-height:1;flex:none}
+  .tipx:hover{background:#31465c}
 
   footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
 </style>
@@ -81,6 +89,15 @@
   <div class="bar">
     <div id="tabs" style="display:flex;gap:8px;flex-wrap:wrap"></div>
     <div class="spacer"></div>
+    <div class="ycap"><span class="lbl">สูงสุด</span>
+      <div class="rng" id="ymax">
+        <button data-y="auto" class="on">อัตโนมัติ</button>
+        <button data-y="85">85</button>
+        <button data-y="90">90</button>
+        <button data-y="95">95</button>
+        <button data-y="100">100</button>
+      </div>
+    </div>
     <div class="rng" id="rng">
       <button data-h="72" class="on">3 วัน</button>
       <button data-h="24">24 ชม.</button>
@@ -89,6 +106,7 @@
     </div>
   </div>
 
+  <div class="hint">💡 <b>คลิกบนกราฟ</b> เพื่อ “ปักหมุด” ค่า ณ เวลานั้นให้ค้างไว้ (สำหรับแคปหน้าจอ) — คลิกจุดอื่นเพื่อย้ายหมุด · กด <b>✕</b> หรือปุ่ม <b>Esc</b> เพื่อเอาหมุดออก · คลิกชิป “จุดวัด” ด้านล่างเพื่อ <b>ซ่อน/แสดง</b> เส้นแต่ละจุด</div>
   <div class="panel">
     <div class="chartwrap" id="chartwrap">
       <div class="empty" id="emptyMsg">กำลังโหลดข้อมูล…</div>
@@ -129,6 +147,8 @@ function seriesColor(i, n){
 }
 
 let HIST = null, group = null, rangeH = 72;
+let yMaxSel = 'auto';    // เพดานแกน Y: 'auto' หรือ 85/90/95/100
+let pinnedTime = null;   // เวลา (ms) ของหมุดที่คลิกค้างไว้ (null = ไม่ปัก)
 const hidden = {};    // { group: Set(tagIndex ที่ปิด) }
 
 function fmtTime(iso){
@@ -160,7 +180,7 @@ function renderLegend(){
   if(!s){ return; }
   const hs = hiddenSet(group);
   const ctrl = document.createElement('span');
-  ctrl.className='lgctrl'; ctrl.textContent='จุดวัด:';
+  ctrl.className='lgctrl'; ctrl.textContent='จุดวัด (คลิกเพื่อซ่อน/แสดง):';
   box.appendChild(ctrl);
   s.tags.forEach((tag,i)=>{
     const chip = document.createElement('div');
@@ -171,12 +191,9 @@ function renderLegend(){
     box.appendChild(chip);
   });
   const all = document.createElement('button');
-  all.className='mini'; all.textContent='ทั้งหมด';
+  all.className='mini'; all.textContent='แสดงทั้งหมด';
   all.onclick=()=>{ hs.clear(); drawChart(); renderLegend(); };
-  const none = document.createElement('button');
-  none.className='mini'; none.textContent='ล้าง';
-  none.onclick=()=>{ s.tags.forEach((_,i)=>hs.add(i)); drawChart(); renderLegend(); };
-  box.appendChild(all); box.appendChild(none);
+  box.appendChild(all);
 }
 
 // ค่าของ row ที่ดัชนี tag i (row = [iso, v0, v1, ...]); กันแถวเก่าที่สั้นกว่า
@@ -202,8 +219,17 @@ function drawChart(){
   visIdx.forEach(i=>rows.forEach(x=>{ const v=rowVal(x.r,i); if(v!=null && !isNaN(v)){ if(v<vMin)vMin=v; if(v>vMax)vMax=v; }}));
   if(vMin===Infinity){ vMin=20; vMax=90; }
   // ให้เห็นเส้นเกณฑ์เสมอ + เผื่อขอบ
-  vMin = Math.min(vMin, 60); vMax = Math.max(vMax, ALARM+3);
-  const pad = Math.max(2,(vMax-vMin)*0.08); vMin-=pad; vMax+=pad;
+  vMin = Math.min(vMin, 60);
+  let topPad;
+  if(yMaxSel==='auto'){
+    vMax = Math.max(vMax, ALARM+3);
+    topPad = Math.max(2,(vMax-vMin)*0.08);
+  } else {
+    // เพดานคงที่ตามที่เลือก แต่ถ้าค่าจริงสูงกว่าก็ขยายตามไม่ให้เส้นถูกตัด
+    vMax = Math.max(Number(yMaxSel), vMax);
+    topPad = 0;
+  }
+  const pad = Math.max(2,(vMax-vMin)*0.08); vMin-=pad; vMax+=topPad;
 
   const W=1000, H=460, mL=46, mR=14, mT=14, mB=30;
   const px = t => mL + (t - tMin)/(tMax - tMin || 1) * (W-mL-mR);
@@ -272,37 +298,54 @@ function drawChart(){
     const cx = (ev.touches?ev.touches[0].clientX:ev.clientX) - rect.left;
     return cx / rect.width * W;
   }
-  function move(ev){
-    const mx = toVB(ev);
-    const idx = nearest(mx);
+  // แสดงเส้นตั้ง + จุด + กล่องค่าที่แถวดัชนี idx (pinned=true คือหมุดที่คลิกค้าง)
+  function showAt(idx, pinned){
     const x = px(times[idx]);
     cross.setAttribute('x1',x); cross.setAttribute('x2',x); cross.setAttribute('opacity','1');
+    cross.setAttribute('stroke', pinned ? '#ffd591' : '#9cc2ff');
+    cross.setAttribute('stroke-width', pinned ? '1.6' : '1');
     let d=''; const tipRows=[];
     visIdx.forEach(i=>{ const v=rowVal(rows[idx].r,i); if(v!=null&&!isNaN(v)){
       const y=py(v); const col=seriesColor(i,s.tags.length);
-      d+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3" fill="'+col+'" stroke="#0b1220" stroke-width="1"/>';
+      d+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(pinned?4:3)+'" fill="'+col+'" stroke="#0b1220" stroke-width="1"/>';
       tipRows.push({col,label:tagLabel(s.tags[i]),v});
     }});
     dots.innerHTML=d;
     tipRows.sort((a,b)=>b.v-a.v);
-    tip.innerHTML = '<div class="tt">'+fmtTime(rows[idx].r[0])+'</div>'+
-      tipRows.map(r=>'<div class="row"><span class="nm"><span class="sw" style="background:'+r.col+'"></span>'+r.label+'</span><b>'+r.v.toFixed(1)+'°</b></div>').join('') ||
-      '<div class="tt">ไม่มีค่า</div>';
+    const head = pinned
+      ? '<div class="tt pin"><span>📌 '+fmtTime(rows[idx].r[0])+'</span><button class="tipx" title="เอาหมุดออก (Esc)">✕</button></div>'
+      : '<div class="tt">'+fmtTime(rows[idx].r[0])+'</div>';
+    const body = tipRows.map(r=>'<div class="row"><span class="nm"><span class="sw" style="background:'+r.col+'"></span>'+r.label+'</span><b>'+r.v.toFixed(1)+'°</b></div>').join('');
+    tip.innerHTML = head + (body || '<div class="tt">ไม่มีค่า</div>');
+    tip.classList.toggle('pinned', !!pinned);
     tip.style.opacity='1';
+    if(pinned){ const xb=tip.querySelector('.tipx'); if(xb) xb.onclick=clearPin; }
     // วางกล่อง tip โดยอิงพิกัดจริงบนจอ
     const rect = svg.getBoundingClientRect();
     const realX = rect.width * x / W;
-    let left = realX + 14; if(left + 180 > rect.width) left = realX - 180;
+    let left = realX + 14; if(left + 190 > rect.width) left = realX - 190;
     tip.style.left = Math.max(4,left)+'px';
     tip.style.top = '10px';
   }
-  function leave(){ cross.setAttribute('opacity','0'); dots.innerHTML=''; tip.style.opacity='0'; }
+  function clearPin(){ pinnedTime=null; cross.setAttribute('opacity','0'); dots.innerHTML=''; tip.style.opacity='0'; tip.classList.remove('pinned'); }
+  function move(ev){ if(pinnedTime!=null) return; showAt(nearest(toVB(ev)), false); }
+  function leave(){ if(pinnedTime!=null) return; cross.setAttribute('opacity','0'); dots.innerHTML=''; tip.style.opacity='0'; }
+  function pinAt(ev){ const idx=nearest(toVB(ev)); pinnedTime=times[idx]; showAt(idx, true); }
   hit.addEventListener('mousemove',move);
   hit.addEventListener('mouseleave',leave);
-  svg.addEventListener('touchstart',move,{passive:true});
-  svg.addEventListener('touchmove',move,{passive:true});
-  svg.addEventListener('touchend',leave);
+  hit.addEventListener('click',pinAt);
+  svg.addEventListener('touchstart',pinAt,{passive:true});
+  svg.addEventListener('touchmove',pinAt,{passive:true});
+  // ให้ Esc ปลดหมุดได้ (ลงทะเบียนครั้งเดียว ใช้ตัวล่าสุดเสมอ)
+  chartClearPin = clearPin;
+  // ถ้ามีหมุดค้างอยู่ (เช่นหลังรีเฟรช/เปลี่ยนช่วงเวลา) ให้แสดงที่จุดใกล้เวลาหมุดเดิม
+  if(pinnedTime!=null){
+    let bi=0,bd=Infinity; times.forEach((t,i)=>{const dd=Math.abs(t-pinnedTime); if(dd<bd){bd=dd;bi=i;}});
+    if(isFinite(bd) && bd < 30*60*1000){ pinnedTime=times[bi]; showAt(bi,true); } else { pinnedTime=null; }
+  }
 }
+let chartClearPin = null;   // อ้างถึง clearPin ของกราฟล่าสุด (ให้ Esc เรียกได้)
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && chartClearPin) chartClearPin(); });
 
 function drawAll(){
   document.getElementById('emptyMsg') && (document.getElementById('emptyMsg').style.display='none');
@@ -314,6 +357,12 @@ document.getElementById('rng').addEventListener('click', e=>{
   const b = e.target.closest('button'); if(!b) return;
   rangeH = parseInt(b.dataset.h,10);
   [...document.querySelectorAll('#rng button')].forEach(x=>x.classList.toggle('on',x===b));
+  drawChart();
+});
+document.getElementById('ymax').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  yMaxSel = b.dataset.y;   // 'auto' หรือ '85'/'90'/'95'/'100'
+  [...document.querySelectorAll('#ymax button')].forEach(x=>x.classList.toggle('on',x===b));
   drawChart();
 });
 
