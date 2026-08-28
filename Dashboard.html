@@ -2028,11 +2028,6 @@ function smuToggle(id){
   else SMU_PAUSE[k]=s;
   smuSavePause(); recalcSMU(); renderAll();
 }
-function smuReset(id){
-  const d=DATA.find(x=>x._id===id); if(!d) return;
-  if(!confirm('ล้างประวัติการหยุดนับของ ' + (d.name||'') + ' ทั้งหมด?\nSMU จะกลับไปนับเต็มตั้งแต่วันฐาน')) return;
-  delete SMU_PAUSE[smuK(d)]; smuSavePause(); recalcSMU(); renderAll();
-}
 function smuStampTxt(ms){const n=new Date(ms),p=x=>String(x).padStart(2,"0");return p(n.getDate())+"/"+p(n.getMonth()+1)+"/"+n.getFullYear()+" "+p(n.getHours())+":"+p(n.getMinutes());}
 /* แถบควบคุมใต้ไทม์ไลน์ — CSS ซ่อนไว้จนกว่าจะเข้าโหมดแก้ไข */
 function smuActHTML(d){
@@ -2046,7 +2041,6 @@ function smuActHTML(d){
   return `<div class="smu-act">
     <div class="lbl">⏱ การนับ SMU · ${note}${tally}</div>
     ${canToggle?`<button type="button" class="smu-btn ${d.smuPaused?"go":""}" onclick="smuToggle('${d._id}')">${d.smuPaused?"▶ เริ่มนับ SMU":"⏸ หยุดนับ SMU"}</button>`:""}
-    ${(s&&((+s.off||0)>=0.05||s.since))?`<button type="button" class="smu-btn rst" onclick="smuReset('${d._id}')">↺ ล้างประวัติ</button>`:""}
   </div>`;
 }
 
