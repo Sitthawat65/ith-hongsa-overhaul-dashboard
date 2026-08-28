@@ -366,43 +366,48 @@ document.getElementById('ymax').addEventListener('click', e=>{
   drawChart();
 });
 
-// ---------- shared 5-min countdown (เหมือนหน้า Table) ----------
-const PERIOD = 5*60*1000, CD_KEY='ith_temp_next_update';
-function cdGet(){ const v=parseInt(localStorage.getItem(CD_KEY)||'0',10); return isNaN(v)?0:v; }
-function cdSet(t){ try{ localStorage.setItem(CD_KEY,String(t)); }catch(e){} }
+// ---------- อัปเดตอัตโนมัติ ----------
+// ดึงไฟล์ประวัติถี่ๆ (ทุก 20 วิ) แต่ "วาดใหม่เฉพาะตอนมีข้อมูลใหม่จริง" เพื่อให้
+// กราฟตามข้อมูลรอบ 5 นาทีได้ใกล้เคียง โดยไม่ต้องรอครบรอบของหน้าเว็บเอง
+// ตัวนับถอยหลังอิง "เวลาข้อมูลล่าสุด + 5 นาที" จึงตรงกับจังหวะข้อมูลจริง
+const PERIOD = 5*60*1000, POLL = 20*1000;
+let lastUpdatedStr = null, nextExpected = 0;
 function drawCountdown(){
   const el=document.getElementById('cdVal'), box=document.getElementById('countdown');
-  let rem=cdGet()-Date.now(); if(rem<0) rem=0;
+  let rem = nextExpected - Date.now(); if(rem<0) rem=0;
   const sec=Math.floor(rem/1000), m=Math.floor(sec/60), s=sec%60;
-  el.textContent=m+':'+String(s).padStart(2,'0');
+  el.textContent = m+':'+String(s).padStart(2,'0');
   box.classList.toggle('soon', rem<=60000);
 }
-function resetCountdown(){ cdSet(Date.now()+PERIOD); drawCountdown(); }
-function tick(){ const next=cdGet(); if(!next||next<=Date.now()){ load(); cdSet(Date.now()+PERIOD); } drawCountdown(); }
-setInterval(tick,1000);
 
-async function load(){
+async function load(force){
   try{
     const r = await fetch(HIST_URL+'?_='+Date.now(), {cache:'no-store'});
-    HIST = await r.json();
+    const j = await r.json();
+    const changed = (j.updated !== lastUpdatedStr);
+    HIST = j;
     document.getElementById('updated').textContent = fmtTime(HIST.updated);
-    drawAll();
+    const dt = Date.parse(HIST.updated);
+    if(!isNaN(dt)) nextExpected = dt + PERIOD;      // คาดว่าอีก 5 นาทีจากข้อมูลล่าสุด
+    if(changed || force){ lastUpdatedStr = j.updated; drawAll(); }
+    drawCountdown();
   }catch(e){
     console.error('load failed', e);
-    document.getElementById('chartwrap').innerHTML = '<div class="empty">โหลดข้อมูลไม่สำเร็จ — ยังไม่มีไฟล์ temps_history.json หรือเครือข่ายมีปัญหา</div>';
+    if(!HIST) document.getElementById('chartwrap').innerHTML = '<div class="empty">โหลดข้อมูลไม่สำเร็จ — ยังไม่มีไฟล์ temps_history.json หรือเครือข่ายมีปัญหา</div>';
   }
 }
 async function refresh(){
   const btn=document.getElementById('refreshBtn');
   btn.classList.add('spin'); btn.disabled=true;
-  await load(); resetCountdown();
+  await load(true);
   setTimeout(()=>{ btn.classList.remove('spin'); btn.disabled=false; },500);
 }
 document.getElementById('refreshBtn').addEventListener('click', refresh);
 window.addEventListener('resize', ()=>{ if(HIST) drawChart(); });
 
-load();
-if(!cdGet() || cdGet()<=Date.now()) cdSet(Date.now()+PERIOD);
+setInterval(()=>load(false), POLL);   // ดึงข้อมูลถี่ๆ วาดใหม่เมื่อมีค่าใหม่
+setInterval(drawCountdown, 1000);     // เดินตัวนับทุกวินาที
+load(true);
 drawCountdown();
 </script>
 </body>
