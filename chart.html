@@ -37,11 +37,30 @@
   .ycap .lbl{font-size:12px;color:var(--muted)}
 
   #dateBtn.active{background:#1f6feb;border-color:#1f6feb;color:#fff}
-  .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000}
-  .modal-content{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;max-width:300px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
-  .modal-content h3{margin:0 0 12px;font-size:15px;color:#e7eef6}
-  .modal-close{position:absolute;top:12px;right:14px;cursor:pointer;font-size:20px;color:var(--muted);background:none;border:none;padding:0}
-  .modal-close:hover{color:#e7eef6}
+  #dateBtn .caret{font-size:10px;opacity:.8}
+  /* ---- ปฏิทินเลือกช่วงวันที่ (เด้งใต้ปุ่ม) ---- */
+  .datewrap{position:relative;display:inline-block}
+  .calpop{position:absolute;top:calc(100% + 8px);right:0;z-index:900;width:290px;background:#0f1a26;border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 44px rgba(0,0,0,.6);padding:12px}
+  .calpop[hidden]{display:none}
+  .calpop::before{content:"";position:absolute;top:-6px;right:26px;width:10px;height:10px;background:#0f1a26;border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+  .calhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+  .caltitle{font-size:14px;font-weight:700;color:#e7eef6}
+  .calnav{border:1px solid var(--line);background:var(--panel);color:#cdd9e5;width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:15px;line-height:1;font-family:inherit}
+  .calnav:hover:not(:disabled){background:#1c2a3a;border-color:#31465c}
+  .calnav:disabled{opacity:.3;cursor:default}
+  .caldow,.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .caldow span{text-align:center;font-size:11px;color:var(--muted);padding:4px 0}
+  .calgrid button{border:1px solid transparent;background:transparent;color:#cdd9e5;font:inherit;font-size:12.5px;height:32px;border-radius:8px;cursor:pointer}
+  .calgrid button:disabled{color:#3d4b5c;cursor:default}
+  .calgrid button:hover:not(:disabled){background:#1c2a3a}
+  .calgrid button.today{border-color:#31465c}
+  .calgrid button.inrange{background:rgba(31,111,235,.18);border-radius:0}
+  .calgrid button.sel{background:#1f6feb;color:#fff;font-weight:700}
+  .calgrid button.sel.start{border-radius:8px 0 0 8px}
+  .calgrid button.sel.end{border-radius:0 8px 8px 0}
+  .calgrid button.sel.start.end{border-radius:8px}
+  .calgrid .pad{height:32px}
+  .calfoot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
   .rng{display:inline-flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
   .rng button{border:none;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer}
   .rng button.on{background:#1f6feb;color:#fff}
@@ -125,30 +144,27 @@
         <button data-y="100">100</button>
       </div>
     </div>
-    <button id="dateBtn" class="refresh" type="button" title="เลือกช่วงวันที่">📅 เลือกวันที่</button>
+    <div class="datewrap">
+      <button id="dateBtn" class="refresh" type="button" title="เลือกช่วงวันที่">📅 เลือกวันที่ <span class="caret">▾</span></button>
+      <div class="calpop" id="calPop" hidden>
+        <div class="calhead">
+          <button type="button" class="calnav" id="calPrev" title="เดือนก่อนหน้า">‹</button>
+          <div class="caltitle" id="calTitle">—</div>
+          <button type="button" class="calnav" id="calNext" title="เดือนถัดไป">›</button>
+        </div>
+        <div class="caldow"><span>จ.</span><span>อ.</span><span>พ.</span><span>พฤ.</span><span>ศ.</span><span>ส.</span><span>อา.</span></div>
+        <div class="calgrid" id="calGrid"></div>
+        <div class="calfoot">
+          <span id="calMsg">เลือกวันเริ่มต้น</span>
+          <button type="button" class="mini" id="calClear">ล้าง</button>
+        </div>
+      </div>
+    </div>
     <div class="rng" id="rng">
       <button data-h="72" class="on">3 วัน</button>
       <button data-h="24">24 ชม.</button>
       <button data-h="12">12 ชม.</button>
       <button data-h="3">3 ชม.</button>
-    </div>
-  </div>
-
-  <!-- Date Range Picker Modal -->
-  <div id="dateModal" class="modal" style="display:none">
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <h3>เลือกช่วงวันที่</h3>
-      <div style="margin:12px 0">
-        <label style="display:block;margin-bottom:8px;font-size:13px;color:var(--muted)">วันเริ่มต้น</label>
-        <input type="date" id="dateFrom" style="width:100%;padding:6px;border:1px solid var(--line);background:var(--panel);color:#e7eef6;border-radius:6px;font-family:inherit">
-        <label style="display:block;margin-top:12px;margin-bottom:8px;font-size:13px;color:var(--muted)">วันสิ้นสุด</label>
-        <input type="date" id="dateTo" style="width:100%;padding:6px;border:1px solid var(--line);background:var(--panel);color:#e7eef6;border-radius:6px;font-family:inherit">
-      </div>
-      <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
-        <button id="cancelDate" class="mini" type="button">ยกเลิก</button>
-        <button id="applyDate" class="refresh" type="button">ใช้ช่วงนี้</button>
-      </div>
     </div>
   </div>
 
@@ -474,53 +490,124 @@ window.addEventListener('beforeprint', ()=>{
 });
 document.getElementById('pdfBtn').addEventListener('click', ()=>{ window.print(); });
 
-// ---------- Date Range Picker ----------
+// ---------- ปฏิทินเลือกช่วงวันที่ ----------
+const TH_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                   'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 function pad2(n){ return String(n).padStart(2,'0'); }
 function ymd(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
-function openDatePicker(){
-  const fromEl = document.getElementById('dateFrom'), toEl = document.getElementById('dateTo');
-  // จำกัดให้เลือกได้เฉพาะช่วงที่มีข้อมูลจริง (เก็บย้อนหลัง 3 วัน)
+function dayStart(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
+
+let calMonth = null;      // เดือนที่กำลังแสดง (Date ของวันที่ 1)
+let calPick  = null;      // วันเริ่มต้นที่คลิกไว้ระหว่างรอคลิกวันที่สอง (ms)
+
+// ขอบเขตวันที่ที่มีข้อมูลจริงของกลุ่มปัจจุบัน
+function dataDayBounds(){
   const s = HIST && HIST.series[group];
-  if(s && s.rows.length){
-    const first = new Date(Date.parse(s.rows[0][0])), last = new Date(Date.parse(s.rows[s.rows.length-1][0]));
-    fromEl.min = toEl.min = ymd(first);
-    fromEl.max = toEl.max = ymd(last);
-    if(customDateRange){
-      fromEl.value = ymd(new Date(customDateRange.from));
-      toEl.value   = ymd(new Date(customDateRange.to));
-    } else {
-      fromEl.value = ymd(first); toEl.value = ymd(last);
-    }
+  if(!s || !s.rows.length) return null;
+  return {min: dayStart(new Date(Date.parse(s.rows[0][0]))),
+          max: dayStart(new Date(Date.parse(s.rows[s.rows.length-1][0])))};
+}
+
+function renderCalendar(){
+  const grid = document.getElementById('calGrid');
+  const b = dataDayBounds();
+  document.getElementById('calTitle').textContent =
+    TH_MONTHS[calMonth.getMonth()] + ' ' + (calMonth.getFullYear() + 543);   // พ.ศ.
+
+  // ปิดปุ่มเลื่อนเดือนเมื่อออกนอกช่วงที่มีข้อมูล
+  const prevB = document.getElementById('calPrev'), nextB = document.getElementById('calNext');
+  if(b){
+    const firstOfMonth = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1).getTime();
+    const lastOfMonth  = new Date(calMonth.getFullYear(), calMonth.getMonth()+1, 0).getTime();
+    prevB.disabled = firstOfMonth <= b.min;
+    nextB.disabled = lastOfMonth  >= b.max;
   }
-  document.getElementById('dateModal').style.display = 'flex';
+
+  // ช่วงที่ควรไฮไลต์: ที่เลือกไว้แล้ว หรือกำลังเลือกอยู่
+  let selA = null, selB2 = null;
+  if(calPick != null){ selA = selB2 = calPick; }
+  else if(customDateRange){ selA = dayStart(new Date(customDateRange.from)); selB2 = dayStart(new Date(customDateRange.to)); }
+
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  const firstDow = (new Date(y, m, 1).getDay() + 6) % 7;   // จันทร์ = 0
+  const days = new Date(y, m+1, 0).getDate();
+  const today = dayStart(new Date());
+
+  let html = '';
+  for(let i=0;i<firstDow;i++) html += '<div class="pad"></div>';
+  for(let d=1; d<=days; d++){
+    const ts = new Date(y, m, d).getTime();
+    const off = b ? (ts < b.min || ts > b.max) : true;      // ไม่มีข้อมูล = กดไม่ได้
+    const cls = [];
+    if(ts === today) cls.push('today');
+    if(selA != null && ts >= Math.min(selA,selB2) && ts <= Math.max(selA,selB2)){
+      if(ts === Math.min(selA,selB2) || ts === Math.max(selA,selB2)){
+        cls.push('sel');
+        if(ts === Math.min(selA,selB2)) cls.push('start');
+        if(ts === Math.max(selA,selB2)) cls.push('end');
+      } else cls.push('inrange');
+    }
+    html += '<button type="button" data-ts="'+ts+'"'+(off?' disabled':'')+
+            (cls.length?' class="'+cls.join(' ')+'"':'')+'>'+d+'</button>';
+  }
+  grid.innerHTML = html;
+  document.getElementById('calMsg').textContent =
+    calPick != null ? 'เลือกวันสิ้นสุด' : (customDateRange ? 'คลิกเพื่อเลือกช่วงใหม่' : 'เลือกวันเริ่มต้น');
 }
-function closeDatePicker(){
-  document.getElementById('dateModal').style.display = 'none';
+
+function openDatePicker(){
+  const b = dataDayBounds();
+  const base = customDateRange ? new Date(customDateRange.from) : (b ? new Date(b.max) : new Date());
+  calMonth = new Date(base.getFullYear(), base.getMonth(), 1);
+  calPick = null;
+  renderCalendar();
+  document.getElementById('calPop').hidden = false;
 }
+function closeDatePicker(){ document.getElementById('calPop').hidden = true; calPick = null; }
+
 function setDateBtnLabel(){
   const b = document.getElementById('dateBtn');
-  if(!customDateRange){ b.textContent = '📅 เลือกวันที่'; b.classList.remove('active'); return; }
-  const f = new Date(customDateRange.from), t = new Date(customDateRange.to);
-  b.textContent = '📅 ' + pad2(f.getDate())+'/'+pad2(f.getMonth()+1) + ' – ' + pad2(t.getDate())+'/'+pad2(t.getMonth()+1);
+  const caret = ' <span class="caret">▾</span>';
+  if(!customDateRange){ b.innerHTML = '📅 เลือกวันที่' + caret; b.classList.remove('active'); return; }
+  const f = new Date(customDateRange.from), t2 = new Date(customDateRange.to);
+  const one = dayStart(f) === dayStart(t2);
+  b.innerHTML = '📅 ' + pad2(f.getDate())+'/'+pad2(f.getMonth()+1) +
+                (one ? '' : ' – ' + pad2(t2.getDate())+'/'+pad2(t2.getMonth()+1)) + caret;
   b.classList.add('active');
 }
 function clearDateRange(){ customDateRange = null; setDateBtnLabel(); }
-function applyDateRange(){
-  const fv = document.getElementById('dateFrom').value, tv = document.getElementById('dateTo').value;
-  if(!fv || !tv){ alert('เลือกทั้งวันเริ่มต้นและวันสิ้นสุด'); return; }
-  const from = new Date(fv+'T00:00:00'), to = new Date(tv+'T23:59:59');   // ครอบคลุมทั้งวันสุดท้าย
-  if(from > to){ alert('วันเริ่มต้นต้องอยู่ก่อนวันสิ้นสุด'); return; }
-  customDateRange = {from: from.getTime(), to: to.getTime()};
+
+// คลิกวันในปฏิทิน: ครั้งแรก = วันเริ่ม, ครั้งที่สอง = วันจบ (สลับให้ถ้าเลือกย้อน)
+function pickDay(ts){
+  if(calPick == null){ calPick = ts; renderCalendar(); return; }
+  const a = Math.min(calPick, ts), z = Math.max(calPick, ts);
+  calPick = null;
+  customDateRange = {from: a, to: z + (24*3600*1000 - 1000)};   // ครอบคลุมถึง 23:59:59 ของวันสุดท้าย
   setDateBtnLabel();
-  [...document.querySelectorAll('#rng button')].forEach(x=>x.classList.remove('on'));   // ปุ่มช่วงย้อนหลังไม่ active แล้ว
+  [...document.querySelectorAll('#rng button')].forEach(x=>x.classList.remove('on'));
   closeDatePicker();
   drawChart();
 }
-document.getElementById('dateBtn').addEventListener('click', openDatePicker);
-document.getElementById('cancelDate').addEventListener('click', closeDatePicker);
-document.getElementById('applyDate').addEventListener('click', applyDateRange);
-document.querySelector('.modal-close').addEventListener('click', closeDatePicker);
-document.getElementById('dateModal').addEventListener('click', e=>{ if(e.target.id==='dateModal') closeDatePicker(); });
+
+document.getElementById('dateBtn').addEventListener('click', e=>{
+  e.stopPropagation();
+  const pop = document.getElementById('calPop');
+  if(pop.hidden) openDatePicker(); else closeDatePicker();
+});
+document.getElementById('calGrid').addEventListener('click', e=>{
+  const btn = e.target.closest('button'); if(!btn || btn.disabled) return;
+  pickDay(Number(btn.dataset.ts));
+});
+document.getElementById('calPrev').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); });
+document.getElementById('calNext').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); });
+document.getElementById('calClear').addEventListener('click', ()=>{
+  clearDateRange(); closeDatePicker();
+  document.querySelector('#rng button[data-h="'+rangeH+'"]').classList.add('on');
+  drawChart();
+});
+document.getElementById('calPop').addEventListener('click', e=>e.stopPropagation());
+document.addEventListener('click', ()=>{ if(!document.getElementById('calPop').hidden) closeDatePicker(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !document.getElementById('calPop').hidden) closeDatePicker(); });
 
 setInterval(()=>load(false), POLL);   // ดึงข้อมูลถี่ๆ วาดใหม่เมื่อมีค่าใหม่
 setInterval(drawCountdown, 1000);     // เดินตัวนับทุกวินาที
