@@ -36,6 +36,7 @@
   .ycap{display:inline-flex;align-items:center;gap:6px;margin-right:8px}
   .ycap .lbl{font-size:12px;color:var(--muted)}
 
+  #dateBtn.active{background:#1f6feb;border-color:#1f6feb;color:#fff}
   .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000}
   .modal-content{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;max-width:300px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
   .modal-content h3{margin:0 0 12px;font-size:15px;color:#e7eef6}
@@ -194,6 +195,7 @@ function seriesColor(i, n){
 
 let HIST = null, group = null, rangeH = 72;
 let yMaxSel = 'auto';    // เพดานแกน Y: 'auto' หรือ 85/90/95/100
+let customDateRange = null;   // {from,to} เป็น ms เมื่อเลือกช่วงวันที่เอง (null = ใช้ปุ่มย้อนหลัง)
 let pinnedTime = null;   // เวลา (ms) ของหมุดที่คลิกค้างไว้ (null = ไม่ปัก)
 const hidden = {};    // { group: Set(tagIndex ที่ปิด) }
 
@@ -251,11 +253,13 @@ function drawChart(){
   if(!s || !s.rows.length){ wrap.innerHTML = '<div class="empty">ยังไม่มีข้อมูลย้อนหลังของกลุ่มนี้</div>'; return; }
 
   const nowMs = Date.now();
-  const minMs = nowMs - rangeH*3600*1000;
+  // ช่วงเวลาที่แสดง: ใช้ช่วงวันที่ที่เลือกเอง ถ้ามี ไม่งั้นย้อนหลังตามปุ่ม (rangeH)
+  const minMs = customDateRange ? customDateRange.from : nowMs - rangeH*3600*1000;
+  const maxMs = customDateRange ? customDateRange.to   : nowMs;
   // เตรียมจุดของแต่ละ series ในช่วงเวลา
-  const rows = s.rows.map(r=>({t:Date.parse(r[0]), r})).filter(x=>!isNaN(x.t) && x.t>=minMs);
+  const rows = s.rows.map(r=>({t:Date.parse(r[0]), r})).filter(x=>!isNaN(x.t) && x.t>=minMs && x.t<=maxMs);
   if(!rows.length){ wrap.innerHTML = '<div class="empty">ไม่มีข้อมูลในช่วงเวลานี้</div>'; return; }
-  const tMin = Math.min(rows[0].t, minMs), tMax = Math.max(rows[rows.length-1].t, nowMs);
+  const tMin = Math.min(rows[0].t, minMs), tMax = Math.max(rows[rows.length-1].t, maxMs);
 
   const hs = hiddenSet(group);
   const visIdx = s.tags.map((_,i)=>i).filter(i=>!hs.has(i));
@@ -402,6 +406,7 @@ function drawAll(){
 document.getElementById('rng').addEventListener('click', e=>{
   const b = e.target.closest('button'); if(!b) return;
   rangeH = parseInt(b.dataset.h,10);
+  clearDateRange();     // กดปุ่มย้อนหลัง = เลิกใช้ช่วงวันที่ที่เลือกเอง
   [...document.querySelectorAll('#rng button')].forEach(x=>x.classList.toggle('on',x===b));
   drawChart();
 });
@@ -453,39 +458,61 @@ window.addEventListener('resize', ()=>{ if(HIST) drawChart(); });
 
 // ---------- Print / Save as PDF ----------
 const RNG_LABEL = {72:'3 วัน',24:'24 ชม.',12:'12 ชม.',3:'3 ชม.'};
+function rangeLabel(){
+  if(!customDateRange) return RNG_LABEL[rangeH]||rangeH+' ชม.';
+  const f=new Date(customDateRange.from), t2=new Date(customDateRange.to);
+  return f.toLocaleDateString('th-TH')+' – '+t2.toLocaleDateString('th-TH');
+}
 window.addEventListener('beforeprint', ()=>{
   const s = HIST && HIST.series[group];
   const total = s ? s.tags.length : 0;
   const shown = s ? total - hiddenSet(group).size : 0;
   document.getElementById('printhead').innerHTML =
-    'Temperature Chart · ITH-CV — เครื่องจักร <b>'+(group||'-')+'</b> · ช่วง <b>'+(RNG_LABEL[rangeH]||rangeH+' ชม.')+
+    'Temperature Chart · ITH-CV — เครื่องจักร <b>'+(group||'-')+'</b> · ช่วง <b>'+rangeLabel()+
     '</b> · แสดง '+shown+'/'+total+' จุด · เพดานแกน Y '+(yMaxSel==='auto'?'อัตโนมัติ':yMaxSel+'°C')+
     ' · ข้อมูลล่าสุด '+(HIST?fmtTime(HIST.updated):'-')+' · พิมพ์เมื่อ '+new Date().toLocaleString('th-TH');
 });
 document.getElementById('pdfBtn').addEventListener('click', ()=>{ window.print(); });
 
 // ---------- Date Range Picker ----------
-let customDateRange = null;   // {from, to} in ms, or null = use rangeH
+function pad2(n){ return String(n).padStart(2,'0'); }
+function ymd(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
 function openDatePicker(){
-  const modal = document.getElementById('dateModal');
-  const now = new Date();
-  document.getElementById('dateTo').valueAsDate = now;
-  const from = new Date(now.getTime() - 72*3600*1000);
-  document.getElementById('dateFrom').valueAsDate = from;
-  modal.style.display = 'flex';
+  const fromEl = document.getElementById('dateFrom'), toEl = document.getElementById('dateTo');
+  // จำกัดให้เลือกได้เฉพาะช่วงที่มีข้อมูลจริง (เก็บย้อนหลัง 3 วัน)
+  const s = HIST && HIST.series[group];
+  if(s && s.rows.length){
+    const first = new Date(Date.parse(s.rows[0][0])), last = new Date(Date.parse(s.rows[s.rows.length-1][0]));
+    fromEl.min = toEl.min = ymd(first);
+    fromEl.max = toEl.max = ymd(last);
+    if(customDateRange){
+      fromEl.value = ymd(new Date(customDateRange.from));
+      toEl.value   = ymd(new Date(customDateRange.to));
+    } else {
+      fromEl.value = ymd(first); toEl.value = ymd(last);
+    }
+  }
+  document.getElementById('dateModal').style.display = 'flex';
 }
 function closeDatePicker(){
   document.getElementById('dateModal').style.display = 'none';
 }
+function setDateBtnLabel(){
+  const b = document.getElementById('dateBtn');
+  if(!customDateRange){ b.textContent = '📅 เลือกวันที่'; b.classList.remove('active'); return; }
+  const f = new Date(customDateRange.from), t = new Date(customDateRange.to);
+  b.textContent = '📅 ' + pad2(f.getDate())+'/'+pad2(f.getMonth()+1) + ' – ' + pad2(t.getDate())+'/'+pad2(t.getMonth()+1);
+  b.classList.add('active');
+}
+function clearDateRange(){ customDateRange = null; setDateBtnLabel(); }
 function applyDateRange(){
-  const from = document.getElementById('dateFrom').valueAsDate;
-  const to = document.getElementById('dateTo').valueAsDate;
-  if(!from || !to){ alert('เลือกทั้งวันเริ่มต้นและวันสิ้นสุด'); return; }
-  if(from > to){ alert('วันเริ่มต้นต้องก่อนวันสิ้นสุด'); return; }
+  const fv = document.getElementById('dateFrom').value, tv = document.getElementById('dateTo').value;
+  if(!fv || !tv){ alert('เลือกทั้งวันเริ่มต้นและวันสิ้นสุด'); return; }
+  const from = new Date(fv+'T00:00:00'), to = new Date(tv+'T23:59:59');   // ครอบคลุมทั้งวันสุดท้าย
+  if(from > to){ alert('วันเริ่มต้นต้องอยู่ก่อนวันสิ้นสุด'); return; }
   customDateRange = {from: from.getTime(), to: to.getTime()};
-  // Update button label
-  const days = Math.round((to - from) / (24*3600*1000));
-  document.getElementById('dateBtn').textContent = '📅 ' + days + ' วัน';
+  setDateBtnLabel();
+  [...document.querySelectorAll('#rng button')].forEach(x=>x.classList.remove('on'));   // ปุ่มช่วงย้อนหลังไม่ active แล้ว
   closeDatePicker();
   drawChart();
 }
@@ -494,19 +521,6 @@ document.getElementById('cancelDate').addEventListener('click', closeDatePicker)
 document.getElementById('applyDate').addEventListener('click', applyDateRange);
 document.querySelector('.modal-close').addEventListener('click', closeDatePicker);
 document.getElementById('dateModal').addEventListener('click', e=>{ if(e.target.id==='dateModal') closeDatePicker(); });
-
-// ใช้ custom range ถ้าเลือกไว้
-const originalDrawChart = drawChart;
-window.drawChart = function(){
-  if(customDateRange){
-    const s = HIST.series[group];
-    if(s && s.rows.length){
-      const rows = s.rows.map(r=>({t:Date.parse(r[0]), r})).filter(x=>!isNaN(x.t) && x.t>=customDateRange.from && x.t<=customDateRange.to);
-      if(rows.length) { tMin=Math.min(rows[0].t,customDateRange.from); tMax=Math.max(rows[rows.length-1].t,customDateRange.to); }
-    }
-  }
-  return originalDrawChart.call(this);
-};
 
 setInterval(()=>load(false), POLL);   // ดึงข้อมูลถี่ๆ วาดใหม่เมื่อมีค่าใหม่
 setInterval(drawCountdown, 1000);     // เดินตัวนับทุกวินาที
