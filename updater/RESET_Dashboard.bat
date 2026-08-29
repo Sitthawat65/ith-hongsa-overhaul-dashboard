@@ -29,13 +29,13 @@ if errorlevel 1 (
 )
 
 REM --- 1) normal update: pull live values via socket.io, push to GitHub ---
-echo [1/3] Pulling latest temperatures from Primus...
+echo [1/4] Pulling latest temperatures from Primus...
 python "%SCRIPT%"
 if not errorlevel 1 goto ensuretask
 
 REM --- 2) failed = session dead -> open browser to log in, then retry ---
 echo.
-echo [2/3] Session looks expired. Opening Primus so you can LOG IN...
+echo [2/4] Session looks expired. Opening Primus so you can LOG IN...
 echo       ^(a browser window will appear - log in, it closes by itself^)
 python "%SCRIPT%" --login
 echo       Pulling again after login...
@@ -52,7 +52,7 @@ if errorlevel 1 (
 :ensuretask
 REM --- 3) make sure the every-5-min auto-updater is installed and enabled ---
 echo.
-echo [3/3] Checking auto-update schedule ^(every 5 min^)...
+echo [3/4] Checking auto-update schedule ^(every 5 min^)...
 schtasks /query /tn "ITH_Bearing_Temp_Update" 1>nul 2>nul
 if errorlevel 1 (
   set "PYW="
@@ -65,9 +65,20 @@ if errorlevel 1 (
   echo   Auto-update task present and enabled.
 )
 
+
+REM --- 4) let the task WAKE the PC, so sleeping no longer freezes the dashboard ---
+echo.
+echo [4/4] Allowing the updater to wake the PC from sleep...
+powershell -NoProfile -Command "foreach ($n in 'ITH_Bearing_Temp_Update','ITH_Flight_Price_Update') { try { $t = Get-ScheduledTask -TaskName $n -ErrorAction Stop; $t.Settings.WakeToRun = $true; $t.Settings.StartWhenAvailable = $true; Set-ScheduledTask -TaskName $n -Settings $t.Settings | Out-Null } catch {} }"
+powercfg /setacvalueindex SCHEME_CURRENT SUB_SLEEP RTCWAKE 0 1>nul 2>nul
+powercfg /setdcvalueindex SCHEME_CURRENT SUB_SLEEP RTCWAKE 0 1>nul 2>nul
+powercfg /setactive SCHEME_CURRENT 1>nul 2>nul
+echo   Wake timers enabled - the PC will wake itself every 5 min to update.
+
 echo.
 echo ==================================================
 echo    DONE!  Dashboard updated, auto-update is ON.
+echo    The PC will now wake from sleep to keep updating.
 echo.
 echo    Live: https://sitthawat65.github.io/ith-hongsa-overhaul-dashboard/motor_temp.html
 echo    ^(the site refreshes ~1 min after each update^)
