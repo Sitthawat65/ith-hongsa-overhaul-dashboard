@@ -13,6 +13,8 @@
   --late:#A4453A; --late-soft:#F7E3E0;
   --rule:#DDE1DE; --rule-strong:#C3CBC7;
   --shadow:0 1px 2px rgba(30,42,46,.05), 0 8px 24px rgba(30,42,46,.06);
+  --lp1:#12556B; --lp2:#1E86A2; --lp-ink:#FFFFFF; --lp-ink-soft:#CFE4EC;
+  --tile-shadow:0 1px 3px rgba(8,40,52,.18);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -24,6 +26,8 @@
     --late:#E08277; --late-soft:#37201E;
     --rule:#2B3A3D; --rule-strong:#3C4E52;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+      --lp1:#0A2C38; --lp2:#0F4757; --lp-ink:#E8F2F5; --lp-ink-soft:#9FBECA;
+    --tile-shadow:0 1px 3px rgba(0,0,0,.45);
   }
 }
 :root[data-theme="dark"]{
@@ -35,6 +39,8 @@
   --late:#E08277; --late-soft:#37201E;
   --rule:#2B3A3D; --rule-strong:#3C4E52;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --lp1:#0A2C38; --lp2:#0F4757; --lp-ink:#E8F2F5; --lp-ink-soft:#9FBECA;
+  --tile-shadow:0 1px 3px rgba(0,0,0,.45);
 }
 
 *{box-sizing:border-box}
@@ -61,6 +67,47 @@ body{
 .dot.off{background:var(--ink-faint)}
 @keyframes pulse{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){ .dot.busy{animation:none} }
+
+/* ---------- launchpad ---------- */
+body.lp{background:var(--lp1); background-image:linear-gradient(160deg,var(--lp1) 0%,var(--lp2) 100%);
+  background-attachment:fixed}
+.tabs{display:flex; gap:2px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  border-bottom:1px solid rgba(255,255,255,.22); margin:0 0 20px}
+.tabs::-webkit-scrollbar{height:0}
+.tabs button{font:inherit; font-size:14px; white-space:nowrap; background:none; border:none;
+  color:var(--lp-ink-soft); padding:10px 15px 9px; cursor:pointer;
+  border-bottom:3px solid transparent; margin-bottom:-1px}
+.tabs button:hover{color:var(--lp-ink)}
+.tabs button[aria-current="page"]{color:var(--lp-ink); font-weight:600; border-bottom-color:var(--lp-ink)}
+.tabs button:focus-visible{outline:2px solid var(--lp-ink); outline-offset:-3px; border-radius:3px}
+
+.lp .brand h1,.lp .phead h2{color:var(--lp-ink)}
+.lp .brand p,.lp .top .right,.lp .saving{color:var(--lp-ink-soft)}
+.sect{margin:24px 0 10px; color:var(--lp-ink); font-size:14.5px; font-weight:600; letter-spacing:.01em;
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.sect .n{font-size:12.5px; font-weight:400; color:var(--lp-ink-soft)}
+.tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:11px}
+.tile{background:var(--surface); border:none; border-radius:4px; min-height:134px;
+  padding:13px 14px 11px; display:flex; flex-direction:column; gap:3px; text-align:left;
+  font:inherit; color:var(--ink); cursor:pointer; box-shadow:var(--tile-shadow);
+  transition:transform .12s, box-shadow .12s}
+.tile:hover{transform:translateY(-2px); box-shadow:0 5px 14px rgba(8,40,52,.24)}
+.tile:active{transform:translateY(0)}
+.tile:focus-visible{outline:2px solid var(--lp-ink); outline-offset:2px}
+.tile .tt{font-size:13.5px; font-weight:600; line-height:1.35;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+.tile .ts{font-size:11.5px; color:var(--ink-soft); line-height:1.35}
+.tile .tf{margin-top:auto; padding-top:9px; display:flex; align-items:flex-end;
+  justify-content:space-between; gap:8px}
+.tile.kpi .tn{font-size:31px; font-weight:600; line-height:1.05}
+.tile.kpi.late .tn{color:var(--late)} .tile.kpi.due .tn{color:var(--warn)}
+.tile.kpi.done .tn{color:var(--ok)}
+.tile .edge{width:3px; border-radius:2px; align-self:stretch; margin:-13px -14px -11px 0;
+  margin-left:auto; background:var(--rule)}
+.tile.s-late .edge{background:var(--late)} .tile.s-done .edge{background:var(--ok)}
+.tile.s-doing .edge{background:var(--accent)} .tile.s-soon .edge{background:var(--warn)}
+.tile .row{display:flex; align-items:flex-end; justify-content:space-between; gap:8px; width:100%}
+@media (max-width:420px){ .tiles{grid-template-columns:repeat(auto-fill,minmax(148px,1fr))} }
 
 /* ---------- summary ---------- */
 .summary{
@@ -401,39 +448,63 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule);
     return "เหลือ " + it.left + " วัน";
   }
 
-  /* ---------- หน้ารวม ---------- */
-  function renderOverview(items){
-    var all = summarise(items), h = "";
+  /* ---------- หน้ารวมแบบ Launchpad ---------- */
+  function renderHome(items){
+    var all = summarise(items);
+    var h = alertsHTML(items);
 
-    h += '<div class="summary">' + ring(all.pct, 108) + '<div class="tallies">'
-      + tally(all.total, "รายการทั้งหมด", "")
-      + tally(all.done, "เสร็จแล้ว", "done")
-      + tally(all.soon, "ใกล้ครบกำหนด", "due")
-      + tally(all.late, "ล่าช้า", "late")
-      + '</div></div>';
+    // ไทล์สรุป — ตัวเลขที่ต้องเห็นก่อนเสมอ
+    h += '<div class="sect">ภาพรวมทั้งหมด<span class="n">' + all.total + ' รายการ</span></div>'
+      + '<div class="tiles">'
+      + kpiTile("ความคืบหน้ารวม", all.pct + "%", "ทุกรอบงาน", "", "")
+      + kpiTile("เสร็จแล้ว", all.done, "จาก " + all.total + " รายการ", "done", "")
+      + kpiTile("ใกล้ครบกำหนด", all.soon, "ภายใน 7 วัน", "due", "")
+      + kpiTile("ล่าช้า", all.late, "เกินกำหนดแล้ว", "late", "")
+      + '</div>';
 
-    h += alertsHTML(items);
-
-    h += '<div class="grid">';
+    // ไทล์รายการ แยกตามรอบงาน
     ORDER.forEach(function(code){
-      var sub = items.filter(function(x){ return x.code === code; });
-      var s = summarise(sub), p = PERIOD[code];
-      var cls = s.late ? "late" : (s.pct === 100 ? "ok" : "");
-      h += '<button class="card" data-goto="'+code+'">'
-        + '<div class="hd"><span class="nm">'+esc(p.name)+'</span>'
-        + '<span class="pc mono">'+s.pct+'%</span></div>'
-        + barOf(s.pct, cls)
-        + '<div class="meta">'
-        +   '<span class="pill'+(s.late?" late":"")+'">'+(s.late?"ล่าช้า "+s.late:"ตรงแผน")+'</span>'
-        +   '<span class="pill ok">เสร็จ '+s.done+'/'+s.total+'</span>'
-        +   (s.soon ? '<span class="pill due">ใกล้ครบ '+s.soon+'</span>' : '')
-        + '</div>'
-        + '<div class="cyc">รอบ '+esc(sub[0].cyc.label)+' · กำหนด '+esc(fmtDate(sub[0].cyc.due))+'</div>'
-        + '</button>';
+      var sub2 = items.filter(function(x){ return x.code === code; });
+      var s = summarise(sub2), p = PERIOD[code], c = sub2[0].cyc;
+      h += '<div class="sect">' + esc(p.name)
+        + '<span class="n">รอบ ' + esc(c.label) + ' · กำหนด ' + esc(fmtDate(c.due))
+        + ' · เสร็จ ' + s.done + '/' + s.total + (s.late ? ' · ล่าช้า ' + s.late : '') + '</span></div>'
+        + '<div class="tiles">';
+      sub2.forEach(function(it){
+        var st = it.status === "done" ? "done" : it.late ? "late" : it.soon ? "soon"
+               : it.status === "doing" ? "doing" : "";
+        h += '<button class="tile' + (st ? " s-" + st : "") + '" data-tile="' + it.id + '">'
+          + '<div class="row"><span class="tt">' + esc(it.name) + '</span>'
+          + '<span class="edge"></span></div>'
+          + '<div class="ts">' + esc(dueText(it)) + '</div>'
+          + '<div class="tf"><span class="ts">' + esc(statusWord(it.status)) + '</span>'
+          + ringMini(it.progress) + '</div></button>';
+      });
+      h += '</div>';
     });
-    h += '</div>';
     return h;
   }
+  function statusWord(s){
+    return s === "done" ? "เสร็จแล้ว" : s === "doing" ? "กำลังทำ" : "ยังไม่เริ่ม";
+  }
+  function kpiTile(title, num, sub2, cls, extra){
+    return '<div class="tile kpi ' + cls + '">'
+      + '<div class="tt">' + esc(title) + '</div>'
+      + '<div class="tf"><div><div class="tn mono">' + esc(num) + '</div>'
+      + '<div class="ts">' + esc(sub2) + '</div></div>' + extra + '</div></div>';
+  }
+  function ringMini(pct){
+    var r = 15, c = 2 * Math.PI * r, off = c * (1 - pct / 100);
+    return '<svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true">'
+      + '<circle cx="19" cy="19" r="' + r + '" fill="none" stroke="var(--surface-2)" stroke-width="4"/>'
+      + '<circle cx="19" cy="19" r="' + r + '" fill="none" stroke="var(--accent)" stroke-width="4"'
+      + ' stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="'
+      + off.toFixed(1) + '" transform="rotate(-90 19 19)"/>'
+      + '<text x="19" y="20.5" text-anchor="middle" dominant-baseline="middle"'
+      + ' font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="600"'
+      + ' fill="var(--ink-soft)">' + pct + '</text></svg>';
+  }
+
   function tally(n, k, cls){
     return '<div class="tally '+cls+'"><div class="n mono">'+n+'</div><div class="k">'+esc(k)+'</div></div>';
   }
@@ -460,8 +531,7 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule);
   function renderPeriod(items, code){
     var sub = items.filter(function(x){ return x.code === code; });
     var s = summarise(sub), p = PERIOD[code], c = sub[0].cyc;
-    var h = '<button class="back" data-goto="">← กลับหน้ารวม</button>'
-      + '<div class="phead"><h2>'+esc(p.name)+'</h2>'
+    var h = '<div class="phead"><h2>'+esc(p.name)+'</h2>'
       + '<div class="sub">รอบ '+esc(c.label)+' · กำหนด '+esc(fmtDate(c.due))+' · '+esc(p.remind)+'</div></div>'
       + '<div class="summary">' + ring(s.pct, 96) + '<div class="tallies">'
       + tally(s.total,"รายการ","") + tally(s.done,"เสร็จแล้ว","done")
@@ -519,9 +589,20 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule);
   }
 
   /* ---------- วาดทั้งหน้า ---------- */
+  function tabsHTML(){
+    var h = '<div class="tabs" role="tablist">'
+      + '<button role="tab" data-goto="" aria-current="' + (view.period ? "false" : "page") + '">ภาพรวม</button>';
+    ORDER.forEach(function(c){
+      h += '<button role="tab" data-goto="'+c+'" aria-current="'
+        + (view.period === c ? "page" : "false") + '">' + esc(PERIOD[c].name) + '</button>';
+    });
+    return h + '</div>';
+  }
+
   function render(){
     var items = build();
     var root = document.getElementById("root");
+    document.body.classList.toggle("lp", !view.period);
     var head = '<div class="top"><div class="brand">'
       + '<h1>แผนติดตามงาน ISO · Electrical CV-ITH</h1>'
       + '<p>ITH Hongsa · ติดตามความคืบหน้าตามรอบงาน</p></div>'
@@ -531,17 +612,25 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule);
       + (mode === "readonly"
           ? '<div class="ro">มุมมองอ่านอย่างเดียว — บัญชีนี้ไม่มีสิทธิ์แก้ไขสถานะ</div>' : "");
 
-    root.innerHTML = head
-      + (view.period ? renderPeriod(items, view.period) : renderOverview(items))
+    root.innerHTML = head + tabsHTML()
+      + (view.period ? renderPeriod(items, view.period) : renderHome(items))
       + '<footer>ข้อมูลแผนงานจากไฟล์ “แผนติดตามงาน ISO EE” · แก้ไขสถานะแล้วบันทึกอัตโนมัติ</footer>';
     paintSave();
   }
 
   /* ---------- รับการกดและการพิมพ์ ---------- */
   document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-goto],[data-status],[data-toggle],[data-ack]");
+    var t = e.target.closest("[data-goto],[data-status],[data-toggle],[data-ack],[data-tile]");
     if(!t) return;
     if(t.hasAttribute("data-goto")){ view.period = t.getAttribute("data-goto") || null; view.open = {}; render(); window.scrollTo(0,0); return; }
+    if(t.hasAttribute("data-tile")){
+      var tid = t.getAttribute("data-tile");
+      view.period = tid.split("-")[0]; view.open = {}; view.open[tid] = true;
+      render(); window.scrollTo(0,0);
+      var el = document.querySelector('[data-toggle="' + tid + '"]');
+      if(el && el.scrollIntoView) el.scrollIntoView({block:"center"});
+      return;
+    }
     var id = t.getAttribute("data-id") || t.getAttribute("data-toggle") || t.getAttribute("data-ack");
     var it = build().filter(function(x){ return x.id === id; })[0];
     if(!it) return;
