@@ -5,219 +5,153 @@
 
 <style id="css">
 :root{
-  --bg:#F5F6F4; --surface:#FFFFFF; --surface-2:#EEF1EF;
-  --ink:#1E2A2E; --ink-soft:#5F6E73; --ink-faint:#8B989C;
-  --accent:#2C5F63; --accent-soft:#DCE8E7;
-  --ok:#3E7A52; --ok-soft:#E1EDE4;
-  --warn:#B07A2B; --warn-soft:#F6EDDC;
-  --late:#A4453A; --late-soft:#F7E3E0;
-  --rule:#DDE1DE; --rule-strong:#C3CBC7;
-  --shadow:0 1px 2px rgba(30,42,46,.05), 0 8px 24px rgba(30,42,46,.06);
-  --lp1:#0B2F3D; --lp2:#134F62; --lp-ink:#FFFFFF; --lp-ink-soft:#D6E7EE;
-  --tile-shadow:0 1px 3px rgba(8,40,52,.18);
+  --bg1:#091630; --bg2:#0C1F42;
+  --panel:#122850; --panel-2:#0F2246; --line:#1E4079; --line-soft:#193764;
+  --ink:#FFFFFF; --ink-soft:#93ACD4; --ink-faint:#5E7BA8;
+  --track:#17325C;
+  --cyan:#35A0F5; --teal:#2FE0B0; --amber:#FFC24B; --coral:#FF7B6B; --violet:#8E7BFF;
+  --ok:var(--teal); --doing:var(--cyan); --soon:var(--amber); --late:var(--coral);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#121A1C; --surface:#1A2427; --surface-2:#212D30;
-    --ink:#E3EAE9; --ink-soft:#9CACAF; --ink-faint:#6C7C80;
-    --accent:#5FAAAE; --accent-soft:#1E3335;
-    --ok:#6FBE8B; --ok-soft:#183026;
-    --warn:#D9A45A; --warn-soft:#33291A;
-    --late:#E08277; --late-soft:#37201E;
-    --rule:#2B3A3D; --rule-strong:#3C4E52;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-      --lp1:#061C25; --lp2:#0B3543; --lp-ink:#FFFFFF; --lp-ink-soft:#BDD6DF;
-    --tile-shadow:0 1px 3px rgba(0,0,0,.45);
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#121A1C; --surface:#1A2427; --surface-2:#212D30;
-  --ink:#E3EAE9; --ink-soft:#9CACAF; --ink-faint:#6C7C80;
-  --accent:#5FAAAE; --accent-soft:#1E3335;
-  --ok:#6FBE8B; --ok-soft:#183026;
-  --warn:#D9A45A; --warn-soft:#33291A;
-  --late:#E08277; --late-soft:#37201E;
-  --rule:#2B3A3D; --rule-strong:#3C4E52;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-  --lp1:#061C25; --lp2:#0B3543; --lp-ink:#FFFFFF; --lp-ink-soft:#BDD6DF;
-  --tile-shadow:0 1px 3px rgba(0,0,0,.45);
-}
-
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
-  background:var(--lp1);
-  background-image:linear-gradient(160deg,var(--lp1) 0%,var(--lp2) 100%);
-  background-attachment:fixed;
-  color:var(--lp-ink);
+  background:var(--bg1);
+  background-image:linear-gradient(155deg,var(--bg1) 0%,var(--bg2) 55%,#0A1A38 100%);
+  background-attachment:fixed; color:var(--ink);
   font-family:"IBM Plex Sans Thai","IBM Plex Sans",system-ui,sans-serif;
   font-size:15px; line-height:1.6; -webkit-text-size-adjust:100%;
 }
 .mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
-.wrap{max-width:1180px; margin:0 auto; padding:20px 18px 64px}
-@media (max-width:640px){ .wrap{padding:14px 12px 56px} }
+.wrap{max-width:1320px; margin:0 auto; padding:18px 16px 60px}
+@media (max-width:640px){ .wrap{padding:12px 11px 48px} }
 
-/* ---------- header ---------- */
-.top{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:20px}
+/* ---------- หัวเรื่อง ---------- */
+.top{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px}
 .brand{flex:1 1 220px; min-width:0}
-.brand h1{margin:0; font-size:clamp(17px,4.4vw,21px); font-weight:700; letter-spacing:-.01em;
-  text-wrap:balance; overflow-wrap:anywhere}
-.brand p{margin:2px 0 0; font-size:13px; overflow-wrap:anywhere}
-.top .right{margin-left:auto; text-align:right; font-size:12px; line-height:1.5; flex:none}
-.saving{display:inline-flex; align-items:center; gap:6px; font-size:12px}
-.dot{width:7px; height:7px; border-radius:50%; background:var(--ok); flex:none}
-.dot.busy{background:var(--warn); animation:pulse 1s ease-in-out infinite}
-.dot.off{background:var(--ink-faint)}
+.brand h1{margin:0; font-size:clamp(16px,4.2vw,20px); font-weight:700; letter-spacing:.01em;
+  text-wrap:balance; overflow-wrap:anywhere; color:var(--ink)}
+.brand p{margin:2px 0 0; font-size:12.5px; color:var(--ink-soft); overflow-wrap:anywhere}
+.top .right{margin-left:auto; text-align:right; font-size:11.5px; color:var(--ink-soft);
+  line-height:1.5; flex:none}
+.saving{display:inline-flex; align-items:center; gap:6px; font-size:11.5px}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--teal); flex:none;
+  box-shadow:0 0 0 3px rgba(47,224,176,.15)}
+.dot.busy{background:var(--amber); box-shadow:0 0 0 3px rgba(255,194,75,.15); animation:pulse 1s infinite}
+.dot.off{background:var(--ink-faint); box-shadow:none}
 @keyframes pulse{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){ .dot.busy{animation:none} }
 
-/* ---------- launchpad ---------- */
-.tabs{display:flex; gap:2px; overflow-x:auto; -webkit-overflow-scrolling:touch;
-  border-bottom:1px solid rgba(255,255,255,.22); margin:0 0 20px}
+/* ---------- แท็บ ---------- */
+.tabs{display:flex; gap:2px; overflow-x:auto; border-bottom:1px solid var(--line-soft); margin:0 0 14px}
 .tabs::-webkit-scrollbar{height:0}
-.tabs button{font:inherit; font-size:14px; white-space:nowrap; background:none; border:none;
-  color:var(--lp-ink-soft); padding:10px 15px 9px; cursor:pointer;
-  border-bottom:3px solid transparent; margin-bottom:-1px}
-.tabs button:hover{color:var(--lp-ink)}
-.tabs button[aria-current="page"]{color:var(--lp-ink); font-weight:600; border-bottom-color:var(--lp-ink)}
-.tabs button:focus-visible{outline:2px solid var(--lp-ink); outline-offset:-3px; border-radius:3px}
+.tabs button{font:inherit; font-size:13.5px; white-space:nowrap; background:none; border:none;
+  color:var(--ink-soft); padding:9px 14px 8px; cursor:pointer;
+  border-bottom:2px solid transparent; margin-bottom:-1px}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-current="page"]{color:var(--ink); font-weight:600; border-bottom-color:var(--cyan)}
+.tabs button:focus-visible{outline:2px solid var(--cyan); outline-offset:-3px; border-radius:3px}
 
-.brand h1,.phead h2{color:var(--lp-ink)}
-.brand p,.top .right,.saving,.phead .sub{color:var(--lp-ink-soft)}
-footer{color:var(--lp-ink-soft); border-top-color:rgba(255,255,255,.2)}
-.sect{margin:24px 0 10px; color:var(--lp-ink); font-size:14.5px; font-weight:600; letter-spacing:.01em;
-  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
-.sect .n{font-size:12.5px; font-weight:400; color:var(--lp-ink-soft)}
-.tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:11px}
-.tile{background:var(--surface); border:none; border-radius:4px; min-height:134px;
-  padding:13px 14px 11px; display:flex; flex-direction:column; gap:3px; text-align:left;
-  font:inherit; color:var(--ink); cursor:pointer; box-shadow:var(--tile-shadow);
-  transition:transform .12s, box-shadow .12s}
-.tile:hover{transform:translateY(-2px); box-shadow:0 5px 14px rgba(8,40,52,.24)}
-.tile:active{transform:translateY(0)}
-.tile:focus-visible{outline:2px solid var(--lp-ink); outline-offset:2px}
-.tile .tt{font-size:13.5px; font-weight:600; line-height:1.35;
-  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
-.tile .ts{font-size:11.5px; color:var(--ink-soft); line-height:1.35}
-.tile .tf{margin-top:auto; padding-top:9px; display:flex; align-items:flex-end;
-  justify-content:space-between; gap:8px}
-.tile.kpi .tn{font-size:31px; font-weight:600; line-height:1.05}
-.tile.kpi.late .tn{color:var(--late)} .tile.kpi.due .tn{color:var(--warn)}
-.tile.kpi.done .tn{color:var(--ok)}
-.tile .edge{width:3px; border-radius:2px; align-self:stretch; margin:-13px -14px -11px 0;
-  margin-left:auto; background:var(--rule)}
-.tile.s-late .edge{background:var(--late)} .tile.s-done .edge{background:var(--ok)}
-.tile.s-doing .edge{background:var(--accent)} .tile.s-soon .edge{background:var(--warn)}
-.tile .row{display:flex; align-items:flex-end; justify-content:space-between; gap:8px; width:100%}
-@media (max-width:420px){ .tiles{grid-template-columns:repeat(auto-fill,minmax(148px,1fr))} }
+/* ---------- แผง ---------- */
+.panels{display:grid; gap:11px; grid-template-columns:repeat(12,1fr)}
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:5px;
+  padding:13px 15px 15px; min-width:0; display:flex; flex-direction:column}
+.panel > h3{margin:0 0 11px; font-size:12.5px; font-weight:600; color:var(--ink);
+  letter-spacing:.02em; display:flex; align-items:center; gap:8px}
+.panel > h3 .c{font-size:11.5px; font-weight:400; color:var(--ink-faint); margin-left:auto}
+button.panel{text-align:left; font:inherit; color:var(--ink); cursor:pointer;
+  transition:border-color .13s, transform .13s}
+button.panel:hover{border-color:var(--cyan); transform:translateY(-1px)}
+button.panel:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+.c3{grid-column:span 3} .c4{grid-column:span 4} .c5{grid-column:span 5}
+.c6{grid-column:span 6} .c7{grid-column:span 7} .c8{grid-column:span 8} .c12{grid-column:span 12}
+@media (max-width:1000px){ .c3,.c4,.c5{grid-column:span 6} .c7,.c8{grid-column:span 12} }
+@media (max-width:620px){ .c3,.c4,.c5,.c6,.c7,.c8{grid-column:span 12} }
 
-/* ---------- summary ---------- */
-.summary{
-  display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:center;
-  background:var(--surface); border:none; border-radius:4px; color:var(--ink);
-  padding:18px 20px; box-shadow:var(--tile-shadow); margin-bottom:14px;
-}
-@media (max-width:560px){ .summary{grid-template-columns:1fr; gap:14px; padding:16px} }
-.ring{display:block}
-.tallies{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px}
-@media (max-width:560px){ .tallies{grid-template-columns:repeat(2,1fr)} }
-.tally{background:var(--surface-2); border-radius:9px; padding:10px 12px}
-.tally .n{font-size:22px; font-weight:600; line-height:1.15}
-.tally .k{font-size:11.5px; color:var(--ink-soft); letter-spacing:.02em}
-.tally.late .n{color:var(--late)} .tally.due .n{color:var(--warn)}
-.tally.done .n{color:var(--ok)}
+/* ---------- ตัวเลขและวงแหวน ---------- */
+.big{font-size:34px; font-weight:600; line-height:1.05; letter-spacing:-.01em}
+.big.sm{font-size:26px}
+.cap{font-size:11.5px; color:var(--ink-soft)}
+.kpirow{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:auto}
+.delta{font-size:11px; font-weight:600; padding:2px 9px; border-radius:99px}
+.d-ok{background:rgba(47,224,176,.14); color:var(--teal)}
+.d-soon{background:rgba(255,194,75,.14); color:var(--amber)}
+.d-late{background:rgba(255,123,107,.14); color:var(--coral)}
+.d-idle{background:rgba(53,160,245,.14); color:var(--cyan)}
+.rings{display:flex; gap:14px; justify-content:space-around; flex-wrap:wrap}
+.ringbox{text-align:center; min-width:92px}
+.ringbox .lb{font-size:11.5px; color:var(--ink-soft); margin-top:3px}
 
-/* ---------- alerts ---------- */
-.alerts{display:flex; flex-direction:column; gap:8px; margin-bottom:16px}
-.alert{
-  display:flex; gap:12px; align-items:flex-start; color:var(--ink);
-  background:var(--late-soft); border:none; border-left:3px solid var(--late);
-  border-radius:4px; padding:11px 13px; box-shadow:var(--tile-shadow);
-}
-.alert .body{flex:1; min-width:0}
-.alert .t{font-weight:600; font-size:14px; color:var(--late)}
-.alert .s{font-size:12.5px; color:var(--ink-soft); margin-top:1px}
-.alert.warn{background:var(--warn-soft); border-color:var(--warn)}
-.alert.warn .t{color:var(--warn)}
+/* ---------- แถบแนวนอน ---------- */
+.blist{display:flex; flex-direction:column; gap:11px}
+.brow{display:grid; grid-template-columns:1fr auto; gap:4px 10px; align-items:baseline}
+.brow .nm{font-size:12.5px; color:var(--ink)}
+.brow .vl{font-size:12.5px; color:var(--ink-soft)}
+.track{grid-column:1/-1; height:6px; border-radius:99px; background:var(--track); overflow:hidden}
+.track i{display:block; height:100%; border-radius:99px; background:var(--cyan); transition:width .35s}
+@media (prefers-reduced-motion:reduce){ .track i{transition:none} }
+.track i.ok{background:var(--teal)} .track i.soon{background:var(--amber)}
+.track i.late{background:var(--coral)}
 
-/* ---------- period cards ---------- */
-.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(255px,1fr)); gap:12px}
-.card{
-  background:var(--surface); border:1px solid var(--rule); border-radius:12px;
-  padding:16px 17px; box-shadow:var(--shadow); cursor:pointer;
-  display:flex; flex-direction:column; gap:11px; text-align:left; font:inherit; color:inherit;
-  transition:border-color .15s, transform .15s;
-}
-.card:hover{border-color:var(--accent)}
-.card:active{transform:translateY(1px)}
-.card:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
-.card .hd{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
-.card .nm{font-weight:600; font-size:15.5px}
-.card .pc{font-size:19px; font-weight:600}
-.card .meta{display:flex; gap:8px; flex-wrap:wrap; font-size:12px; color:var(--ink-soft)}
-.card .cyc{font-size:12px; color:var(--ink-faint)}
+/* ---------- รายการเตือน ---------- */
+.mini{display:flex; flex-direction:column; gap:9px; max-height:236px; overflow:auto}
+.mini::-webkit-scrollbar{width:5px} .mini::-webkit-scrollbar-thumb{background:var(--line); border-radius:9px}
+.mrow{display:flex; gap:9px; align-items:flex-start; padding-left:9px; border-left:2px solid var(--coral)}
+.mrow.soon{border-left-color:var(--amber)}
+.mrow .t{font-size:12.5px; line-height:1.4}
+.mrow .s{font-size:11px; color:var(--ink-faint)}
+.mrow .r{margin-left:auto; font-size:11.5px; white-space:nowrap; color:var(--coral)}
+.mrow.soon .r{color:var(--amber)}
+.empty{font-size:12.5px; color:var(--ink-faint); padding:6px 0}
 
-.bar{height:7px; border-radius:99px; background:var(--surface-2); overflow:hidden}
-.bar i{display:block; height:100%; border-radius:99px; background:var(--accent); transition:width .3s}
-@media (prefers-reduced-motion:reduce){ .bar i{transition:none} }
-.bar i.ok{background:var(--ok)} .bar i.late{background:var(--late)} .bar i.warn{background:var(--warn)}
-
-.pill{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:500;
-  padding:2px 8px; border-radius:99px; background:var(--surface-2); color:var(--ink-soft)}
-.pill.late{background:var(--late-soft); color:var(--late)}
-.pill.due{background:var(--warn-soft); color:var(--warn)}
-.pill.ok{background:var(--ok-soft); color:var(--ok)}
-
-/* ---------- item list ---------- */
-.back{background:none; border:none; font:inherit; color:var(--accent); cursor:pointer;
-  padding:6px 0; display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:500}
-.back:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
-.phead{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; margin:4px 0 14px}
-.phead h2{margin:0; font-size:19px; font-weight:700}
-.phead .sub{font-size:13px}
-
-.items{display:flex; flex-direction:column; gap:9px}
-.item{background:var(--surface); border:none; border-radius:4px; color:var(--ink);
-  padding:13px 15px; box-shadow:var(--tile-shadow)}
-.item.is-late{border-left:3px solid var(--late)}
-.item.is-done{border-left:3px solid var(--ok)}
+/* ---------- รายการงาน ---------- */
+.phead{display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap; margin:2px 0 12px}
+.phead h2{margin:0; font-size:18px; font-weight:700; color:var(--ink)}
+.phead .sub{color:var(--ink-soft); font-size:12.5px}
+.items{display:flex; flex-direction:column; gap:8px}
+.item{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--line);
+  border-radius:5px; padding:12px 14px}
+.item.is-late{border-left-color:var(--coral)}
+.item.is-soon{border-left-color:var(--amber)}
+.item.is-done{border-left-color:var(--teal)}
 .item .r1{display:flex; gap:12px; align-items:flex-start}
-.item .nm{font-weight:500; flex:1; min-width:0; font-size:14.5px}
-.item .due{font-size:12px; color:var(--ink-soft); white-space:nowrap}
-.item .r2{display:flex; gap:10px; align-items:center; margin-top:10px; flex-wrap:wrap}
-.seg{display:inline-flex; border:1px solid var(--rule-strong); border-radius:8px; overflow:hidden}
-.seg button{font:inherit; font-size:12.5px; padding:5px 11px; border:none; background:var(--surface);
-  color:var(--ink-soft); cursor:pointer; border-right:1px solid var(--rule-strong)}
+.item .nm{font-weight:500; flex:1; min-width:0; font-size:14px; color:var(--ink)}
+.item .due{font-size:11.5px; color:var(--ink-soft); white-space:nowrap}
+.item.is-late .due{color:var(--coral)}
+.ptag{display:inline-block; font-size:10.5px; font-weight:500; color:var(--cyan);
+  background:rgba(53,160,245,.13); border-radius:3px; padding:1px 7px; margin-right:7px; vertical-align:1px}
+.item .r2{display:flex; gap:9px; align-items:center; margin-top:9px; flex-wrap:wrap}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:5px; overflow:hidden}
+.seg button{font:inherit; font-size:12px; padding:5px 11px; border:none; background:var(--panel-2);
+  color:var(--ink-soft); cursor:pointer; border-right:1px solid var(--line)}
 .seg button:last-child{border-right:none}
-.seg button[aria-pressed="true"]{background:var(--accent); color:#fff; font-weight:500}
-.seg button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--cyan); color:#06182F; font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--cyan); outline-offset:-2px}
 .item .barwrap{flex:1; min-width:110px; display:flex; align-items:center; gap:9px}
-.item .pcv{font-size:12.5px; color:var(--ink-soft); min-width:34px; text-align:right}
+.item .pcv{font-size:12px; color:var(--ink-soft); min-width:34px; text-align:right}
+.rowbtn{font:inherit; font-size:12px; padding:5px 10px; border-radius:5px; cursor:pointer;
+  border:1px solid var(--line); background:var(--panel-2); color:var(--ink-soft)}
+.rowbtn:hover{border-color:var(--cyan); color:var(--cyan)}
+.rowbtn:focus-visible{outline:2px solid var(--cyan); outline-offset:1px}
+.rowbtn.on{background:rgba(53,160,245,.14); border-color:var(--cyan); color:var(--cyan)}
+.acked{font-size:11.5px; color:var(--teal); display:flex; align-items:center; gap:5px}
 
-.rowbtn{font:inherit; font-size:12.5px; padding:5px 10px; border-radius:7px; cursor:pointer;
-  border:1px solid var(--rule-strong); background:var(--surface); color:var(--ink-soft)}
-.rowbtn:hover{border-color:var(--accent); color:var(--accent)}
-.rowbtn:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
-.rowbtn.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
-
-.detail{margin-top:11px; padding-top:11px; border-top:1px dashed var(--rule); display:grid; gap:9px}
+.detail{margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); display:grid; gap:9px}
 .fld{display:grid; gap:4px}
-.fld label{font-size:11.5px; color:var(--ink-soft); letter-spacing:.02em}
+.fld label{font-size:11px; color:var(--ink-faint); letter-spacing:.02em}
 .fld input,.fld textarea,.fld select{
-  font:inherit; font-size:13.5px; padding:7px 9px; border:1px solid var(--rule-strong);
-  border-radius:7px; background:var(--surface); color:var(--ink); width:100%;
-}
-.fld textarea{resize:vertical; min-height:56px}
+  font:inherit; font-size:13px; padding:7px 9px; border:1px solid var(--line);
+  border-radius:5px; background:var(--panel-2); color:var(--ink); width:100%}
+.fld textarea{resize:vertical; min-height:54px}
 .fld input:focus-visible,.fld textarea:focus-visible,.fld select:focus-visible{
-  outline:2px solid var(--accent); outline-offset:-1px; border-color:var(--accent)}
+  outline:2px solid var(--cyan); outline-offset:-1px; border-color:var(--cyan)}
+.fld ::placeholder{color:var(--ink-faint)}
 .two{display:grid; grid-template-columns:1fr 1fr; gap:9px}
 @media (max-width:560px){ .two{grid-template-columns:1fr} }
-.acked{font-size:12px; color:var(--ok); display:flex; align-items:center; gap:5px}
-
-.ro{background:var(--warn-soft); border-left:3px solid var(--warn); color:var(--ink);
-  border-radius:4px; padding:10px 13px; font-size:13px; margin-bottom:14px; box-shadow:var(--tile-shadow)}
-.hidden{display:none}
-footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); font-size:12px; text-align:center}
+.ro{background:rgba(255,194,75,.1); border:1px solid var(--amber); color:var(--ink);
+  border-radius:5px; padding:9px 12px; font-size:12.5px; margin-bottom:12px}
+footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
+  color:var(--ink-faint); font-size:11.5px; text-align:center}
 </style>
 
 <div class="wrap" id="root"></div>
@@ -264,15 +198,15 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); font
     ["Y","ประจำปี","เอกสาร Calibrate เครื่องมือ"]
   ];
   var PERIOD = {
-    M:{name:"ประจำเดือน", due:"ภายในวันที่ 5 ของเดือน",        remind:"เตือนวันที่ 25–30 ทุกเดือน"},
-    Q:{name:"ไตรมาส",     due:"ภายใน 1 เดือนของไตรมาสถัดไป",   remind:"เตือนวันที่ 25–30 เดือน 3, 6, 9, 12"},
-    H:{name:"ครึ่งปี",     due:"ภายในเดือน 6 และ 12",           remind:"เตือนวันที่ 25–30 เดือน 6, 12"},
-    Y:{name:"ประจำปี",     due:"ภายในเดือน 10–11",              remind:"เตือนวันที่ 25–30 เดือน 10, 11, 12"}
+    M:{name:"ประจำเดือน", remind:"เตือนวันที่ 25–30 ทุกเดือน"},
+    Q:{name:"ไตรมาส",     remind:"เตือนวันที่ 25–30 เดือน 3, 6, 9, 12"},
+    H:{name:"ครึ่งปี",     remind:"เตือนวันที่ 25–30 เดือน 6, 12"},
+    Y:{name:"ประจำปี",     remind:"เตือนวันที่ 25–30 เดือน 10, 11, 12"}
   };
   var ORDER = ["M","Q","H","Y"];
   var THMON = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 
-  /* ---------- สถานะที่บันทึกไว้ ---------- */
+/* ---------- สถานะที่บันทึกไว้ ---------- */
   var STATE;
   try { STATE = JSON.parse(document.getElementById("state").textContent) || {}; }
   catch(e){ STATE = {}; }
@@ -290,7 +224,7 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); font
   function canEdit(){ return mode !== "readonly"; }
   function lsAvailable(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }
                           catch(e){ return false; } }
-  var view = { period:null, open:{} };
+  var view = { period:null, filter:null, open:{} };
 
   /* ---------- รอบงานปัจจุบันของแต่ละช่วงเวลา ---------- */
   function cycleOf(code, now){
@@ -425,23 +359,25 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); font
       + '</body></html>';
   }
 
+  
   /* ---------- ตัวช่วยวาด ---------- */
   function esc(s){ return String(s == null ? "" : s)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-  function ring(pct, size){
-    var r = (size-12)/2, c = 2*Math.PI*r, off = c*(1-pct/100);
-    return '<svg class="ring" width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img" '
-      + 'aria-label="ความคืบหน้ารวม '+pct+' เปอร์เซ็นต์">'
-      + '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--surface-2)" stroke-width="9"/>'
-      + '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--accent)" stroke-width="9"'
+
+  function ring(pct, size, color, label){
+    var sw = Math.max(7, size*0.11), r = (size-sw)/2, c = 2*Math.PI*r, off = c*(1-pct/100);
+    return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img"'
+      + ' aria-label="'+esc(label||"")+' '+pct+' เปอร์เซ็นต์">'
+      + '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--track)" stroke-width="'+sw+'"/>'
+      + '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="'+sw+'"'
       + ' stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"'
       + ' transform="rotate(-90 '+size/2+' '+size/2+')"/>'
-      + '<text x="'+size/2+'" y="'+(size/2+2)+'" text-anchor="middle" dominant-baseline="middle" '
-      + 'font-family="IBM Plex Mono, monospace" font-size="'+(size*0.24)+'" font-weight="600" fill="var(--ink)">'
-      + pct + '%</text></svg>';
+      + '<text x="'+size/2+'" y="'+(size/2+1)+'" text-anchor="middle" dominant-baseline="middle"'
+      + ' font-family="IBM Plex Mono, monospace" font-size="'+(size*0.235).toFixed(1)+'"'
+      + ' font-weight="600" fill="var(--ink)">'+pct+'%</text></svg>';
   }
-  function barOf(pct, cls){
-    return '<div class="bar"><i class="'+cls+'" style="width:'+Math.max(0,Math.min(100,pct))+'%"></i></div>';
+  function bar(pct, cls){
+    return '<div class="track"><i class="'+(cls||"")+'" style="width:'+Math.max(0,Math.min(100,pct))+'%"></i></div>';
   }
   function dueText(it){
     if(it.status === "done") return "เสร็จแล้ว";
@@ -449,151 +385,17 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); font
     if(it.left === 0) return "ครบกำหนดวันนี้";
     return "เหลือ " + it.left + " วัน";
   }
-
-  /* ---------- หน้ารวมแบบ Launchpad ---------- */
-  function renderHome(items){
-    var all = summarise(items);
-    var h = alertsHTML(items);
-
-    // ไทล์สรุป — ตัวเลขที่ต้องเห็นก่อนเสมอ
-    h += '<div class="sect">ภาพรวมทั้งหมด<span class="n">' + all.total + ' รายการ</span></div>'
-      + '<div class="tiles">'
-      + kpiTile("ความคืบหน้ารวม", all.pct + "%", "ทุกรอบงาน", "", "")
-      + kpiTile("เสร็จแล้ว", all.done, "จาก " + all.total + " รายการ", "done", "")
-      + kpiTile("ใกล้ครบกำหนด", all.soon, "ภายใน 7 วัน", "due", "")
-      + kpiTile("ล่าช้า", all.late, "เกินกำหนดแล้ว", "late", "")
-      + '</div>';
-
-    // ไทล์รายการ แยกตามรอบงาน
-    ORDER.forEach(function(code){
-      var sub2 = items.filter(function(x){ return x.code === code; });
-      var s = summarise(sub2), p = PERIOD[code], c = sub2[0].cyc;
-      h += '<div class="sect">' + esc(p.name)
-        + '<span class="n">รอบ ' + esc(c.label) + ' · กำหนด ' + esc(fmtDate(c.due))
-        + ' · เสร็จ ' + s.done + '/' + s.total + (s.late ? ' · ล่าช้า ' + s.late : '') + '</span></div>'
-        + '<div class="tiles">';
-      sub2.forEach(function(it){
-        var st = it.status === "done" ? "done" : it.late ? "late" : it.soon ? "soon"
-               : it.status === "doing" ? "doing" : "";
-        h += '<button class="tile' + (st ? " s-" + st : "") + '" data-tile="' + it.id + '">'
-          + '<div class="row"><span class="tt">' + esc(it.name) + '</span>'
-          + '<span class="edge"></span></div>'
-          + '<div class="ts">' + esc(dueText(it)) + '</div>'
-          + '<div class="tf"><span class="ts">' + esc(statusWord(it.status)) + '</span>'
-          + ringMini(it.progress) + '</div></button>';
-      });
-      h += '</div>';
-    });
-    return h;
-  }
-  function statusWord(s){
-    return s === "done" ? "เสร็จแล้ว" : s === "doing" ? "กำลังทำ" : "ยังไม่เริ่ม";
-  }
-  function kpiTile(title, num, sub2, cls, extra){
-    return '<div class="tile kpi ' + cls + '">'
-      + '<div class="tt">' + esc(title) + '</div>'
-      + '<div class="tf"><div><div class="tn mono">' + esc(num) + '</div>'
-      + '<div class="ts">' + esc(sub2) + '</div></div>' + extra + '</div></div>';
-  }
-  function ringMini(pct){
-    var r = 15, c = 2 * Math.PI * r, off = c * (1 - pct / 100);
-    return '<svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true">'
-      + '<circle cx="19" cy="19" r="' + r + '" fill="none" stroke="var(--surface-2)" stroke-width="4"/>'
-      + '<circle cx="19" cy="19" r="' + r + '" fill="none" stroke="var(--accent)" stroke-width="4"'
-      + ' stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="'
-      + off.toFixed(1) + '" transform="rotate(-90 19 19)"/>'
-      + '<text x="19" y="20.5" text-anchor="middle" dominant-baseline="middle"'
-      + ' font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="600"'
-      + ' fill="var(--ink-soft)">' + pct + '</text></svg>';
+  function statusWord(s){ return s === "done" ? "เสร็จแล้ว" : s === "doing" ? "กำลังทำ" : "ยังไม่เริ่ม"; }
+  function stateOf(it){
+    return it.status === "done" ? "done" : it.late ? "late" : it.soon ? "soon"
+         : it.status === "doing" ? "doing" : "";
   }
 
-  function tally(n, k, cls){
-    return '<div class="tally '+cls+'"><div class="n mono">'+n+'</div><div class="k">'+esc(k)+'</div></div>';
-  }
-
-  function alertsHTML(items){
-    var late = items.filter(function(x){ return x.late && !x.ack; });
-    var soon = items.filter(function(x){ return x.soon && !x.ack; });
-    if(!late.length && !soon.length) return "";
-    var h = '<div class="alerts">';
-    if(late.length){
-      h += '<div class="alert"><div class="body"><div class="t">งานล่าช้า '+late.length+' รายการ</div>'
-        + '<div class="s">'+esc(late.slice(0,3).map(function(x){return x.name;}).join(" · "))
-        + (late.length > 3 ? " และอีก " + (late.length-3) + " รายการ" : "") + '</div></div></div>';
-    }
-    if(soon.length){
-      h += '<div class="alert warn"><div class="body"><div class="t">ใกล้ครบกำหนด '+soon.length+' รายการ</div>'
-        + '<div class="s">'+esc(soon.slice(0,3).map(function(x){return x.name;}).join(" · "))
-        + (soon.length > 3 ? " และอีก " + (soon.length-3) + " รายการ" : "") + '</div></div></div>';
-    }
-    return h + '</div>';
-  }
-
-  /* ---------- หน้าแยกตามช่วงเวลา ---------- */
-  function renderPeriod(items, code){
-    var sub = items.filter(function(x){ return x.code === code; });
-    var s = summarise(sub), p = PERIOD[code], c = sub[0].cyc;
-    var h = '<div class="phead"><h2>'+esc(p.name)+'</h2>'
-      + '<div class="sub">รอบ '+esc(c.label)+' · กำหนด '+esc(fmtDate(c.due))+' · '+esc(p.remind)+'</div></div>'
-      + '<div class="summary">' + ring(s.pct, 96) + '<div class="tallies">'
-      + tally(s.total,"รายการ","") + tally(s.done,"เสร็จแล้ว","done")
-      + tally(s.doing,"กำลังทำ","") + tally(s.late,"ล่าช้า","late")
-      + '</div></div>'
-      + '<div class="items">';
-
-    sub.forEach(function(it){
-      var open = !!view.open[it.id];
-      h += '<div class="item'+(it.late?" is-late":"")+(it.status==="done"?" is-done":"")+'">'
-        + '<div class="r1"><div class="nm">'+esc(it.name)+'</div>'
-        + '<div class="due'+(it.late?" late":"")+'">'+esc(dueText(it))+'</div></div>'
-        + '<div class="r2">'
-        +   '<div class="seg" role="group" aria-label="สถานะ">'
-        +     segBtn(it,"todo","ยังไม่เริ่ม") + segBtn(it,"doing","กำลังทำ") + segBtn(it,"done","เสร็จแล้ว")
-        +   '</div>'
-        +   '<div class="barwrap">'+barOf(it.progress, it.status==="done"?"ok":(it.late?"late":""))
-        +     '<span class="pcv mono">'+it.progress+'%</span></div>'
-        +   '<button class="rowbtn'+(open?" on":"")+'" data-toggle="'+it.id+'">'+(open?"ปิด":"รายละเอียด")+'</button>'
-        +   (it.late && !it.ack ? '<button class="rowbtn" data-ack="'+it.id+'">รับทราบ</button>' : "")
-        +   (it.ack ? '<span class="acked">✓ รับทราบแล้ว '+esc(it.ack.by||"")+'</span>' : "")
-        + '</div>';
-
-      if(open){
-        h += '<div class="detail">'
-          + '<div class="two">'
-          +   fld("ความคืบหน้า (%)", '<input type="number" min="0" max="100" step="5" value="'+it.progress
-              +'" data-f="progress" data-id="'+it.id+'">')
-          +   fld("ผู้รับผิดชอบ", '<input type="text" value="'+esc(it.owner)
-              +'" placeholder="ชื่อผู้รับผิดชอบ" data-f="owner" data-id="'+it.id+'">')
-          + '</div>'
-          + fld("สถานะเอกสาร", '<select data-f="doc" data-id="'+it.id+'">'
-              + opt("none","ยังไม่มีเอกสาร",it.doc) + opt("doing","กำลังจัดทำ",it.doc)
-              + opt("done","จัดทำแล้วเสร็จ",it.doc) + '</select>')
-          + fld("สาเหตุความล่าช้า", '<textarea placeholder="ระบุสาเหตุ เช่น รออะไหล่ / เครื่องจักรไม่หยุด / กำลังคนไม่พอ"'
-              + ' data-f="reason" data-id="'+it.id+'">'+esc(it.reason)+'</textarea>')
-          + fld("หมายเหตุ", '<textarea placeholder="บันทึกเพิ่มเติม" data-f="note" data-id="'+it.id+'">'
-              + esc(it.note)+'</textarea>')
-          + (it.at ? '<div class="cyc">แก้ไขล่าสุด '+esc(new Date(it.at).toLocaleString("th-TH"))+'</div>' : "")
-          + '</div>';
-      }
-      h += '</div>';
-    });
-    return h + '</div>';
-  }
-  function segBtn(it, val, label){
-    return '<button data-status="'+val+'" data-id="'+it.id+'" aria-pressed="'
-      + (it.status===val) + '">'+esc(label)+'</button>';
-  }
-  function fld(label, inner){
-    return '<div class="fld"><label>'+esc(label)+'</label>'+inner+'</div>';
-  }
-  function opt(v, label, cur){
-    return '<option value="'+v+'"'+(cur===v?" selected":"")+'>'+esc(label)+'</option>';
-  }
-
-  /* ---------- วาดทั้งหน้า ---------- */
+  /* ---------- แท็บ ---------- */
   function tabsHTML(){
-    var h = '<div class="tabs" role="tablist">'
-      + '<button role="tab" data-goto="" aria-current="' + (view.period ? "false" : "page") + '">ภาพรวม</button>';
+    var atHome = !view.period && !view.filter;
+    var h = '<div class="tabs" role="tablist"><button role="tab" data-goto="" aria-current="'
+      + (atHome ? "page" : "false") + '">ภาพรวม</button>';
     ORDER.forEach(function(c){
       h += '<button role="tab" data-goto="'+c+'" aria-current="'
         + (view.period === c ? "page" : "false") + '">' + esc(PERIOD[c].name) + '</button>';
@@ -601,32 +403,227 @@ footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); font
     return h + '</div>';
   }
 
+  /* ---------- หน้าภาพรวม ---------- */
+  function renderHome(items){
+    var a = summarise(items);
+    var late = items.filter(function(x){ return x.late; }).sort(function(p,q){ return p.left - q.left; });
+    var soon = items.filter(function(x){ return x.soon; }).sort(function(p,q){ return p.left - q.left; });
+    var h = '<div class="panels">';
+
+    // ความคืบหน้ารวม
+    h += '<button class="panel c3" data-filter="all"><h3>ความคืบหน้ารวม</h3>'
+      + '<div style="display:flex;justify-content:center;padding:2px 0 10px">'
+      + ring(a.pct, 116, "var(--cyan)", "ความคืบหน้ารวม") + '</div>'
+      + '<div class="kpirow"><span class="cap">ทั้งหมด ' + a.total + ' รายการ</span>'
+      + '<span class="delta d-idle">ดูทั้งหมด →</span></div></button>';
+
+    // สถานะงาน
+    h += '<button class="panel c5" data-filter="done"><h3>สถานะงานรอบปัจจุบัน</h3>'
+      + '<div class="rings">'
+      + ringBox(pctOf(a.done, a.total), "var(--teal)",  a.done,  "เสร็จแล้ว")
+      + ringBox(pctOf(a.doing, a.total), "var(--cyan)", a.doing, "กำลังทำ")
+      + ringBox(pctOf(a.total - a.done - a.doing, a.total), "var(--ink-faint)",
+                a.total - a.done - a.doing, "ยังไม่เริ่ม")
+      + '</div>'
+      + '<div class="kpirow"><span class="cap">แตะเพื่อดูงานที่เสร็จแล้ว</span>'
+      + '<span class="delta d-ok">' + a.done + '/' + a.total + '</span></div></button>';
+
+    // ล่าช้า + ใกล้ครบ
+    h += '<button class="panel c4" data-filter="late"><h3>ต้องจัดการก่อน'
+      + '<span class="c">' + late.length + ' ล่าช้า · ' + soon.length + ' ใกล้ครบ</span></h3>';
+    if(!late.length && !soon.length){
+      h += '<div class="empty">ไม่มีงานค้างในรอบนี้</div>';
+    } else {
+      h += '<div class="mini">';
+      late.slice(0,4).forEach(function(it){
+        h += '<div class="mrow"><div><div class="t">'+esc(it.name)+'</div>'
+          + '<div class="s">'+esc(it.period)+'</div></div>'
+          + '<div class="r">'+Math.abs(it.left)+' วัน</div></div>';
+      });
+      soon.slice(0, Math.max(0, 4-late.length)).forEach(function(it){
+        h += '<div class="mrow soon"><div><div class="t">'+esc(it.name)+'</div>'
+          + '<div class="s">'+esc(it.period)+'</div></div>'
+          + '<div class="r">'+it.left+' วัน</div></div>';
+      });
+      h += '</div>';
+    }
+    h += '<div class="kpirow"><span class="cap">แตะเพื่อดูงานล่าช้าทั้งหมด</span>'
+      + '<span class="delta ' + (late.length ? "d-late" : "d-ok") + '">'
+      + (late.length ? late.length + " ล่าช้า" : "ตรงแผน") + '</span></div></button>';
+
+    // ความคืบหน้าตามรอบงาน
+    h += '<div class="panel c7"><h3>ความคืบหน้าตามรอบงาน</h3><div class="blist">';
+    ORDER.forEach(function(code){
+      var g = items.filter(function(x){ return x.code === code; }), s = summarise(g);
+      var cls = s.late ? "late" : s.pct === 100 ? "ok" : "";
+      h += '<div class="brow"><span class="nm">' + esc(PERIOD[code].name)
+        + '  <span style="color:var(--ink-faint);font-size:11px">' + esc(g[0].cyc.label) + '</span></span>'
+        + '<span class="vl mono">' + s.done + '/' + s.total + ' · ' + s.pct + '%</span>'
+        + bar(s.pct, cls) + '</div>';
+    });
+    h += '</div></div>';
+
+    // ใกล้ครบกำหนด
+    h += '<button class="panel c5" data-filter="soon"><h3>ใกล้ครบกำหนด<span class="c">ภายใน 7 วัน</span></h3>'
+      + '<div class="kpirow" style="margin:6px 0 12px"><div><div class="big mono" style="color:var(--amber)">'
+      + a.soon + '</div><div class="cap">รายการ</div></div>'
+      + ring(a.total ? Math.round(a.soon/a.total*100) : 0, 84, "var(--amber)", "ใกล้ครบกำหนด") + '</div>'
+      + '<div class="kpirow"><span class="cap">แตะเพื่อดูรายการ</span>'
+      + '<span class="delta d-soon">ดูรายการ →</span></div></button>';
+
+    h += '</div>';
+
+    // รายการทั้งหมด แยกตามรอบ
+    ORDER.forEach(function(code){
+      var g = items.filter(function(x){ return x.code === code; }), s = summarise(g);
+      h += '<div class="panels" style="margin-top:11px"><div class="panel c12">'
+        + '<h3>' + esc(PERIOD[code].name)
+        + '<span class="c">รอบ ' + esc(g[0].cyc.label) + ' · กำหนด ' + esc(fmtDate(g[0].cyc.due))
+        + ' · เสร็จ ' + s.done + '/' + s.total + (s.late ? ' · ล่าช้า ' + s.late : '') + '</span></h3>'
+        + '<div class="blist">';
+      g.forEach(function(it){
+        var st = stateOf(it);
+        h += '<button class="brow" data-tile="'+it.id+'" style="background:none;border:none;'
+          + 'font:inherit;color:inherit;cursor:pointer;text-align:left;padding:0">'
+          + '<span class="nm">' + esc(it.name) + '</span>'
+          + '<span class="vl mono">' + esc(dueText(it)) + ' · ' + it.progress + '%</span>'
+          + bar(it.progress, st === "done" ? "ok" : st === "late" ? "late" : st === "soon" ? "soon" : "")
+          + '</button>';
+      });
+      h += '</div></div></div>';
+    });
+    return h;
+  }
+  function pctOf(n, d){ return d ? Math.round(n/d*100) : 0; }
+  function ringBox(pct, color, n, label){
+    return '<div class="ringbox">' + ring(pct, 84, color, label)
+      + '<div class="lb">' + esc(label) + ' · ' + n + '</div></div>';
+  }
+
+  /* ---------- หน้ารายการที่กรองจากแผงสรุป ---------- */
+  var FILTERS = {
+    all :{title:"ทุกรายการ",       pick:function(x){ return true; },              empty:"ไม่มีรายการ"},
+    done:{title:"งานที่เสร็จแล้ว",  pick:function(x){ return x.status==="done"; }, empty:"ยังไม่มีงานที่ทำเสร็จในรอบนี้"},
+    soon:{title:"ใกล้ครบกำหนด",    pick:function(x){ return x.soon; },            empty:"ยังไม่มีงานที่ใกล้ครบกำหนดภายใน 7 วัน"},
+    late:{title:"งานล่าช้า",        pick:function(x){ return x.late; },            empty:"ไม่มีงานล่าช้า"}
+  };
+  function renderFilter(items, kind){
+    var f = FILTERS[kind] || FILTERS.all, list = items.filter(f.pick);
+    var h = '<div class="phead"><h2>' + esc(f.title) + '</h2>'
+      + '<div class="sub">' + list.length + ' รายการ · รวมทุกรอบงาน</div></div>';
+    if(!list.length) return h + '<div class="panel"><div class="empty">' + esc(f.empty) + '</div></div>';
+    list.sort(function(p,q){ return p.left - q.left; });
+    h += '<div class="items">';
+    list.forEach(function(it){ h += itemHTML(it, true); });
+    return h + '</div>';
+  }
+
+  /* ---------- หน้ารอบงาน ---------- */
+  function renderPeriod(items, code){
+    var g = items.filter(function(x){ return x.code === code; });
+    var s = summarise(g), p = PERIOD[code], c = g[0].cyc;
+    var h = '<div class="phead"><h2>' + esc(p.name) + '</h2>'
+      + '<div class="sub">รอบ ' + esc(c.label) + ' · กำหนด ' + esc(fmtDate(c.due)) + ' · ' + esc(p.remind) + '</div></div>'
+      + '<div class="panels" style="margin-bottom:12px">'
+      + '<div class="panel c4"><h3>ความคืบหน้ารอบนี้</h3>'
+      +   '<div style="display:flex;justify-content:center;padding:2px 0 6px">'
+      +   ring(s.pct, 104, s.late ? "var(--coral)" : "var(--cyan)", "ความคืบหน้า") + '</div></div>'
+      + '<div class="panel c8"><h3>สรุป</h3><div class="blist">'
+      +   sumRow("เสร็จแล้ว", s.done, s.total, "ok")
+      +   sumRow("กำลังทำ", s.doing, s.total, "")
+      +   sumRow("ล่าช้า", s.late, s.total, "late")
+      + '</div></div></div>'
+      + '<div class="items">';
+    g.forEach(function(it){ h += itemHTML(it, false); });
+    return h + '</div>';
+  }
+  function sumRow(label, n, total, cls){
+    return '<div class="brow"><span class="nm">' + esc(label) + '</span>'
+      + '<span class="vl mono">' + n + '/' + total + '</span>'
+      + bar(pctOf(n, total), cls) + '</div>';
+  }
+
+  /* ---------- หนึ่งรายการ ---------- */
+  function itemHTML(it, showPeriod){
+    var open = !!view.open[it.id], st = stateOf(it);
+    var h = '<div class="item' + (st ? " is-" + st : "") + '">'
+      + '<div class="r1"><div class="nm">'
+      +   (showPeriod ? '<span class="ptag">' + esc(it.period) + '</span>' : '')
+      +   esc(it.name) + '</div>'
+      + '<div class="due">' + esc(dueText(it)) + '</div></div>'
+      + '<div class="r2">'
+      +   '<div class="seg" role="group" aria-label="สถานะ">'
+      +     segBtn(it,"todo","ยังไม่เริ่ม") + segBtn(it,"doing","กำลังทำ") + segBtn(it,"done","เสร็จแล้ว")
+      +   '</div>'
+      +   '<div class="barwrap">' + bar(it.progress, st === "done" ? "ok" : st === "late" ? "late" : "")
+      +     '<span class="pcv mono">' + it.progress + '%</span></div>'
+      +   '<button class="rowbtn' + (open ? " on" : "") + '" data-toggle="' + it.id + '">'
+      +     (open ? "ปิด" : "รายละเอียด") + '</button>'
+      +   (it.late && !it.ack ? '<button class="rowbtn" data-ack="' + it.id + '">รับทราบ</button>' : "")
+      +   (it.ack ? '<span class="acked">✓ รับทราบแล้ว</span>' : "")
+      + '</div>';
+    if(open){
+      h += '<div class="detail"><div class="two">'
+        + fld("ความคืบหน้า (%)", '<input type="number" min="0" max="100" step="5" value="' + it.progress
+            + '" data-f="progress" data-id="' + it.id + '">')
+        + fld("ผู้รับผิดชอบ", '<input type="text" value="' + esc(it.owner)
+            + '" placeholder="ชื่อผู้รับผิดชอบ" data-f="owner" data-id="' + it.id + '">')
+        + '</div>'
+        + fld("สถานะเอกสาร", '<select data-f="doc" data-id="' + it.id + '">'
+            + opt("none","ยังไม่มีเอกสาร",it.doc) + opt("doing","กำลังจัดทำ",it.doc)
+            + opt("done","จัดทำแล้วเสร็จ",it.doc) + '</select>')
+        + fld("สาเหตุความล่าช้า", '<textarea placeholder="เช่น รออะไหล่ / เครื่องจักรไม่หยุด / กำลังคนไม่พอ"'
+            + ' data-f="reason" data-id="' + it.id + '">' + esc(it.reason) + '</textarea>')
+        + fld("หมายเหตุ", '<textarea placeholder="บันทึกเพิ่มเติม" data-f="note" data-id="' + it.id + '">'
+            + esc(it.note) + '</textarea>')
+        + (it.at ? '<div class="cap">แก้ไขล่าสุด ' + esc(new Date(it.at).toLocaleString("th-TH")) + '</div>' : "")
+        + '</div>';
+    }
+    return h + '</div>';
+  }
+  function segBtn(it, val, label){
+    return '<button data-status="' + val + '" data-id="' + it.id + '" aria-pressed="'
+      + (it.status === val) + '">' + esc(label) + '</button>';
+  }
+  function fld(label, inner){ return '<div class="fld"><label>' + esc(label) + '</label>' + inner + '</div>'; }
+  function opt(v, label, cur){
+    return '<option value="' + v + '"' + (cur === v ? " selected" : "") + '>' + esc(label) + '</option>';
+  }
+
+  /* ---------- วาดทั้งหน้า ---------- */
   function render(){
     var items = build();
     var root = document.getElementById("root");
     var head = '<div class="top"><div class="brand">'
       + '<h1>แผนติดตามงาน ISO · Electrical CV-ITH</h1>'
       + '<p>ITH Hongsa · ติดตามความคืบหน้าตามรอบงาน</p></div>'
-      + '<div class="right"><div id="saveState" class="saving"></div>'
-      + '<div>' + esc(new Date().toLocaleDateString("th-TH", {day:"numeric", month:"long", year:"numeric"})) + '</div>'
-      + '</div></div>'
-      + (mode === "readonly"
-          ? '<div class="ro">มุมมองอ่านอย่างเดียว — บัญชีนี้ไม่มีสิทธิ์แก้ไขสถานะ</div>' : "");
+      + '<div class="right"><div id="saveState" class="saving"></div><div>'
+      + esc(new Date().toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric"}))
+      + '</div></div></div>'
+      + (mode === "readonly" ? '<div class="ro">มุมมองอ่านอย่างเดียว — บัญชีนี้ไม่มีสิทธิ์แก้ไขสถานะ</div>' : "");
 
     root.innerHTML = head + tabsHTML()
-      + (view.period ? renderPeriod(items, view.period) : renderHome(items))
+      + (view.filter ? renderFilter(items, view.filter)
+         : view.period ? renderPeriod(items, view.period) : renderHome(items))
       + '<footer>ข้อมูลแผนงานจากไฟล์ “แผนติดตามงาน ISO EE” · แก้ไขสถานะแล้วบันทึกอัตโนมัติ</footer>';
     paintSave();
   }
 
   /* ---------- รับการกดและการพิมพ์ ---------- */
   document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-goto],[data-status],[data-toggle],[data-ack],[data-tile]");
+    var t = e.target.closest("[data-goto],[data-status],[data-toggle],[data-ack],[data-tile],[data-filter]");
     if(!t) return;
-    if(t.hasAttribute("data-goto")){ view.period = t.getAttribute("data-goto") || null; view.open = {}; render(); window.scrollTo(0,0); return; }
+    if(t.hasAttribute("data-goto")){
+      view.period = t.getAttribute("data-goto") || null; view.filter = null; view.open = {};
+      render(); window.scrollTo(0,0); return;
+    }
+    if(t.hasAttribute("data-filter")){
+      view.filter = t.getAttribute("data-filter"); view.period = null; view.open = {};
+      render(); window.scrollTo(0,0); return;
+    }
     if(t.hasAttribute("data-tile")){
       var tid = t.getAttribute("data-tile");
-      view.period = tid.split("-")[0]; view.open = {}; view.open[tid] = true;
+      view.period = tid.split("-")[0]; view.filter = null; view.open = {}; view.open[tid] = true;
       render(); window.scrollTo(0,0);
       var el = document.querySelector('[data-toggle="' + tid + '"]');
       if(el && el.scrollIntoView) el.scrollIntoView({block:"center"});
