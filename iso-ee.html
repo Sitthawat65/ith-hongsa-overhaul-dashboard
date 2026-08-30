@@ -1,0 +1,592 @@
+<title>ISO EE Plan Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+
+<style id="css">
+:root{
+  --bg:#F5F6F4; --surface:#FFFFFF; --surface-2:#EEF1EF;
+  --ink:#1E2A2E; --ink-soft:#5F6E73; --ink-faint:#8B989C;
+  --accent:#2C5F63; --accent-soft:#DCE8E7;
+  --ok:#3E7A52; --ok-soft:#E1EDE4;
+  --warn:#B07A2B; --warn-soft:#F6EDDC;
+  --late:#A4453A; --late-soft:#F7E3E0;
+  --rule:#DDE1DE; --rule-strong:#C3CBC7;
+  --shadow:0 1px 2px rgba(30,42,46,.05), 0 8px 24px rgba(30,42,46,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A1C; --surface:#1A2427; --surface-2:#212D30;
+    --ink:#E3EAE9; --ink-soft:#9CACAF; --ink-faint:#6C7C80;
+    --accent:#5FAAAE; --accent-soft:#1E3335;
+    --ok:#6FBE8B; --ok-soft:#183026;
+    --warn:#D9A45A; --warn-soft:#33291A;
+    --late:#E08277; --late-soft:#37201E;
+    --rule:#2B3A3D; --rule-strong:#3C4E52;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A1C; --surface:#1A2427; --surface-2:#212D30;
+  --ink:#E3EAE9; --ink-soft:#9CACAF; --ink-faint:#6C7C80;
+  --accent:#5FAAAE; --accent-soft:#1E3335;
+  --ok:#6FBE8B; --ok-soft:#183026;
+  --warn:#D9A45A; --warn-soft:#33291A;
+  --late:#E08277; --late-soft:#37201E;
+  --rule:#2B3A3D; --rule-strong:#3C4E52;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans Thai","IBM Plex Sans",system-ui,sans-serif;
+  font-size:15px; line-height:1.6; -webkit-text-size-adjust:100%;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px; margin:0 auto; padding:20px 18px 64px}
+@media (max-width:640px){ .wrap{padding:14px 12px 56px} }
+
+/* ---------- header ---------- */
+.top{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:20px}
+.brand{flex:1 1 220px; min-width:0}
+.brand h1{margin:0; font-size:clamp(17px,4.4vw,21px); font-weight:700; letter-spacing:-.01em;
+  text-wrap:balance; overflow-wrap:anywhere}
+.brand p{margin:2px 0 0; color:var(--ink-soft); font-size:13px; overflow-wrap:anywhere}
+.top .right{margin-left:auto; text-align:right; font-size:12px; color:var(--ink-soft); line-height:1.5; flex:none}
+.saving{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft)}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--ok); flex:none}
+.dot.busy{background:var(--warn); animation:pulse 1s ease-in-out infinite}
+.dot.off{background:var(--ink-faint)}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){ .dot.busy{animation:none} }
+
+/* ---------- summary ---------- */
+.summary{
+  display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:center;
+  background:var(--surface); border:1px solid var(--rule); border-radius:12px;
+  padding:18px 20px; box-shadow:var(--shadow); margin-bottom:16px;
+}
+@media (max-width:560px){ .summary{grid-template-columns:1fr; gap:14px; padding:16px} }
+.ring{display:block}
+.tallies{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px}
+@media (max-width:560px){ .tallies{grid-template-columns:repeat(2,1fr)} }
+.tally{background:var(--surface-2); border-radius:9px; padding:10px 12px}
+.tally .n{font-size:22px; font-weight:600; line-height:1.15}
+.tally .k{font-size:11.5px; color:var(--ink-soft); letter-spacing:.02em}
+.tally.late .n{color:var(--late)} .tally.due .n{color:var(--warn)}
+.tally.done .n{color:var(--ok)}
+
+/* ---------- alerts ---------- */
+.alerts{display:flex; flex-direction:column; gap:8px; margin-bottom:16px}
+.alert{
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--late-soft); border:1px solid var(--late); border-left-width:3px;
+  border-radius:8px; padding:11px 13px;
+}
+.alert .body{flex:1; min-width:0}
+.alert .t{font-weight:600; font-size:14px; color:var(--late)}
+.alert .s{font-size:12.5px; color:var(--ink-soft); margin-top:1px}
+.alert.warn{background:var(--warn-soft); border-color:var(--warn)}
+.alert.warn .t{color:var(--warn)}
+
+/* ---------- period cards ---------- */
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(255px,1fr)); gap:12px}
+.card{
+  background:var(--surface); border:1px solid var(--rule); border-radius:12px;
+  padding:16px 17px; box-shadow:var(--shadow); cursor:pointer;
+  display:flex; flex-direction:column; gap:11px; text-align:left; font:inherit; color:inherit;
+  transition:border-color .15s, transform .15s;
+}
+.card:hover{border-color:var(--accent)}
+.card:active{transform:translateY(1px)}
+.card:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.card .hd{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+.card .nm{font-weight:600; font-size:15.5px}
+.card .pc{font-size:19px; font-weight:600}
+.card .meta{display:flex; gap:8px; flex-wrap:wrap; font-size:12px; color:var(--ink-soft)}
+.card .cyc{font-size:12px; color:var(--ink-faint)}
+
+.bar{height:7px; border-radius:99px; background:var(--surface-2); overflow:hidden}
+.bar i{display:block; height:100%; border-radius:99px; background:var(--accent); transition:width .3s}
+@media (prefers-reduced-motion:reduce){ .bar i{transition:none} }
+.bar i.ok{background:var(--ok)} .bar i.late{background:var(--late)} .bar i.warn{background:var(--warn)}
+
+.pill{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:500;
+  padding:2px 8px; border-radius:99px; background:var(--surface-2); color:var(--ink-soft)}
+.pill.late{background:var(--late-soft); color:var(--late)}
+.pill.due{background:var(--warn-soft); color:var(--warn)}
+.pill.ok{background:var(--ok-soft); color:var(--ok)}
+
+/* ---------- item list ---------- */
+.back{background:none; border:none; font:inherit; color:var(--accent); cursor:pointer;
+  padding:6px 0; display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:500}
+.back:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.phead{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; margin:4px 0 14px}
+.phead h2{margin:0; font-size:19px; font-weight:700}
+.phead .sub{color:var(--ink-soft); font-size:13px}
+
+.items{display:flex; flex-direction:column; gap:9px}
+.item{background:var(--surface); border:1px solid var(--rule); border-radius:10px; padding:13px 15px}
+.item.is-late{border-left:3px solid var(--late)}
+.item.is-done{border-left:3px solid var(--ok)}
+.item .r1{display:flex; gap:12px; align-items:flex-start}
+.item .nm{font-weight:500; flex:1; min-width:0; font-size:14.5px}
+.item .due{font-size:12px; color:var(--ink-soft); white-space:nowrap}
+.item .r2{display:flex; gap:10px; align-items:center; margin-top:10px; flex-wrap:wrap}
+.seg{display:inline-flex; border:1px solid var(--rule-strong); border-radius:8px; overflow:hidden}
+.seg button{font:inherit; font-size:12.5px; padding:5px 11px; border:none; background:var(--surface);
+  color:var(--ink-soft); cursor:pointer; border-right:1px solid var(--rule-strong)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--accent); color:#fff; font-weight:500}
+.seg button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+.item .barwrap{flex:1; min-width:110px; display:flex; align-items:center; gap:9px}
+.item .pcv{font-size:12.5px; color:var(--ink-soft); min-width:34px; text-align:right}
+
+.rowbtn{font:inherit; font-size:12.5px; padding:5px 10px; border-radius:7px; cursor:pointer;
+  border:1px solid var(--rule-strong); background:var(--surface); color:var(--ink-soft)}
+.rowbtn:hover{border-color:var(--accent); color:var(--accent)}
+.rowbtn:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+.rowbtn.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+
+.detail{margin-top:11px; padding-top:11px; border-top:1px dashed var(--rule); display:grid; gap:9px}
+.fld{display:grid; gap:4px}
+.fld label{font-size:11.5px; color:var(--ink-soft); letter-spacing:.02em}
+.fld input,.fld textarea,.fld select{
+  font:inherit; font-size:13.5px; padding:7px 9px; border:1px solid var(--rule-strong);
+  border-radius:7px; background:var(--surface); color:var(--ink); width:100%;
+}
+.fld textarea{resize:vertical; min-height:56px}
+.fld input:focus-visible,.fld textarea:focus-visible,.fld select:focus-visible{
+  outline:2px solid var(--accent); outline-offset:-1px; border-color:var(--accent)}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+@media (max-width:560px){ .two{grid-template-columns:1fr} }
+.acked{font-size:12px; color:var(--ok); display:flex; align-items:center; gap:5px}
+
+.ro{background:var(--warn-soft); border:1px solid var(--warn); color:var(--ink);
+  border-radius:8px; padding:10px 13px; font-size:13px; margin-bottom:14px}
+.hidden{display:none}
+footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule);
+  color:var(--ink-faint); font-size:12px; text-align:center}
+</style>
+
+<div class="wrap" id="root"></div>
+
+<script id="state" type="application/json">
+{"updated":"","rev":0,"log":{}}
+</script>
+
+<script id="app">
+(function(){
+  "use strict";
+
+  /* ---------- แผนงานจากไฟล์ Excel "แผนติดตามงาน ISO EE" ---------- */
+  var PLAN = [
+    ["M","ประจำเดือน","ตรวจเช็คเครื่องจักรประจำเดือน Spreader"],
+    ["M","ประจำเดือน","ตรวจเช็คเครื่องจักรประจำเดือน Bucket Wheel"],
+    ["M","ประจำเดือน","ตรวจเช็คเครื่องจักรประจำเดือน Crusher"],
+    ["M","ประจำเดือน","ตรวจเช็คหม้อแปลงไฟฟ้า"],
+    ["M","ประจำเดือน","PM Carbon Brush"],
+    ["M","ประจำเดือน","อัดจาระบี Bearing Motor"],
+    ["M","ประจำเดือน","ตรวจเช็คประสิทธิภาพของมอเตอร์ไฟฟ้า Work shop"],
+    ["M","ประจำเดือน","ตรวจเช็คตู้โหลดไฟฟ้า Work shop"],
+    ["Q","ไตรมาส","ตรวจเช็คระบบ Emergency ใน Line สายพาน"],
+    ["Q","ไตรมาส","ตรวจเช็คระบบ Emergency ในเครื่องจักร"],
+    ["Q","ไตรมาส","ตรวจเช็คสายไฟฟ้า 6.6kV ของ Front Shovel"],
+    ["Q","ไตรมาส","ตรวจเช็คสายไฟฟ้าและ Box ไฟฟ้า 6.6kV ที่ Line ของ Spreader"],
+    ["Q","ไตรมาส","ตรวจเช็คสายไฟฟ้าและ Box ไฟฟ้า 6.6kV ที่ Line ของ Bucket Wheel"],
+    ["Q","ไตรมาส","ตรวจเช็คสายไฟฟ้า 6.6kV จ่ายให้เครื่องจักร Spreader"],
+    ["Q","ไตรมาส","ตรวจเช็คสายไฟฟ้า 6.6kV จ่ายให้เครื่องจักร Bucket Wheel"],
+    ["H","ครึ่งปี","ตรวจเช็ค Power Line 22kV"],
+    ["H","ครึ่งปี","ตรวจสอบความร้อนในระบบไฟฟ้าแรงสูง"],
+    ["H","ครึ่งปี","ตรวจเช็ค Terminal Box ของเครื่องจักรในระบบสายพาน"],
+    ["H","ครึ่งปี","ตรวจเช็คสัญญาณของ Fiber Optic"],
+    ["Y","ประจำปี","แผนการ Overhaul Motor"],
+    ["Y","ประจำปี","ตรวจเช็ค E-House & R-House ของระบบสายพาน"],
+    ["Y","ประจำปี","ตรวจเช็ค E-House ของเครื่องจักร Spreader"],
+    ["Y","ประจำปี","ตรวจเช็ค E-House ของเครื่องจักร Bucket Wheel"],
+    ["Y","ประจำปี","ตรวจเช็ค E-House ของเครื่องจักร Crusher"],
+    ["Y","ประจำปี","ตรวจเช็คหม้อแปลงไฟฟ้า + ส่งน้ำมันหม้อแปลงทดสอบ"],
+    ["Y","ประจำปี","ตรวจเช็คค่าความต้านทานสายดิน (Ground) ใน Instruction Area"],
+    ["Y","ประจำปี","ตรวจเช็คค่าความต้านทานสายดิน (Ground) ใน Mining Area"],
+    ["Y","ประจำปี","ตรวจเช็คตู้ MDB & Consumer & Generator"],
+    ["Y","ประจำปี","แบบวิเคราะห์กระบวนการทำงาน"],
+    ["Y","ประจำปี","เอกสาร Calibrate เครื่องมือ"]
+  ];
+  var PERIOD = {
+    M:{name:"ประจำเดือน", due:"ภายในวันที่ 5 ของเดือน",        remind:"เตือนวันที่ 25–30 ทุกเดือน"},
+    Q:{name:"ไตรมาส",     due:"ภายใน 1 เดือนของไตรมาสถัดไป",   remind:"เตือนวันที่ 25–30 เดือน 3, 6, 9, 12"},
+    H:{name:"ครึ่งปี",     due:"ภายในเดือน 6 และ 12",           remind:"เตือนวันที่ 25–30 เดือน 6, 12"},
+    Y:{name:"ประจำปี",     due:"ภายในเดือน 10–11",              remind:"เตือนวันที่ 25–30 เดือน 10, 11, 12"}
+  };
+  var ORDER = ["M","Q","H","Y"];
+  var THMON = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+
+  /* ---------- สถานะที่บันทึกไว้ ---------- */
+  var STATE;
+  try { STATE = JSON.parse(document.getElementById("state").textContent) || {}; }
+  catch(e){ STATE = {}; }
+  if(!STATE.log) STATE.log = {};
+  try {
+    var saved = JSON.parse(localStorage.getItem("iso_ee_status_v1") || "null");
+    if(saved && saved.log && (saved.rev || 0) >= (STATE.rev || 0)) STATE = saved;
+  } catch(e){}
+
+  // live     = อยู่บนหน้าเผยแพร่ บันทึกแล้วทุกเครื่องเห็นตรงกัน
+  // local    = อยู่บนเว็บทั่วไป (GitHub Pages) บันทึกไว้ในเบราว์เซอร์เครื่องนี้
+  // readonly = ไม่มีสิทธิ์แก้ไข
+  var LS_KEY = "iso_ee_status_v1";
+  var artifactApi = null, mode = "local", saving = "idle";
+  function canEdit(){ return mode !== "readonly"; }
+  function lsAvailable(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }
+                          catch(e){ return false; } }
+  var view = { period:null, open:{} };
+
+  /* ---------- รอบงานปัจจุบันของแต่ละช่วงเวลา ---------- */
+  function cycleOf(code, now){
+    var y = now.getFullYear(), m = now.getMonth() + 1, be = y + 543;
+    if(code === "M")
+      return {key:y+"-"+pad(m), label:THMON[m-1]+" "+be, due:new Date(y, m-1, 5)};
+    if(code === "Q"){
+      var q = Math.ceil(m/3), endM = q*3 + 1;
+      var dy = endM > 12 ? y+1 : y, dm = endM > 12 ? endM-12 : endM;
+      return {key:y+"-Q"+q, label:"ไตรมาส "+q+"/"+be, due:new Date(dy, dm, 0)};
+    }
+    if(code === "H"){
+      var h = m <= 6 ? 1 : 2;
+      return {key:y+"-H"+h, label:"ครึ่งปีที่ "+h+"/"+be, due:new Date(y, h===1?6:12, 0)};
+    }
+    return {key:String(y), label:"ปี "+be, due:new Date(y, 11, 0)};
+  }
+  function pad(n){ return n < 10 ? "0"+n : ""+n; }
+  function today(){ var d = new Date(); d.setHours(0,0,0,0); return d; }
+  function dayDiff(a,b){ return Math.round((a-b)/86400000); }
+  function fmtDate(d){ return d.getDate()+" "+THMON[d.getMonth()]+" "+(d.getFullYear()+543); }
+
+  /* ---------- รวมแผน + สถานะ = รายการที่ใช้แสดงผล ---------- */
+  function build(){
+    var now = today(), out = [];
+    PLAN.forEach(function(row, i){
+      var code = row[0], id = code + "-" + i;
+      var cyc = cycleOf(code, now);
+      var rec = (STATE.log[id] && STATE.log[id][cyc.key]) || {};
+      var status = rec.status || "todo";
+      var prog = status === "done" ? 100 : (typeof rec.progress === "number" ? rec.progress : (status === "doing" ? 50 : 0));
+      var left = dayDiff(cyc.due, now);
+      var late = status !== "done" && left < 0;
+      out.push({
+        id:id, code:code, period:row[1], name:row[2],
+        cyc:cyc, status:status, progress:prog,
+        owner:rec.owner || "", reason:rec.reason || "", note:rec.note || "",
+        doc:rec.doc || "none",
+        ack:rec.ack || null, at:rec.at || "", by:rec.by || "",
+        left:left, late:late,
+        soon: status !== "done" && left >= 0 && left <= 7
+      });
+    });
+    return out;
+  }
+
+  function summarise(items){
+    var n = items.length || 1;
+    var prog = items.reduce(function(s,x){ return s + x.progress; }, 0) / n;
+    return {
+      pct: Math.round(prog),
+      done: items.filter(function(x){ return x.status === "done"; }).length,
+      doing: items.filter(function(x){ return x.status === "doing"; }).length,
+      late: items.filter(function(x){ return x.late; }).length,
+      soon: items.filter(function(x){ return x.soon; }).length,
+      total: items.length
+    };
+  }
+
+  /* ---------- เขียนค่าลงสถานะ แล้วบันทึก ---------- */
+  function setField(id, cycKey, patch){
+    if(!canEdit()) return;
+    if(!STATE.log[id]) STATE.log[id] = {};
+    var rec = STATE.log[id][cycKey] || (STATE.log[id][cycKey] = {});
+    Object.keys(patch).forEach(function(k){ rec[k] = patch[k]; });
+    rec.at = new Date().toISOString();
+    render();
+    save();
+  }
+
+  var saveTimer = null;
+  function save(){
+    if(mode === "readonly") return;
+    if(mode === "local"){                       // เก็บไว้ในเบราว์เซอร์เครื่องนี้
+      STATE.updated = new Date().toISOString();
+      STATE.rev = (STATE.rev || 0) + 1;
+      try{ localStorage.setItem(LS_KEY, JSON.stringify(STATE)); saving = "saved"; }
+      catch(e){ saving = "error"; }
+      paintSave(); return;
+    }
+    if(!artifactApi) return;
+    clearTimeout(saveTimer);
+    saving = "pending"; paintSave();
+    saveTimer = setTimeout(commit, 1200);          // รวมการแก้หลายครั้งเป็นการบันทึกครั้งเดียว
+  }
+  function commit(){
+    if(!artifactApi) return;
+    saving = "saving"; paintSave();
+    STATE.updated = new Date().toISOString();
+    STATE.rev = (STATE.rev || 0) + 1;
+    artifactApi.publish(pageHTML()).then(function(){
+      saving = "saved"; paintSave();
+    })["catch"](function(err){
+      var code = err && err.code;
+      if(code === "conflict"){ saving = "idle"; return; }   // มีคนบันทึกก่อน หน้าจะโหลดใหม่เอง
+      if(code === "not_writer" || code === "not_granted" || code === "not_declared" || code === "consent_required"){
+        mode = "readonly"; saving = "readonly"; render(); return;
+      }
+      if(code === "rate_limited"){ saving = "pending"; saveTimer = setTimeout(commit, 6000); return; }
+      saving = "error"; paintSave();
+    });
+  }
+  function paintSave(){
+    var el = document.getElementById("saveState");
+    if(!el) return;
+    var map = {
+      idle:["", mode === "live" ? "บันทึกอัตโนมัติ · ซิงค์ทุกเครื่อง"
+                : mode === "local" ? "บันทึกในเครื่องนี้" : "ดูอย่างเดียว"],
+      pending:["busy","กำลังบันทึก…"], saving:["busy","กำลังบันทึก…"],
+      saved:["", "บันทึกแล้ว"], error:["off","บันทึกไม่สำเร็จ"], readonly:["off","ดูอย่างเดียว"]
+    };
+    var m = map[saving] || map.idle;
+    el.innerHTML = '<span class="dot ' + m[0] + '"></span>' + esc(m[1]);
+  }
+
+  /* ---------- สร้างเอกสารทั้งหน้าเพื่อบันทึกเป็นเวอร์ชันใหม่ ---------- */
+  function pageHTML(){
+    var css = document.getElementById("css").textContent;
+    var app = document.getElementById("app").textContent;
+    var S = "script";
+    return '<!doctype html><html lang="th"><head><meta charset="utf-8">'
+      + '<meta name="viewport" content="width=device-width, initial-scale=1">'
+      + '<title>ISO EE Plan Tracker</title>'
+      + '<link rel="preconnect" href="https://fonts.googleapis.com">'
+      + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+      + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600'
+      + '&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">'
+      + '<style id="css">' + css + '</style></head><body>'
+      + '<div class="wrap" id="root"></div>'
+      + '<' + S + ' id="state" type="application/json">' + JSON.stringify(STATE).replace(/</g,"\\u003c") + '</' + S + '>'
+      + '<' + S + ' id="app">' + app + '</' + S + '>'
+      + '</body></html>';
+  }
+
+  /* ---------- ตัวช่วยวาด ---------- */
+  function esc(s){ return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function ring(pct, size){
+    var r = (size-12)/2, c = 2*Math.PI*r, off = c*(1-pct/100);
+    return '<svg class="ring" width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img" '
+      + 'aria-label="ความคืบหน้ารวม '+pct+' เปอร์เซ็นต์">'
+      + '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--surface-2)" stroke-width="9"/>'
+      + '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--accent)" stroke-width="9"'
+      + ' stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"'
+      + ' transform="rotate(-90 '+size/2+' '+size/2+')"/>'
+      + '<text x="'+size/2+'" y="'+(size/2+2)+'" text-anchor="middle" dominant-baseline="middle" '
+      + 'font-family="IBM Plex Mono, monospace" font-size="'+(size*0.24)+'" font-weight="600" fill="var(--ink)">'
+      + pct + '%</text></svg>';
+  }
+  function barOf(pct, cls){
+    return '<div class="bar"><i class="'+cls+'" style="width:'+Math.max(0,Math.min(100,pct))+'%"></i></div>';
+  }
+  function dueText(it){
+    if(it.status === "done") return "เสร็จแล้ว";
+    if(it.late) return "เกินกำหนด " + Math.abs(it.left) + " วัน";
+    if(it.left === 0) return "ครบกำหนดวันนี้";
+    return "เหลือ " + it.left + " วัน";
+  }
+
+  /* ---------- หน้ารวม ---------- */
+  function renderOverview(items){
+    var all = summarise(items), h = "";
+
+    h += '<div class="summary">' + ring(all.pct, 108) + '<div class="tallies">'
+      + tally(all.total, "รายการทั้งหมด", "")
+      + tally(all.done, "เสร็จแล้ว", "done")
+      + tally(all.soon, "ใกล้ครบกำหนด", "due")
+      + tally(all.late, "ล่าช้า", "late")
+      + '</div></div>';
+
+    h += alertsHTML(items);
+
+    h += '<div class="grid">';
+    ORDER.forEach(function(code){
+      var sub = items.filter(function(x){ return x.code === code; });
+      var s = summarise(sub), p = PERIOD[code];
+      var cls = s.late ? "late" : (s.pct === 100 ? "ok" : "");
+      h += '<button class="card" data-goto="'+code+'">'
+        + '<div class="hd"><span class="nm">'+esc(p.name)+'</span>'
+        + '<span class="pc mono">'+s.pct+'%</span></div>'
+        + barOf(s.pct, cls)
+        + '<div class="meta">'
+        +   '<span class="pill'+(s.late?" late":"")+'">'+(s.late?"ล่าช้า "+s.late:"ตรงแผน")+'</span>'
+        +   '<span class="pill ok">เสร็จ '+s.done+'/'+s.total+'</span>'
+        +   (s.soon ? '<span class="pill due">ใกล้ครบ '+s.soon+'</span>' : '')
+        + '</div>'
+        + '<div class="cyc">รอบ '+esc(sub[0].cyc.label)+' · กำหนด '+esc(fmtDate(sub[0].cyc.due))+'</div>'
+        + '</button>';
+    });
+    h += '</div>';
+    return h;
+  }
+  function tally(n, k, cls){
+    return '<div class="tally '+cls+'"><div class="n mono">'+n+'</div><div class="k">'+esc(k)+'</div></div>';
+  }
+
+  function alertsHTML(items){
+    var late = items.filter(function(x){ return x.late && !x.ack; });
+    var soon = items.filter(function(x){ return x.soon && !x.ack; });
+    if(!late.length && !soon.length) return "";
+    var h = '<div class="alerts">';
+    if(late.length){
+      h += '<div class="alert"><div class="body"><div class="t">งานล่าช้า '+late.length+' รายการ</div>'
+        + '<div class="s">'+esc(late.slice(0,3).map(function(x){return x.name;}).join(" · "))
+        + (late.length > 3 ? " และอีก " + (late.length-3) + " รายการ" : "") + '</div></div></div>';
+    }
+    if(soon.length){
+      h += '<div class="alert warn"><div class="body"><div class="t">ใกล้ครบกำหนด '+soon.length+' รายการ</div>'
+        + '<div class="s">'+esc(soon.slice(0,3).map(function(x){return x.name;}).join(" · "))
+        + (soon.length > 3 ? " และอีก " + (soon.length-3) + " รายการ" : "") + '</div></div></div>';
+    }
+    return h + '</div>';
+  }
+
+  /* ---------- หน้าแยกตามช่วงเวลา ---------- */
+  function renderPeriod(items, code){
+    var sub = items.filter(function(x){ return x.code === code; });
+    var s = summarise(sub), p = PERIOD[code], c = sub[0].cyc;
+    var h = '<button class="back" data-goto="">← กลับหน้ารวม</button>'
+      + '<div class="phead"><h2>'+esc(p.name)+'</h2>'
+      + '<div class="sub">รอบ '+esc(c.label)+' · กำหนด '+esc(fmtDate(c.due))+' · '+esc(p.remind)+'</div></div>'
+      + '<div class="summary">' + ring(s.pct, 96) + '<div class="tallies">'
+      + tally(s.total,"รายการ","") + tally(s.done,"เสร็จแล้ว","done")
+      + tally(s.doing,"กำลังทำ","") + tally(s.late,"ล่าช้า","late")
+      + '</div></div>'
+      + '<div class="items">';
+
+    sub.forEach(function(it){
+      var open = !!view.open[it.id];
+      h += '<div class="item'+(it.late?" is-late":"")+(it.status==="done"?" is-done":"")+'">'
+        + '<div class="r1"><div class="nm">'+esc(it.name)+'</div>'
+        + '<div class="due'+(it.late?" late":"")+'">'+esc(dueText(it))+'</div></div>'
+        + '<div class="r2">'
+        +   '<div class="seg" role="group" aria-label="สถานะ">'
+        +     segBtn(it,"todo","ยังไม่เริ่ม") + segBtn(it,"doing","กำลังทำ") + segBtn(it,"done","เสร็จแล้ว")
+        +   '</div>'
+        +   '<div class="barwrap">'+barOf(it.progress, it.status==="done"?"ok":(it.late?"late":""))
+        +     '<span class="pcv mono">'+it.progress+'%</span></div>'
+        +   '<button class="rowbtn'+(open?" on":"")+'" data-toggle="'+it.id+'">'+(open?"ปิด":"รายละเอียด")+'</button>'
+        +   (it.late && !it.ack ? '<button class="rowbtn" data-ack="'+it.id+'">รับทราบ</button>' : "")
+        +   (it.ack ? '<span class="acked">✓ รับทราบแล้ว '+esc(it.ack.by||"")+'</span>' : "")
+        + '</div>';
+
+      if(open){
+        h += '<div class="detail">'
+          + '<div class="two">'
+          +   fld("ความคืบหน้า (%)", '<input type="number" min="0" max="100" step="5" value="'+it.progress
+              +'" data-f="progress" data-id="'+it.id+'">')
+          +   fld("ผู้รับผิดชอบ", '<input type="text" value="'+esc(it.owner)
+              +'" placeholder="ชื่อผู้รับผิดชอบ" data-f="owner" data-id="'+it.id+'">')
+          + '</div>'
+          + fld("สถานะเอกสาร", '<select data-f="doc" data-id="'+it.id+'">'
+              + opt("none","ยังไม่มีเอกสาร",it.doc) + opt("doing","กำลังจัดทำ",it.doc)
+              + opt("done","จัดทำแล้วเสร็จ",it.doc) + '</select>')
+          + fld("สาเหตุความล่าช้า", '<textarea placeholder="ระบุสาเหตุ เช่น รออะไหล่ / เครื่องจักรไม่หยุด / กำลังคนไม่พอ"'
+              + ' data-f="reason" data-id="'+it.id+'">'+esc(it.reason)+'</textarea>')
+          + fld("หมายเหตุ", '<textarea placeholder="บันทึกเพิ่มเติม" data-f="note" data-id="'+it.id+'">'
+              + esc(it.note)+'</textarea>')
+          + (it.at ? '<div class="cyc">แก้ไขล่าสุด '+esc(new Date(it.at).toLocaleString("th-TH"))+'</div>' : "")
+          + '</div>';
+      }
+      h += '</div>';
+    });
+    return h + '</div>';
+  }
+  function segBtn(it, val, label){
+    return '<button data-status="'+val+'" data-id="'+it.id+'" aria-pressed="'
+      + (it.status===val) + '">'+esc(label)+'</button>';
+  }
+  function fld(label, inner){
+    return '<div class="fld"><label>'+esc(label)+'</label>'+inner+'</div>';
+  }
+  function opt(v, label, cur){
+    return '<option value="'+v+'"'+(cur===v?" selected":"")+'>'+esc(label)+'</option>';
+  }
+
+  /* ---------- วาดทั้งหน้า ---------- */
+  function render(){
+    var items = build();
+    var root = document.getElementById("root");
+    var head = '<div class="top"><div class="brand">'
+      + '<h1>แผนติดตามงาน ISO · ฝ่ายไฟฟ้า</h1>'
+      + '<p>ITH Hongsa · ติดตามความคืบหน้าตามรอบงาน</p></div>'
+      + '<div class="right"><div id="saveState" class="saving"></div>'
+      + '<div>' + esc(new Date().toLocaleDateString("th-TH", {day:"numeric", month:"long", year:"numeric"})) + '</div>'
+      + '</div></div>'
+      + (mode === "readonly"
+          ? '<div class="ro">มุมมองอ่านอย่างเดียว — บัญชีนี้ไม่มีสิทธิ์แก้ไขสถานะ</div>' : "");
+
+    root.innerHTML = head
+      + (view.period ? renderPeriod(items, view.period) : renderOverview(items))
+      + '<footer>ข้อมูลแผนงานจากไฟล์ “แผนติดตามงาน ISO EE” · แก้ไขสถานะแล้วบันทึกอัตโนมัติ</footer>';
+    paintSave();
+  }
+
+  /* ---------- รับการกดและการพิมพ์ ---------- */
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-goto],[data-status],[data-toggle],[data-ack]");
+    if(!t) return;
+    if(t.hasAttribute("data-goto")){ view.period = t.getAttribute("data-goto") || null; view.open = {}; render(); window.scrollTo(0,0); return; }
+    var id = t.getAttribute("data-id") || t.getAttribute("data-toggle") || t.getAttribute("data-ack");
+    var it = build().filter(function(x){ return x.id === id; })[0];
+    if(!it) return;
+    if(t.hasAttribute("data-toggle")){ view.open[id] = !view.open[id]; render(); return; }
+    if(t.hasAttribute("data-ack")){
+      setField(id, it.cyc.key, {ack:{by:"", at:new Date().toISOString()}});
+      return;
+    }
+    if(t.hasAttribute("data-status")){
+      var st = t.getAttribute("data-status");
+      var patch = {status:st};
+      if(st === "done") patch.progress = 100;
+      if(st === "todo") patch.progress = 0;
+      if(st === "doing" && it.progress === 0) patch.progress = 25;
+      setField(id, it.cyc.key, patch);
+    }
+  });
+
+  document.addEventListener("change", function(e){
+    var el = e.target;
+    if(!el.hasAttribute || !el.hasAttribute("data-f")) return;
+    var id = el.getAttribute("data-id"), f = el.getAttribute("data-f");
+    var it = build().filter(function(x){ return x.id === id; })[0];
+    if(!it) return;
+    var v = el.value;
+    if(f === "progress"){
+      v = Math.max(0, Math.min(100, parseInt(v,10) || 0));
+      var patch = {progress:v};
+      if(v === 100) patch.status = "done";
+      else if(v > 0 && it.status === "todo") patch.status = "doing";
+      else if(v === 0) patch.status = "todo";
+      setField(id, it.cyc.key, patch);
+    } else {
+      setField(id, it.cyc.key, JSON.parse('{"'+f+'":'+JSON.stringify(v)+'}'));
+    }
+  });
+
+  /* ---------- เริ่มทำงาน ---------- */
+  if(!lsAvailable()) mode = "readonly";
+  render();
+  if(window.claude && window.claude.use){
+    window.claude.use("artifact").then(function(api){
+      if(api){ artifactApi = api; mode = "live"; }   // หน้าเผยแพร่: บันทึกให้ทุกเครื่อง
+      render();
+    })["catch"](function(){});
+  }
+})();
+</script>
