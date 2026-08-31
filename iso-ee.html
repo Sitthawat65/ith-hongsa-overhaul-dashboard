@@ -138,11 +138,50 @@ button.panel:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
 .seg button:focus-visible{outline:2px solid var(--cyan); outline-offset:-2px}
 .item .barwrap{flex:1; min-width:110px; display:flex; align-items:center; gap:9px}
 .item .pcv{font-size:12px; color:var(--ink-soft); min-width:34px; text-align:right}
-.rowbtn{font:inherit; font-size:12px; padding:5px 10px; border-radius:5px; cursor:pointer;
-  border:1px solid var(--line); background:var(--panel-2); color:var(--ink-soft)}
-.rowbtn:hover{border-color:var(--cyan); color:var(--cyan)}
-.rowbtn:focus-visible{outline:2px solid var(--cyan); outline-offset:1px}
-.rowbtn.on{background:rgba(53,160,245,.14); border-color:var(--cyan); color:var(--cyan)}
+/* ปุ่มนูน — ขอบมน มีสันขอบด้านล่าง กดแล้วยุบลง */
+.rowbtn{font:inherit; font-size:12px; font-weight:500; padding:6px 14px; cursor:pointer;
+  border-radius:8px; border:1px solid #2C5389; color:#CBDDF5; letter-spacing:.01em;
+  background:linear-gradient(180deg,#1D3F70 0%,#152C51 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),
+             inset 0 -1px 0 rgba(0,0,0,.28),
+             0 2px 0 #0A1930,
+             0 4px 7px rgba(0,0,0,.34);
+  transition:transform .09s ease, box-shadow .09s ease, border-color .13s, color .13s}
+.rowbtn:hover{border-color:var(--cyan); color:#EDF5FF;
+  background:linear-gradient(180deg,#255089 0%,#193764 100%)}
+.rowbtn:active{transform:translateY(2px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),
+             inset 0 2px 5px rgba(0,0,0,.4),
+             0 0 0 #0A1930,
+             0 1px 2px rgba(0,0,0,.3)}
+.rowbtn:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+.rowbtn.on{border-color:var(--cyan); color:#EDF5FF;
+  background:linear-gradient(180deg,#26558F 0%,#1A3A69 100%)}
+
+/* ปุ่มกากบาทแดงนูน — ปิดรายละเอียด */
+.xbtn{position:relative; width:33px; height:33px; padding:0; flex:none; cursor:pointer;
+  border:none; border-radius:10px; display:inline-grid; place-items:center;
+  background:linear-gradient(180deg,#FF7D74 0%,#EE4A40 46%,#CE2820 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),
+             inset 0 -3px 6px rgba(120,10,6,.5),
+             0 3px 0 #8C1712,
+             0 6px 12px rgba(0,0,0,.42);
+  transition:transform .09s ease, box-shadow .09s ease, filter .13s}
+.xbtn::before{content:""; position:absolute; left:4px; right:4px; top:3px; height:40%;
+  border-radius:7px 7px 12px 12px; pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0))}
+.xbtn svg{position:relative; display:block}
+.xbtn:hover{filter:brightness(1.07)}
+.xbtn:active{transform:translateY(3px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),
+             inset 0 3px 7px rgba(120,10,6,.55),
+             0 0 0 #8C1712,
+             0 2px 4px rgba(0,0,0,.34)}
+.xbtn:focus-visible{outline:2px solid #FF9C94; outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  .rowbtn,.xbtn{transition:none}
+  .rowbtn:active,.xbtn:active{transform:none}
+}
 .acked{font-size:11.5px; color:var(--teal); display:flex; align-items:center; gap:5px}
 
 .detail{margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); display:grid; gap:9px}
@@ -931,8 +970,10 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
               : statusChip(it))
       +   '<div class="barwrap">' + bar(it.progress, st === "done" ? "ok" : st === "late" ? "late" : "")
       +     '<span class="pcv mono">' + it.progress + '%</span></div>'
-      +   '<button class="rowbtn' + (open ? " on" : "") + '" data-toggle="' + it.id + '">'
-      +     (open ? "ปิด" : "รายละเอียด") + '</button>'
+      +   (open
+             ? '<button class="xbtn" data-toggle="' + it.id + '" title="ปิดรายละเอียด"'
+               + ' aria-label="ปิดรายละเอียด">' + xIcon() + '</button>'
+             : '<button class="rowbtn" data-toggle="' + it.id + '">รายละเอียด</button>')
       +   (rw && it.late && !it.ack ? '<button class="rowbtn" data-ack="' + it.id + '">รับทราบ</button>' : "")
       +   (it.ack ? '<span class="acked">✓ รับทราบแล้ว</span>' : "")
       + '</div>';
@@ -965,6 +1006,12 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
         + '</div>';
     }
     return h + '</div>';
+  }
+  // กากบาทสีขาว ปลายมน ตัดขอบเรียบ
+  function xIcon(){
+    return '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+      + '<path d="M7 7 L17 17 M17 7 L7 17" fill="none" stroke="#FFFFFF" stroke-width="3.4"'
+      + ' stroke-linecap="round"/></svg>';
   }
   function statusChip(it){
     var cls = it.status === "done" ? "d-ok" : it.status === "doing" ? "d-idle" : "d-mute";
