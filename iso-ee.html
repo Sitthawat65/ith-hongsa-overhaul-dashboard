@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ISO EE Plan Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6,12 +8,19 @@
 <style id="css">
 :root{
   --bg1:#091630; --bg2:#0C1F42;
-  --panel:#122850; --panel-2:#0F2246; --line:#1E4079; --line-soft:#193764;
+  --panel:#122850; --panel-2:#0F2246; --panel-hi:#173563; --line:#1E4079; --line-soft:#193764;
   --ink:#FFFFFF; --ink-soft:#93ACD4; --ink-faint:#5E7BA8;
   --track:#17325C;
   --cyan:#35A0F5; --teal:#2FE0B0; --amber:#FFC24B; --coral:#FF7B6B; --violet:#8E7BFF;
   --ok:var(--teal); --doing:var(--cyan); --soon:var(--amber); --late:var(--coral);
+  --tone:#35A0F5; --tone-soft:rgba(53,160,245,.14);
 }
+
+/* ---------- โทนสีตามรอบงาน ---------- */
+.tone-M{--tone:#35A0F5; --tone-soft:rgba(53,160,245,.14)}   /* น้ำเงิน */
+.tone-Q{--tone:#2FE0B0; --tone-soft:rgba(47,224,176,.13)}   /* เขียว */
+.tone-H{--tone:#FF9F45; --tone-soft:rgba(255,159,69,.13)}   /* ส้ม */
+.tone-Y{--tone:#9B87FF; --tone-soft:rgba(155,135,255,.14)}  /* ม่วง */
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
@@ -152,6 +161,59 @@ button.panel:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
   border-radius:5px; padding:9px 12px; font-size:12.5px; margin-bottom:12px}
 footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
   color:var(--ink-faint); font-size:11.5px; text-align:center}
+
+/* ---------- กล่องรอบงาน + หัวข้อ ---------- */
+.panel.sec{border-color:var(--tone); border-top:3px solid var(--tone);
+  background:linear-gradient(180deg,var(--tone-soft) 0%,rgba(0,0,0,0) 78px),var(--panel);
+  padding-top:11px}
+.sect-h{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+  background:var(--tone-soft); border-left:4px solid var(--tone);
+  border-radius:4px; padding:8px 13px; margin:0 0 11px}
+.sect-h .th{font-size:17px; font-weight:700; color:var(--ink); letter-spacing:.01em}
+.sect-h .en{font-size:12px; font-weight:600; color:var(--tone);
+  letter-spacing:.08em; text-transform:uppercase}
+.sect-h .c{margin-left:auto; font-size:11.5px; font-weight:400; color:var(--ink-soft)}
+@media (max-width:640px){ .sect-h .c{margin-left:0; flex-basis:100%} }
+
+/* ---------- แถวสลับสี (เข้ม/จาง) ---------- */
+button.brow{font:inherit; color:inherit; border:none; background:transparent;
+  cursor:pointer; text-align:left; width:100%}
+.blist.zebra{gap:3px}
+.blist.zebra > .brow{padding:8px 11px 10px; border-radius:4px;
+  border-left:3px solid transparent}
+.blist.zebra > .brow:nth-child(odd){background:rgba(255,255,255,.05)}
+.blist.zebra > .brow:nth-child(even){background:rgba(0,0,0,.16)}
+.blist.zebra > button.brow:hover{background:var(--tone-soft); border-left-color:var(--tone)}
+.blist.zebra > button.brow:focus-visible{outline:2px solid var(--tone); outline-offset:-2px}
+
+.items .item:nth-child(odd){background:var(--panel-hi)}
+.items .item:nth-child(even){background:var(--panel-2)}
+
+/* ---------- คำอธิบายสีวงแหวน ---------- */
+.rlg{display:flex; gap:13px; justify-content:center; flex-wrap:wrap;
+  font-size:11px; color:var(--ink-soft); margin-top:4px}
+.rlg i{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px}
+.rlg i.thin{height:3px; width:10px; border-radius:99px; margin-bottom:2px}
+
+/* ---------- หัวข้อหน้ารอบงาน ---------- */
+.phead h2 .en{font-size:12.5px; font-weight:600; color:var(--tone);
+  letter-spacing:.08em; text-transform:uppercase; margin-left:8px}
+.tabs button .en{font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+  opacity:.72; margin-left:6px}
+
+/* ---------- สลับโหมดแก้ไข / ดูอย่างเดียว ---------- */
+.modebtn{font:inherit; font-size:11.5px; font-weight:600; padding:5px 12px; margin-top:5px;
+  border-radius:99px; cursor:pointer; border:1px solid var(--line);
+  background:var(--panel-2); color:var(--ink-soft); white-space:nowrap}
+.modebtn:hover{border-color:var(--cyan); color:var(--ink)}
+.modebtn.on{background:rgba(47,224,176,.15); border-color:var(--teal); color:var(--teal)}
+.modebtn:disabled{opacity:.45; cursor:not-allowed}
+.modebtn:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+.ro.view{background:rgba(53,160,245,.1); border-color:var(--cyan)}
+.d-mute{background:rgba(94,123,168,.18); color:var(--ink-soft)}
+.rov{font-size:13px; padding:7px 9px; border:1px solid var(--line-soft); border-radius:5px;
+  background:rgba(0,0,0,.16); min-height:34px; white-space:pre-wrap; overflow-wrap:anywhere}
+.rov.dim{color:var(--ink-faint)}
 </style>
 
 <div class="wrap" id="root"></div>
@@ -198,10 +260,10 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
     ["Y","ประจำปี","เอกสาร Calibrate เครื่องมือ"]
   ];
   var PERIOD = {
-    M:{name:"ประจำเดือน", remind:"เตือนวันที่ 25–30 ทุกเดือน"},
-    Q:{name:"ไตรมาส",     remind:"เตือนวันที่ 25–30 เดือน 3, 6, 9, 12"},
-    H:{name:"ครึ่งปี",     remind:"เตือนวันที่ 25–30 เดือน 6, 12"},
-    Y:{name:"ประจำปี",     remind:"เตือนวันที่ 25–30 เดือน 10, 11, 12"}
+    M:{name:"ประจำเดือน", en:"Monthly",     remind:"เตือนวันที่ 25–30 ทุกเดือน"},
+    Q:{name:"ไตรมาส",     en:"Quarterly",   remind:"เตือนวันที่ 25–30 เดือน 3, 6, 9, 12"},
+    H:{name:"ครึ่งปี",     en:"Semi-Annual", remind:"เตือนวันที่ 25–30 เดือน 6, 12"},
+    Y:{name:"ประจำปี",     en:"Annual",      remind:"เตือนวันที่ 25–30 เดือน 10, 11, 12"}
   };
   var ORDER = ["M","Q","H","Y"];
   var THMON = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
@@ -219,9 +281,18 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
   // live     = อยู่บนหน้าเผยแพร่ บันทึกแล้วทุกเครื่องเห็นตรงกัน
   // local    = อยู่บนเว็บทั่วไป (GitHub Pages) บันทึกไว้ในเบราว์เซอร์เครื่องนี้
   // readonly = ไม่มีสิทธิ์แก้ไข
-  var LS_KEY = "iso_ee_status_v1";
+  var LS_KEY = "iso_ee_status_v1", LS_EDIT = "iso_ee_editmode_v1";
   var artifactApi = null, mode = "local", saving = "idle";
-  function canEdit(){ return mode !== "readonly"; }
+  // editMode = สลับเองได้ เริ่มต้นที่ “ดูอย่างเดียว” กันกดโดนโดยไม่ตั้งใจ
+  var editMode = false;
+  try { editMode = localStorage.getItem(LS_EDIT) === "1"; } catch(e){}
+  function canEdit(){ return mode !== "readonly" && editMode; }
+  function setEditMode(v){
+    editMode = !!v;
+    try { localStorage.setItem(LS_EDIT, editMode ? "1" : "0"); } catch(e){}
+    view.open = {};
+    render();
+  }
   function lsAvailable(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }
                           catch(e){ return false; } }
   var view = { period:null, filter:null, open:{} };
@@ -297,7 +368,7 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
 
   var saveTimer = null;
   function save(){
-    if(mode === "readonly") return;
+    if(mode === "readonly" || !editMode) return;
     if(mode === "local"){                       // เก็บไว้ในเบราว์เซอร์เครื่องนี้
       STATE.updated = new Date().toISOString();
       STATE.rev = (STATE.rev || 0) + 1;
@@ -331,8 +402,11 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
     var el = document.getElementById("saveState");
     if(!el) return;
     var map = {
-      idle:["", mode === "live" ? "บันทึกอัตโนมัติ · ซิงค์ทุกเครื่อง"
-                : mode === "local" ? "บันทึกในเครื่องนี้" : "ดูอย่างเดียว"],
+      idle:[mode === "readonly" || !editMode ? "off" : "",
+            mode === "readonly" ? "ดูอย่างเดียว"
+              : !editMode ? "ดูอย่างเดียว"
+              : mode === "live" ? "บันทึกอัตโนมัติ · ซิงค์ทุกเครื่อง"
+              : "บันทึกในเครื่องนี้"],
       pending:["busy","กำลังบันทึก…"], saving:["busy","กำลังบันทึก…"],
       saved:["", "บันทึกแล้ว"], error:["off","บันทึกไม่สำเร็จ"], readonly:["off","ดูอย่างเดียว"]
     };
@@ -376,6 +450,65 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
       + ' font-family="IBM Plex Mono, monospace" font-size="'+(size*0.235).toFixed(1)+'"'
       + ' font-weight="600" fill="var(--ink)">'+pct+'%</text></svg>';
   }
+  // วงแหวนหลายสี: เสร็จแล้ว=เขียว กำลังทำ=ฟ้า ล่าช้า=แดง
+  function ringMulti(size, seg, centerPct, label){
+    var cx = size/2;
+    var swO = Math.max(3, size*0.038);                 // วงนอกบาง = งานล่าช้า
+    var rO  = (size - swO)/2, cO = 2*Math.PI*rO;
+    var sw  = Math.max(7, size*0.115);                 // วงในหนา = สถานะงาน
+    var r   = rO - swO/2 - Math.max(3, size*0.03) - sw/2, c = 2*Math.PI*r, acc = 0;
+    var s = '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img"'
+      + ' aria-label="'+esc(label||"")+' '+centerPct+' เปอร์เซ็นต์">'
+      + '<circle cx="'+cx+'" cy="'+cx+'" r="'+rO+'" fill="none" stroke="var(--track)"'
+      +   ' stroke-width="'+swO+'" opacity=".55"/>'
+      + '<circle cx="'+cx+'" cy="'+cx+'" r="'+r+'" fill="none" stroke="var(--track)" stroke-width="'+sw+'"/>';
+    (seg.parts || []).forEach(function(p){
+      if(!(p.v > 0)) return;
+      var len = c*Math.min(100,p.v)/100;
+      s += '<circle cx="'+cx+'" cy="'+cx+'" r="'+r+'" fill="none" stroke="'+p.color+'"'
+        + ' stroke-width="'+sw+'" stroke-dasharray="'+len.toFixed(2)+' '+(c-len).toFixed(2)+'"'
+        + ' stroke-dashoffset="'+(-c*acc/100).toFixed(2)+'"'
+        + ' transform="rotate(-90 '+cx+' '+cx+')"/>';
+      acc += p.v;
+    });
+    if(seg.late > 0){
+      var lenO = cO*Math.min(100,seg.late)/100;
+      s += '<circle cx="'+cx+'" cy="'+cx+'" r="'+rO+'" fill="none" stroke="var(--coral)"'
+        + ' stroke-width="'+swO+'" stroke-linecap="round"'
+        + ' stroke-dasharray="'+lenO.toFixed(2)+' '+(cO-lenO).toFixed(2)+'"'
+        + ' transform="rotate(-90 '+cx+' '+cx+')"/>';
+    }
+    return s + '<text x="'+cx+'" y="'+(cx+1)+'" text-anchor="middle" dominant-baseline="middle"'
+      + ' font-family="IBM Plex Mono, monospace" font-size="'+(size*0.235).toFixed(1)+'"'
+      + ' font-weight="600" fill="var(--ink)">'+centerPct+'%</text></svg>';
+  }
+  // วงใน = สถานะงาน (เสร็จ/กำลังทำ) · วงนอก = ล่าช้า
+  // นับคนละชั้น งานที่“กำลังทำ”และ“ล่าช้า”พร้อมกัน จึงขึ้นครบทั้งสองสี ตรงกับแถบสรุป
+  function segsOf(list){
+    var n = list.length || 1;
+    var done = 0, doing = 0, late = 0;
+    list.forEach(function(x){
+      if(x.status === "done") done++;
+      else if(x.status === "doing") doing++;
+      if(x.late) late++;
+    });
+    return {parts:[{v:done/n*100,  color:"var(--teal)"},
+                   {v:doing/n*100, color:"var(--cyan)"}],
+            late: late/n*100};
+  }
+  function ringLegend(){
+    return '<div class="rlg">'
+      + '<span><i style="background:var(--teal)"></i>เสร็จแล้ว</span>'
+      + '<span><i style="background:var(--cyan)"></i>กำลังทำ</span>'
+      + '<span><i class="thin" style="background:var(--coral)"></i>ล่าช้า (วงนอก)</span></div>';
+  }
+  // หัวข้อกลุ่มรอบงาน (ไทย + อังกฤษ)
+  function sectHead(code, metaHTML){
+    var p = PERIOD[code];
+    return '<div class="sect-h"><span class="th">' + esc(p.name) + '</span>'
+      + '<span class="en">' + esc(p.en) + '</span>'
+      + '<span class="c">' + metaHTML + '</span></div>';
+  }
   function bar(pct, cls){
     return '<div class="track"><i class="'+(cls||"")+'" style="width:'+Math.max(0,Math.min(100,pct))+'%"></i></div>';
   }
@@ -395,10 +528,11 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
   function tabsHTML(){
     var atHome = !view.period && !view.filter;
     var h = '<div class="tabs" role="tablist"><button role="tab" data-goto="" aria-current="'
-      + (atHome ? "page" : "false") + '">ภาพรวม</button>';
+      + (atHome ? "page" : "false") + '">ภาพรวม<span class="en">Overview</span></button>';
     ORDER.forEach(function(c){
       h += '<button role="tab" data-goto="'+c+'" aria-current="'
-        + (view.period === c ? "page" : "false") + '">' + esc(PERIOD[c].name) + '</button>';
+        + (view.period === c ? "page" : "false") + '">' + esc(PERIOD[c].name)
+        + '<span class="en">' + esc(PERIOD[c].en) + '</span></button>';
     });
     return h + '</div>';
   }
@@ -412,9 +546,10 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
 
     // ความคืบหน้ารวม
     h += '<button class="panel c3" data-filter="all"><h3>ความคืบหน้ารวม</h3>'
-      + '<div style="display:flex;justify-content:center;padding:2px 0 10px">'
-      + ring(a.pct, 116, "var(--cyan)", "ความคืบหน้ารวม") + '</div>'
-      + '<div class="kpirow"><span class="cap">ทั้งหมด ' + a.total + ' รายการ</span>'
+      + '<div style="display:flex;justify-content:center;padding:2px 0 6px">'
+      + ringMulti(116, segsOf(items), a.pct, "ความคืบหน้ารวม") + '</div>'
+      + ringLegend()
+      + '<div class="kpirow" style="margin-top:10px"><span class="cap">ทั้งหมด ' + a.total + ' รายการ</span>'
       + '<span class="delta d-idle">ดูทั้งหมด →</span></div></button>';
 
     // สถานะงาน
@@ -452,11 +587,14 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
       + (late.length ? late.length + " ล่าช้า" : "ตรงแผน") + '</span></div></button>';
 
     // ความคืบหน้าตามรอบงาน
-    h += '<div class="panel c7"><h3>ความคืบหน้าตามรอบงาน</h3><div class="blist">';
+    h += '<div class="panel c7"><h3>ความคืบหน้าตามรอบงาน</h3><div class="blist zebra">';
     ORDER.forEach(function(code){
       var g = items.filter(function(x){ return x.code === code; }), s = summarise(g);
       var cls = s.late ? "late" : s.pct === 100 ? "ok" : "";
-      h += '<div class="brow"><span class="nm">' + esc(PERIOD[code].name)
+      h += '<div class="brow tone-' + code + '" style="border-left-color:var(--tone)">'
+        + '<span class="nm"><b>' + esc(PERIOD[code].name) + '</b> '
+        + '<span style="color:var(--tone);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase">'
+        + esc(PERIOD[code].en) + '</span>'
         + '  <span style="color:var(--ink-faint);font-size:11px">' + esc(g[0].cyc.label) + '</span></span>'
         + '<span class="vl mono">' + s.done + '/' + s.total + ' · ' + s.pct + '%</span>'
         + bar(s.pct, cls) + '</div>';
@@ -476,15 +614,14 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
     // รายการทั้งหมด แยกตามรอบ
     ORDER.forEach(function(code){
       var g = items.filter(function(x){ return x.code === code; }), s = summarise(g);
-      h += '<div class="panels" style="margin-top:11px"><div class="panel c12">'
-        + '<h3>' + esc(PERIOD[code].name)
-        + '<span class="c">รอบ ' + esc(g[0].cyc.label) + ' · กำหนด ' + esc(fmtDate(g[0].cyc.due))
-        + ' · เสร็จ ' + s.done + '/' + s.total + (s.late ? ' · ล่าช้า ' + s.late : '') + '</span></h3>'
-        + '<div class="blist">';
+      var meta = 'รอบ ' + esc(g[0].cyc.label) + ' · กำหนด ' + esc(fmtDate(g[0].cyc.due))
+        + ' · เสร็จ ' + s.done + '/' + s.total + (s.late ? ' · ล่าช้า ' + s.late : '');
+      h += '<div class="panels" style="margin-top:12px"><div class="panel c12 sec tone-' + code + '">'
+        + sectHead(code, meta)
+        + '<div class="blist zebra">';
       g.forEach(function(it){
         var st = stateOf(it);
-        h += '<button class="brow" data-tile="'+it.id+'" style="background:none;border:none;'
-          + 'font:inherit;color:inherit;cursor:pointer;text-align:left;padding:0">'
+        h += '<button class="brow" data-tile="'+it.id+'">'
           + '<span class="nm">' + esc(it.name) + '</span>'
           + '<span class="vl mono">' + esc(dueText(it)) + ' · ' + it.progress + '%</span>'
           + bar(it.progress, st === "done" ? "ok" : st === "late" ? "late" : st === "soon" ? "soon" : "")
@@ -522,18 +659,20 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
   function renderPeriod(items, code){
     var g = items.filter(function(x){ return x.code === code; });
     var s = summarise(g), p = PERIOD[code], c = g[0].cyc;
-    var h = '<div class="phead"><h2>' + esc(p.name) + '</h2>'
+    var h = '<div class="phead tone-' + code + '"><h2>' + esc(p.name)
+      + '<span class="en">' + esc(p.en) + '</span></h2>'
       + '<div class="sub">รอบ ' + esc(c.label) + ' · กำหนด ' + esc(fmtDate(c.due)) + ' · ' + esc(p.remind) + '</div></div>'
-      + '<div class="panels" style="margin-bottom:12px">'
-      + '<div class="panel c4"><h3>ความคืบหน้ารอบนี้</h3>'
-      +   '<div style="display:flex;justify-content:center;padding:2px 0 6px">'
-      +   ring(s.pct, 104, s.late ? "var(--coral)" : "var(--cyan)", "ความคืบหน้า") + '</div></div>'
-      + '<div class="panel c8"><h3>สรุป</h3><div class="blist">'
+      + '<div class="panels tone-' + code + '" style="margin-bottom:12px">'
+      + '<div class="panel c4 sec"><h3>ความคืบหน้ารอบนี้</h3>'
+      +   '<div style="display:flex;justify-content:center;padding:2px 0 4px">'
+      +   ringMulti(104, segsOf(g), s.pct, "ความคืบหน้า") + '</div>'
+      +   ringLegend() + '</div>'
+      + '<div class="panel c8 sec"><h3>สรุป</h3><div class="blist zebra">'
       +   sumRow("เสร็จแล้ว", s.done, s.total, "ok")
       +   sumRow("กำลังทำ", s.doing, s.total, "")
       +   sumRow("ล่าช้า", s.late, s.total, "late")
       + '</div></div></div>'
-      + '<div class="items">';
+      + '<div class="items tone-' + code + '">';
     g.forEach(function(it){ h += itemHTML(it, false); });
     return h + '</div>';
   }
@@ -545,24 +684,25 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
 
   /* ---------- หนึ่งรายการ ---------- */
   function itemHTML(it, showPeriod){
-    var open = !!view.open[it.id], st = stateOf(it);
+    var open = !!view.open[it.id], st = stateOf(it), rw = canEdit();
     var h = '<div class="item' + (st ? " is-" + st : "") + '">'
       + '<div class="r1"><div class="nm">'
       +   (showPeriod ? '<span class="ptag">' + esc(it.period) + '</span>' : '')
       +   esc(it.name) + '</div>'
       + '<div class="due">' + esc(dueText(it)) + '</div></div>'
       + '<div class="r2">'
-      +   '<div class="seg" role="group" aria-label="สถานะ">'
-      +     segBtn(it,"todo","ยังไม่เริ่ม") + segBtn(it,"doing","กำลังทำ") + segBtn(it,"done","เสร็จแล้ว")
-      +   '</div>'
+      +   (rw ? '<div class="seg" role="group" aria-label="สถานะ">'
+                  + segBtn(it,"todo","ยังไม่เริ่ม") + segBtn(it,"doing","กำลังทำ") + segBtn(it,"done","เสร็จแล้ว")
+                  + '</div>'
+              : statusChip(it))
       +   '<div class="barwrap">' + bar(it.progress, st === "done" ? "ok" : st === "late" ? "late" : "")
       +     '<span class="pcv mono">' + it.progress + '%</span></div>'
       +   '<button class="rowbtn' + (open ? " on" : "") + '" data-toggle="' + it.id + '">'
       +     (open ? "ปิด" : "รายละเอียด") + '</button>'
-      +   (it.late && !it.ack ? '<button class="rowbtn" data-ack="' + it.id + '">รับทราบ</button>' : "")
+      +   (rw && it.late && !it.ack ? '<button class="rowbtn" data-ack="' + it.id + '">รับทราบ</button>' : "")
       +   (it.ack ? '<span class="acked">✓ รับทราบแล้ว</span>' : "")
       + '</div>';
-    if(open){
+    if(open && rw){
       h += '<div class="detail"><div class="two">'
         + fld("ความคืบหน้า (%)", '<input type="number" min="0" max="100" step="5" value="' + it.progress
             + '" data-f="progress" data-id="' + it.id + '">')
@@ -578,8 +718,32 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
             + esc(it.note) + '</textarea>')
         + (it.at ? '<div class="cap">แก้ไขล่าสุด ' + esc(new Date(it.at).toLocaleString("th-TH")) + '</div>' : "")
         + '</div>';
+    } else if(open){
+      // โหมดดูอย่างเดียว — แสดงค่าแต่แก้ไขไม่ได้
+      h += '<div class="detail"><div class="two">'
+        + roFld("ความคืบหน้า (%)", it.progress + "%")
+        + roFld("ผู้รับผิดชอบ", it.owner)
+        + '</div>'
+        + roFld("สถานะเอกสาร", docWord(it.doc))
+        + roFld("สาเหตุความล่าช้า", it.reason)
+        + roFld("หมายเหตุ", it.note)
+        + (it.at ? '<div class="cap">แก้ไขล่าสุด ' + esc(new Date(it.at).toLocaleString("th-TH")) + '</div>' : "")
+        + '</div>';
     }
     return h + '</div>';
+  }
+  function statusChip(it){
+    var cls = it.status === "done" ? "d-ok" : it.status === "doing" ? "d-idle" : "d-mute";
+    return '<span class="delta ' + cls + '">' + esc(statusWord(it.status)) + '</span>';
+  }
+  function docWord(d){
+    return d === "doing" ? "กำลังจัดทำ"
+         : d === "done"  ? "จัดทำแล้วเสร็จ" : "ยังไม่มีเอกสาร";
+  }
+  function roFld(label, val){
+    var has = val !== null && val !== undefined && String(val) !== "";
+    return '<div class="fld"><label>' + esc(label) + '</label>'
+      + '<div class="rov' + (has ? "" : " dim") + '">' + (has ? esc(val) : "—") + '</div></div>';
   }
   function segBtn(it, val, label){
     return '<button data-status="' + val + '" data-id="' + it.id + '" aria-pressed="'
@@ -599,8 +763,17 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
       + '<p>ITH Hongsa · ติดตามความคืบหน้าตามรอบงาน</p></div>'
       + '<div class="right"><div id="saveState" class="saving"></div><div>'
       + esc(new Date().toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric"}))
-      + '</div></div></div>'
-      + (mode === "readonly" ? '<div class="ro">มุมมองอ่านอย่างเดียว — บัญชีนี้ไม่มีสิทธิ์แก้ไขสถานะ</div>' : "");
+      + '</div><button class="modebtn' + (editMode ? " on" : "") + '" data-mode="1"'
+      + (mode === "readonly" ? ' disabled' : '')
+      + ' aria-pressed="' + (editMode ? "true" : "false") + '">'
+      + (editMode ? "✎ โหมดแก้ไข · Edit" : "ดูอย่างเดียว · View only")
+      + '</button></div></div>'
+      + (mode === "readonly"
+          ? '<div class="ro">มุมมองอ่านอย่างเดียว — บัญชีนี้ไม่มีสิทธิ์แก้ไขสถานะ</div>'
+          : !editMode
+          ? '<div class="ro view">โหมดดูอย่างเดียว (View only) — แก้ไขสถานะไม่ได้ '
+            + '· กดปุ่ม “ดูอย่างเดียว” มุมขวาบน เพื่อเข้าโหมดแก้ไข</div>'
+          : "");
 
     root.innerHTML = head + tabsHTML()
       + (view.filter ? renderFilter(items, view.filter)
@@ -611,8 +784,9 @@ footer{margin-top:22px; padding-top:12px; border-top:1px solid var(--line-soft);
 
   /* ---------- รับการกดและการพิมพ์ ---------- */
   document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-goto],[data-status],[data-toggle],[data-ack],[data-tile],[data-filter]");
+    var t = e.target.closest("[data-mode],[data-goto],[data-status],[data-toggle],[data-ack],[data-tile],[data-filter]");
     if(!t) return;
+    if(t.hasAttribute("data-mode")){ setEditMode(!editMode); return; }
     if(t.hasAttribute("data-goto")){
       view.period = t.getAttribute("data-goto") || null; view.filter = null; view.open = {};
       render(); window.scrollTo(0,0); return;
