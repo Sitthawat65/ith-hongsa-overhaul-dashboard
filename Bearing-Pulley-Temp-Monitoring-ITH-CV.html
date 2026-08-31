@@ -43,7 +43,7 @@
   table.temps{width:100%;border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
   table.temps th,table.temps td{padding:15px 20px;text-align:left;border-bottom:1px solid var(--line)}
   table.temps thead th{background:#0e1620;color:#93a6ba;font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;border-bottom:2px solid #2a3a4d;padding-top:13px;padding-bottom:11px}
-  table.temps th.num,table.temps td.num{text-align:right;width:24%;white-space:nowrap}
+  table.temps th.num,table.temps td.num{text-align:right;width:31%;white-space:nowrap}
   table.temps tbody tr{transition:background .12s}
   table.temps tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
   table.temps tbody tr:hover{background:rgba(31,111,235,.09)}
@@ -59,6 +59,21 @@
   .num.stale .v{opacity:.42}
   .num.fault .v{color:#c76a3a;font-size:17px;font-weight:600}
   .agetag{font-size:10.5px;color:#c07f3e;letter-spacing:.3px;margin-top:1px}
+
+  /* ---------- หน้าปัดระดับอุณหภูมิ (Low / Medium / High) ---------- */
+  .gwrap{display:flex;align-items:center;justify-content:flex-end;gap:14px}
+  .gval{text-align:right;line-height:1.1}
+  .gauge{flex:none;width:66px;height:38px;display:block}
+  .gauge .gtick{stroke:rgba(255,255,255,.34);stroke-width:1.5;stroke-linecap:round}
+  .gauge .gneedle{fill:#f4f8fd;stroke:#080e14;stroke-width:.9;stroke-linejoin:round}
+  .gauge .ghub{fill:#e2ebf5;stroke:#080e14;stroke-width:1.1}
+  .num.stale .gauge{opacity:.42}
+  .num.alarm .gauge .gneedle{fill:#ffdede}
+  @media (max-width:600px){
+    .gauge{width:52px;height:30px}
+    .gwrap{gap:9px}
+    table.temps th,table.temps td{padding:13px 12px}
+  }
   @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.18}}
   footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
   .legend{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:6px}
@@ -99,6 +114,7 @@
 
   <footer>
     <div>เกณฑ์สี: <span style="color:#2ecc71">0–69°C ปกติ</span> · <span style="color:#f5a623">70–79°C เตือน</span> · <span style="color:#e02424">≥ 80°C แจ้งเตือน (กะพริบ)</span></div>
+    <div style="margin-top:6px">หน้าปัดสเกล 0–100 °C · เข็มชี้ระดับจริงของแต่ละจุด · ขีดสเกลทุก 25 °C</div>
     <div style="margin-top:6px">ข้อมูลรีเฟรชอัตโนมัติทุก 60 วินาที · แหล่งข้อมูลอัปเดตทุก ~5 นาที</div>
   </footer>
 
@@ -120,6 +136,42 @@ function baseLabel(base){
   const m = /^(?:BWE|CR)[12]_(.+)$/.exec(base);
   return m ? (BASE_NAMES[m[1]] || m[1].replace(/_/g,' ')) : base;
 }
+// ---------- หน้าปัดเกจ SVG: สเกล 0–100 °C · แถบสีตามเกณฑ์เดียวกับตัวเลข
+const G_MAX = 100;
+function gPt(cx, cy, r, frac){                       // frac 0–1 → พิกัดบนครึ่งวงกลม (ซ้าย→ขวา)
+  const th = (180 - frac*180) * Math.PI/180;
+  return [cx + r*Math.cos(th), cy - r*Math.sin(th)];
+}
+function gArc(cx, cy, r, a, b, w, color){
+  const [x1,y1] = gPt(cx,cy,r,a), [x2,y2] = gPt(cx,cy,r,b);
+  return '<path d="M'+x1.toFixed(2)+' '+y1.toFixed(2)+'A'+r+' '+r+' 0 0 1 '+x2.toFixed(2)+' '+y2.toFixed(2)+'"'
+    + ' fill="none" stroke="'+color+'" stroke-width="'+w+'"/>';
+}
+function gaugeSVG(v){
+  const cx = 52, cy = 52, r = 40, w = 9;
+  const f = Math.max(0, Math.min(1, v / G_MAX));     // ค่านอกสเกลให้เข็มหยุดสุดปลาย
+  const lvl = v >= ALARM ? 'High' : v >= WARN ? 'Medium' : 'Low';
+  let g = '<svg class="gauge" viewBox="0 0 104 60" role="img"'
+        + ' aria-label="ระดับ ' + lvl + ' · ' + v.toFixed(1) + ' องศาเซลเซียส">';
+  g += gArc(cx,cy,r,0,1,w+3,'#0b131c');                                  // ร่องหน้าปัด
+  g += gArc(cx,cy,r,0,WARN/G_MAX,w,'#2ecc71');                           // Low   0–69
+  g += gArc(cx,cy,r,WARN/G_MAX,ALARM/G_MAX,w,'#f5a623');                 // Medium 70–79
+  g += gArc(cx,cy,r,ALARM/G_MAX,1,w,'#e02424');                          // High  ≥80
+  for(let t = 0; t <= 100; t += 25){                                     // ขีดสเกลทุก 25 °C
+    const a = gPt(cx,cy,r-w/2-1.2,t/100), b = gPt(cx,cy,r-w/2-5,t/100);
+    g += '<line class="gtick" x1="'+a[0].toFixed(2)+'" y1="'+a[1].toFixed(2)
+       + '" x2="'+b[0].toFixed(2)+'" y2="'+b[1].toFixed(2)+'"/>';
+  }
+  const th = (180 - f*180) * Math.PI/180, tipR = r - w/2 - 6;            // เข็มชี้ตามค่าจริง
+  const tx = cx + tipR*Math.cos(th), ty = cy - tipR*Math.sin(th);
+  const px = Math.sin(th)*2.9, py = Math.cos(th)*2.9;
+  g += '<path class="gneedle" d="M'+tx.toFixed(2)+' '+ty.toFixed(2)
+     + 'L'+(cx+px).toFixed(2)+' '+(cy+py).toFixed(2)
+     + 'L'+(cx-px).toFixed(2)+' '+(cy-py).toFixed(2)+'Z"/>';
+  g += '<circle class="ghub" cx="'+cx+'" cy="'+cy+'" r="4.3"/>';
+  return g + '</svg>';
+}
+
 let DATA = null, activeGroup = null;
 
 function fmtTime(iso){
@@ -173,10 +225,12 @@ function render(){
     const age = isNaN(t) ? 0 : Date.now() - t;
     if(age > STALE_MS){
       return '<td class="num stale" title="ค่าล่าสุดเมื่อ '+fmtTime(seen || DATA.updated)+'">'
+        + '<div class="gwrap">'+gaugeSVG(v)+'<div class="gval">'
         + '<span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span>'
-        + '<div class="agetag">ค้าง '+ageText(age)+'</div></td>';
+        + '<div class="agetag">ค้าง '+ageText(age)+'</div></div></div></td>';
     }
-    return '<td class="'+cls+'"><span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span></td>';
+    return '<td class="'+cls+'"><div class="gwrap">'+gaugeSVG(v)+'<div class="gval">'
+      + '<span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span></div></div></td>';
   };
 
   const rows = document.getElementById('rows');
