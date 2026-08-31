@@ -198,6 +198,9 @@ button.panel:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
 .rowbtn:disabled:hover,.savebtn:disabled:hover{filter:none; border-color:var(--line)}
 
+.lateflag{color:var(--coral); font-weight:600; font-size:12px; white-space:nowrap;
+  background:rgba(255,123,107,.15); border-radius:3px; padding:1px 8px; margin-left:8px}
+.fldhint{font-size:11px; color:var(--coral); margin-top:5px; line-height:1.5}
 .dirty{font-size:11px; font-weight:600; color:var(--amber); white-space:nowrap}
 .dirty[hidden]{display:none}
 .item.is-editing{box-shadow:inset 0 0 0 1px var(--cyan)}
@@ -419,7 +422,7 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     "ท้าวเพ็ก คำมุงคุน", "ท้าวมัว ชง"
   ];
   var CHECKERS = [
-    "ช่างหญิงกลัสกร รักษ์พงษ์", "นายช่างศุภวัฒน์ วรรณใหม่", "นายช่างธีระวัฒ ปัญญากาศ"
+    "ช่างหญิงกลัสกร รักษ์พงษ์", "นายช่างศุภวัฒน์ วรรณใหม่", "นายช่างสิษฐวัศ ปัญญากาศ"
   ];
   // สาเหตุความล่าช้า — เก็บเป็นรหัส ข้อความอิสระเก่าจะถูกย้ายไปช่อง "ระบุเพิ่มเติม"
   var REASONS = [["access","หน้างานเข้าไม่ได้"], ["busy","ติดงาน"], ["other","อื่นๆ"]];
@@ -433,8 +436,9 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     if(code === "other" && note) return w + " — " + note;
     return w;
   }
-  // สถานะงานในรูปแบบ dropdown (ล่าช้า = ยังไม่เริ่ม/ตามไม่ทัน)
-  var WSTATUS = [["todo","ล่าช้า"], ["doing","กำลังทำ"], ["done","เสร็จแล้ว"]];
+  // สถานะงานที่ "เลือกได้" — ตรงกับปุ่ม 3 ปุ่มบนแถวเป๊ะ ๆ
+  // "ล่าช้า" ไม่อยู่ในนี้เพราะระบบคำนวณจากวันครบกำหนดเอง เลือกเองแล้วจะขัดกับความจริง
+  var WSTATUS = [["todo","ยังไม่เริ่ม"], ["doing","กำลังทำ"], ["done","เสร็จแล้ว"]];
   var THMON = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 
 /* ---------- สถานะที่บันทึกไว้ ---------- */
@@ -1082,7 +1086,11 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
         h += '<div class="two">'
           + fld("ความคืบหน้า (%)", '<input type="number" min="0" max="100" step="5" value="'
               + d.progress + '" data-f="progress" data-id="' + it.id + '">')
-          + fld("สถานะงาน", selPairs("status", it.id, WSTATUS, d.status, null))
+          + fld("สถานะงาน", selPairs("status", it.id, WSTATUS, d.status, null)
+              + (it.late && d.status !== "done"
+                  ? '<div class="fldhint">เกินกำหนดมาแล้ว ' + Math.abs(it.left)
+                    + ' วัน — ระบบนับเป็นงานล่าช้าให้อัตโนมัติจนกว่าจะกด “เสร็จแล้ว”</div>'
+                  : ""))
           + '</div><div class="two">'
           + fld("ผู้ปฏิบัติงาน", selNames("owner", it.id, WORKERS, d.owner, "— เลือกผู้ปฏิบัติงาน —"))
           + fld("ผู้ตรวจสอบ", selNames("checker", it.id, CHECKERS, d.checker, "— เลือกผู้ตรวจสอบ —"))
@@ -1099,7 +1107,7 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
       } else {
         h += '<div class="two">'
           + roFld("ความคืบหน้า (%)", it.progress + "%")
-          + roFld("สถานะงาน", wstatusWord(it.status))
+          + roFldHTML("สถานะงาน", esc(wstatusWord(it.status)) + lateFlag(it))
           + '</div><div class="two">'
           + roFld("ผู้ปฏิบัติงาน", it.owner)
           + roFld("ผู้ตรวจสอบ", it.checker)
@@ -1128,6 +1136,14 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     var list = names.slice();
     if(cur && list.indexOf(cur) === -1) list.push(cur);
     return selPairs(f, id, list.map(function(n){ return [n, n]; }), cur, placeholder);
+  }
+  // ป้ายล่าช้าอัตโนมัติ ใช้คู่กับสถานะเสมอ
+  function lateFlag(it){
+    return it.late ? ' <span class="lateflag">ล่าช้า ' + Math.abs(it.left) + ' วัน</span>' : "";
+  }
+  function roFldHTML(label, inner){
+    return '<div class="fld"><label>' + esc(label) + '</label>'
+      + '<div class="rov">' + inner + '</div></div>';
   }
   function wstatusWord(v){
     for(var i = 0; i < WSTATUS.length; i++) if(WSTATUS[i][0] === v) return WSTATUS[i][1];
