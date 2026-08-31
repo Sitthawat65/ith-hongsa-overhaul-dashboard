@@ -178,9 +178,34 @@ button.panel:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
              0 0 0 #8C1712,
              0 2px 4px rgba(0,0,0,.34)}
 .xbtn:focus-visible{outline:2px solid #FF9C94; outline-offset:3px}
+/* ปุ่มบันทึก — เขียวนูน */
+.savebtn{font:inherit; font-size:12px; font-weight:600; padding:6px 14px; cursor:pointer;
+  border-radius:8px; border:1px solid #1F8C63; color:#EAFFF6; letter-spacing:.01em;
+  background:linear-gradient(180deg,#25B881 0%,#158056 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.32),
+             inset 0 -1px 0 rgba(0,0,0,.24),
+             0 2px 0 #0A4A32,
+             0 4px 7px rgba(0,0,0,.34);
+  transition:transform .09s ease, box-shadow .09s ease, filter .13s}
+.savebtn:hover:not(:disabled){filter:brightness(1.09)}
+.savebtn:active:not(:disabled){transform:translateY(2px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),
+             inset 0 2px 5px rgba(0,0,0,.4),
+             0 0 0 #0A4A32,
+             0 1px 2px rgba(0,0,0,.3)}
+.savebtn:focus-visible{outline:2px solid #57E5AF; outline-offset:2px}
+.rowbtn:disabled,.savebtn:disabled{opacity:.4; cursor:not-allowed; transform:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.rowbtn:disabled:hover,.savebtn:disabled:hover{filter:none; border-color:var(--line)}
+
+.dirty{font-size:11px; font-weight:600; color:var(--amber); white-space:nowrap}
+.dirty[hidden]{display:none}
+.item.is-editing{box-shadow:inset 0 0 0 1px var(--cyan)}
+.item.is-editing .detail{border-top-style:solid; border-top-color:var(--cyan)}
+
 @media (prefers-reduced-motion:reduce){
-  .rowbtn,.xbtn{transition:none}
-  .rowbtn:active,.xbtn:active{transform:none}
+  .rowbtn,.xbtn,.savebtn{transition:none}
+  .rowbtn:active,.xbtn:active,.savebtn:active{transform:none}
 }
 .acked{font-size:11.5px; color:var(--teal); display:flex; align-items:center; gap:5px}
 
@@ -380,6 +405,36 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     Y:{name:"ประจำปี",     en:"Annual",      remind:"เตือนวันที่ 25–30 เดือน 10, 11, 12"}
   };
   var ORDER = ["M","Q","H","Y"];
+
+  /* ---------- รายชื่อสำหรับ dropdown ---------- */
+  var WORKERS = [
+    "นายชิงชัย คงมั่น", "นายธนากรณ์ ปานเครือ", "นายลาณวัฒน์ ยานะโส",
+    "นายพงษ์พิเชฐ เนตรทิพย์", "นายธิระพงษ์ พันแพง", "นายชัชวาลย์ คำปัน",
+    "ท้าวสมหมาย เกดมะนี", "ท้าวเทียน สุกคองไซ", "ท้าวคำไส แสงจัน",
+    "ท้าวแอ จิดตะดวง", "ท้าวสิด สีทัดปันยา", "ท้าวอุดม ซับหมั้น",
+    "ท้าวปอ จะ", "ท้าวเบ้ย สาสีพม", "ท้าวจันแก้ว ดีวันนา",
+    "นางแจ่ม พะสิด", "ท้าวทองจัน แก้วจันทะลังสี", "ท้าวคำแก้ว มิ่งสะหมอน",
+    "ท้าวบุน", "ท้าวสมบัด มาสุวัน", "ท้าวสายลม จันทะวง",
+    "ท้าวลือ จะ", "ท้าวเอก คำเพ็ง", "ท้าวอานุไซ มะนีวง",
+    "ท้าวเพ็ก คำมุงคุน", "ท้าวมัว ชง"
+  ];
+  var CHECKERS = [
+    "ช่างหญิงกลัสกร รักษ์พงษ์", "นายช่างศุภวัฒน์ วรรณใหม่", "นายช่างธีระวัฒ ปัญญากาศ"
+  ];
+  // สาเหตุความล่าช้า — เก็บเป็นรหัส ข้อความอิสระเก่าจะถูกย้ายไปช่อง "ระบุเพิ่มเติม"
+  var REASONS = [["access","หน้างานเข้าไม่ได้"], ["busy","ติดงาน"], ["other","อื่นๆ"]];
+  function reasonCode(v){
+    if(!v) return "";
+    return (v === "access" || v === "busy" || v === "other") ? v : "other";
+  }
+  function reasonWord(code, note){
+    var w = "";
+    for(var i = 0; i < REASONS.length; i++) if(REASONS[i][0] === code) w = REASONS[i][1];
+    if(code === "other" && note) return w + " — " + note;
+    return w;
+  }
+  // สถานะงานในรูปแบบ dropdown (ล่าช้า = ยังไม่เริ่ม/ตามไม่ทัน)
+  var WSTATUS = [["todo","ล่าช้า"], ["doing","กำลังทำ"], ["done","เสร็จแล้ว"]];
   var THMON = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 
 /* ---------- สถานะที่บันทึกไว้ ---------- */
@@ -404,7 +459,7 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
   function setEditMode(v){
     editMode = !!v;
     try { localStorage.setItem(LS_EDIT, editMode ? "1" : "0"); } catch(e){}
-    view.open = {};
+    clearRows();
     render();
   }
 
@@ -479,7 +534,30 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
   });
   function lsAvailable(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }
                           catch(e){ return false; } }
-  var view = { period:null, filter:null, open:{}, year:null, idx:{} };
+  var view = { period:null, filter:null, open:{}, year:null, idx:{}, rowEdit:{}, draft:{} };
+
+  /* ---------- ร่างการแก้ไขรายแถว — ยังไม่บันทึกจนกว่าจะกด "บันทึก" ---------- */
+  var DRAFT_KEYS = ["status","progress","owner","checker","doc","reason","reasonNote","note"];
+  function draftOf(it){
+    var d = view.draft[it.id];
+    if(!d){
+      d = view.draft[it.id] = {};
+      DRAFT_KEYS.forEach(function(k){ d[k] = it[k]; });
+    }
+    return d;
+  }
+  function isDirty(it){
+    var d = view.draft[it.id];
+    if(!d) return false;
+    for(var i = 0; i < DRAFT_KEYS.length; i++){
+      var k = DRAFT_KEYS[i];
+      if(d[k] !== it[k]) return true;
+    }
+    return false;
+  }
+  function clearDraft(id){ delete view.draft[id]; delete view.rowEdit[id]; }
+  function clearRows(){ view.open = {}; view.rowEdit = {}; view.draft = {}; }
+  function editingRow(id){ return !!view.rowEdit[id]; }
   function curYear(){ return view.year || today().getFullYear(); }
   function curIdx(code){
     if(view.idx[code] != null) return view.idx[code];
@@ -545,7 +623,12 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
       out.push({
         id:id, code:code, period:row[1], name:row[2],
         cyc:cyc, status:status, progress:prog,
-        owner:rec.owner || "", reason:rec.reason || "", note:rec.note || "",
+        owner:rec.owner || "", note:rec.note || "",
+        checker:rec.checker || "",
+        reason:reasonCode(rec.reason),
+        reasonNote: rec.reasonNote != null ? rec.reasonNote
+                  : (rec.reason && reasonCode(rec.reason) === "other" && rec.reason !== "other"
+                     ? rec.reason : ""),
         doc:rec.doc || "none",
         ack:rec.ack || null, at:rec.at || "", by:rec.by || "",
         left:left, late:late,
@@ -958,64 +1041,108 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
   /* ---------- หนึ่งรายการ ---------- */
   function itemHTML(it, showPeriod){
     var open = !!view.open[it.id], st = stateOf(it), rw = canEdit();
-    var h = '<div class="item' + (st ? " is-" + st : "") + '">'
+    var ed = rw && editingRow(it.id);
+    var d = ed ? draftOf(it) : it;              // ขณะแก้ไขให้แสดงค่าจากร่าง
+    var dirty = ed && isDirty(it);
+    var barCls = d.status === "done" ? "ok" : it.late && d.status !== "done" ? "late" : "";
+
+    var h = '<div class="item' + (st ? " is-" + st : "") + (ed ? " is-editing" : "") + '">'
       + '<div class="r1"><div class="nm">'
       +   (showPeriod ? '<span class="ptag">' + esc(it.period) + '</span>' : '')
       +   esc(it.name) + '</div>'
       + '<div class="due">' + esc(dueText(it)) + '</div></div>'
       + '<div class="r2">'
-      +   (rw ? '<div class="seg" role="group" aria-label="สถานะ">'
-                  + segBtn(it,"todo","ยังไม่เริ่ม") + segBtn(it,"doing","กำลังทำ") + segBtn(it,"done","เสร็จแล้ว")
-                  + '</div>'
-              : statusChip(it))
-      +   '<div class="barwrap">' + bar(it.progress, st === "done" ? "ok" : st === "late" ? "late" : "")
-      +     '<span class="pcv mono">' + it.progress + '%</span></div>'
+      +   (ed ? '<div class="seg" role="group" aria-label="สถานะ">'
+                  + segBtn(it,"todo","ยังไม่เริ่ม",d.status)
+                  + segBtn(it,"doing","กำลังทำ",d.status)
+                  + segBtn(it,"done","เสร็จแล้ว",d.status) + '</div>'
+              : statusChip(d.status))
+      +   '<div class="barwrap">' + bar(d.progress, barCls)
+      +     '<span class="pcv mono">' + d.progress + '%</span></div>'
+      +   (ed ? '<span class="dirty" data-dirty="' + it.id + '"' + (dirty ? "" : " hidden")
+               + '>● ยังไม่บันทึก</span>' : "")
+      +   (open && rw
+             ? '<button class="rowbtn" data-edit="' + it.id + '"' + (ed ? " disabled" : "")
+               + ' title="ปลดล็อกแถวนี้เพื่อแก้ไข">แก้ไข</button>'
+               + '<button class="savebtn" data-save="' + it.id + '"' + (dirty ? "" : " disabled")
+               + ' title="บันทึกการแก้ไขของแถวนี้">บันทึก</button>'
+             : "")
       +   (open
              ? '<button class="xbtn" data-toggle="' + it.id + '" title="ปิดรายละเอียด"'
                + ' aria-label="ปิดรายละเอียด">' + xIcon() + '</button>'
              : '<button class="rowbtn" data-toggle="' + it.id + '">รายละเอียด</button>')
-      +   (rw && it.late && !it.ack ? '<button class="rowbtn" data-ack="' + it.id + '">รับทราบ</button>' : "")
+      +   (rw && !ed && it.late && !it.ack
+             ? '<button class="rowbtn" data-ack="' + it.id + '">รับทราบ</button>' : "")
       +   (it.ack ? '<span class="acked">✓ รับทราบแล้ว</span>' : "")
       + '</div>';
-    if(open && rw){
-      h += '<div class="detail"><div class="two">'
-        + fld("ความคืบหน้า (%)", '<input type="number" min="0" max="100" step="5" value="' + it.progress
-            + '" data-f="progress" data-id="' + it.id + '">')
-        + fld("ผู้รับผิดชอบ", '<input type="text" value="' + esc(it.owner)
-            + '" placeholder="ชื่อผู้รับผิดชอบ" data-f="owner" data-id="' + it.id + '">')
-        + '</div>'
-        + fld("สถานะเอกสาร", '<select data-f="doc" data-id="' + it.id + '">'
-            + opt("none","ยังไม่มีเอกสาร",it.doc) + opt("doing","กำลังจัดทำ",it.doc)
-            + opt("done","จัดทำแล้วเสร็จ",it.doc) + '</select>')
-        + fld("สาเหตุความล่าช้า", '<textarea placeholder="เช่น รออะไหล่ / เครื่องจักรไม่หยุด / กำลังคนไม่พอ"'
-            + ' data-f="reason" data-id="' + it.id + '">' + esc(it.reason) + '</textarea>')
-        + fld("หมายเหตุ", '<textarea placeholder="บันทึกเพิ่มเติม" data-f="note" data-id="' + it.id + '">'
-            + esc(it.note) + '</textarea>')
-        + (it.at ? '<div class="cap">แก้ไขล่าสุด ' + esc(new Date(it.at).toLocaleString("th-TH")) + '</div>' : "")
-        + '</div>';
-    } else if(open){
-      // โหมดดูอย่างเดียว — แสดงค่าแต่แก้ไขไม่ได้
-      h += '<div class="detail"><div class="two">'
-        + roFld("ความคืบหน้า (%)", it.progress + "%")
-        + roFld("ผู้รับผิดชอบ", it.owner)
-        + '</div>'
-        + roFld("สถานะเอกสาร", docWord(it.doc))
-        + roFld("สาเหตุความล่าช้า", it.reason)
-        + roFld("หมายเหตุ", it.note)
-        + (it.at ? '<div class="cap">แก้ไขล่าสุด ' + esc(new Date(it.at).toLocaleString("th-TH")) + '</div>' : "")
+
+    if(open){
+      h += '<div class="detail">';
+      if(ed){
+        h += '<div class="two">'
+          + fld("ความคืบหน้า (%)", '<input type="number" min="0" max="100" step="5" value="'
+              + d.progress + '" data-f="progress" data-id="' + it.id + '">')
+          + fld("สถานะงาน", selPairs("status", it.id, WSTATUS, d.status, null))
+          + '</div><div class="two">'
+          + fld("ผู้ปฏิบัติงาน", selNames("owner", it.id, WORKERS, d.owner, "— เลือกผู้ปฏิบัติงาน —"))
+          + fld("ผู้ตรวจสอบ", selNames("checker", it.id, CHECKERS, d.checker, "— เลือกผู้ตรวจสอบ —"))
+          + '</div>'
+          + fld("สถานะเอกสาร", selPairs("doc", it.id,
+              [["none","ยังไม่มีเอกสาร"],["doing","กำลังจัดทำ"],["done","จัดทำแล้วเสร็จ"]], d.doc, null))
+          + fld("สาเหตุความล่าช้า", selPairs("reason", it.id, REASONS, d.reason, "— ไม่ระบุ —"))
+          + (d.reason === "other"
+              ? fld("ระบุสาเหตุ", '<input type="text" value="' + esc(d.reasonNote)
+                  + '" placeholder="ระบุสาเหตุความล่าช้า" data-f="reasonNote" data-id="' + it.id + '">')
+              : "")
+          + fld("หมายเหตุ", '<textarea placeholder="บันทึกเพิ่มเติม" data-f="note" data-id="'
+              + it.id + '">' + esc(d.note) + '</textarea>');
+      } else {
+        h += '<div class="two">'
+          + roFld("ความคืบหน้า (%)", it.progress + "%")
+          + roFld("สถานะงาน", wstatusWord(it.status))
+          + '</div><div class="two">'
+          + roFld("ผู้ปฏิบัติงาน", it.owner)
+          + roFld("ผู้ตรวจสอบ", it.checker)
+          + '</div>'
+          + roFld("สถานะเอกสาร", docWord(it.doc))
+          + roFld("สาเหตุความล่าช้า", reasonWord(it.reason, it.reasonNote))
+          + roFld("หมายเหตุ", it.note);
+      }
+      h += (it.at ? '<div class="cap">แก้ไขล่าสุด '
+            + esc(new Date(it.at).toLocaleString("th-TH")) + '</div>' : "")
         + '</div>';
     }
     return h + '</div>';
   }
+
+  /* ---------- ตัวช่วยสร้าง dropdown ---------- */
+  function selPairs(f, id, pairs, cur, placeholder){
+    var h = '<select data-f="' + f + '" data-id="' + id + '">';
+    if(placeholder != null)
+      h += '<option value=""' + (cur ? "" : " selected") + '>' + esc(placeholder) + '</option>';
+    pairs.forEach(function(pr){ h += opt(pr[0], pr[1], cur); });
+    return h + '</select>';
+  }
+  // รายชื่อ: ค่า = ป้าย · ถ้าค่าที่บันทึกไว้ไม่อยู่ในรายชื่อ ให้เติมเข้าไปกันข้อมูลเก่าหาย
+  function selNames(f, id, names, cur, placeholder){
+    var list = names.slice();
+    if(cur && list.indexOf(cur) === -1) list.push(cur);
+    return selPairs(f, id, list.map(function(n){ return [n, n]; }), cur, placeholder);
+  }
+  function wstatusWord(v){
+    for(var i = 0; i < WSTATUS.length; i++) if(WSTATUS[i][0] === v) return WSTATUS[i][1];
+    return "";
+  }
+
   // กากบาทสีขาว ปลายมน ตัดขอบเรียบ
   function xIcon(){
     return '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
       + '<path d="M7 7 L17 17 M17 7 L7 17" fill="none" stroke="#FFFFFF" stroke-width="3.4"'
       + ' stroke-linecap="round"/></svg>';
   }
-  function statusChip(it){
-    var cls = it.status === "done" ? "d-ok" : it.status === "doing" ? "d-idle" : "d-mute";
-    return '<span class="delta ' + cls + '">' + esc(statusWord(it.status)) + '</span>';
+  function statusChip(v){
+    var cls = v === "done" ? "d-ok" : v === "doing" ? "d-idle" : "d-mute";
+    return '<span class="delta ' + cls + '">' + esc(statusWord(v)) + '</span>';
   }
   function docWord(d){
     return d === "doing" ? "กำลังจัดทำ"
@@ -1026,9 +1153,9 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     return '<div class="fld"><label>' + esc(label) + '</label>'
       + '<div class="rov' + (has ? "" : " dim") + '">' + (has ? esc(val) : "—") + '</div></div>';
   }
-  function segBtn(it, val, label){
+  function segBtn(it, val, label, cur){
     return '<button data-status="' + val + '" data-id="' + it.id + '" aria-pressed="'
-      + (it.status === val) + '">' + esc(label) + '</button>';
+      + (cur === val) + '">' + esc(label) + '</button>';
   }
   function fld(label, inner){ return '<div class="fld"><label>' + esc(label) + '</label>' + inner + '</div>'; }
   function opt(v, label, cur){
@@ -1066,7 +1193,7 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
 
   /* ---------- รับการกดและการพิมพ์ ---------- */
   document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-mode],[data-yr],[data-cyc],[data-goto],[data-status],[data-toggle],[data-ack],[data-tile],[data-filter]");
+    var t = e.target.closest("[data-mode],[data-yr],[data-cyc],[data-goto],[data-status],[data-toggle],[data-ack],[data-tile],[data-filter],[data-edit],[data-save]");
     if(!t) return;
     if(t.hasAttribute("data-mode")){
       if(editMode) setEditMode(false);   // ออกจากโหมดแก้ไข ไม่ต้องถามรหัส
@@ -1077,65 +1204,103 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
       var dy = parseInt(t.getAttribute("data-yr"), 10) || 0;
       if(dy === 0) resetCycle();
       else { view.year = curYear() + dy; view.idx = {}; }
-      view.open = {}; render(); return;
+      clearRows(); render(); return;
     }
     if(t.hasAttribute("data-cyc")){
       if(view.period) view.idx[view.period] = parseInt(t.getAttribute("data-cyc"), 10);
-      view.open = {}; render(); return;
+      clearRows(); render(); return;
     }
     if(t.hasAttribute("data-goto")){
-      view.period = t.getAttribute("data-goto") || null; view.filter = null; view.open = {};
+      view.period = t.getAttribute("data-goto") || null; view.filter = null; clearRows();
       resetCycle(); render(); window.scrollTo(0,0); return;
     }
     if(t.hasAttribute("data-filter")){
-      view.filter = t.getAttribute("data-filter"); view.period = null; view.open = {};
+      view.filter = t.getAttribute("data-filter"); view.period = null; clearRows();
       resetCycle(); render(); window.scrollTo(0,0); return;
     }
     if(t.hasAttribute("data-tile")){
       var tid = t.getAttribute("data-tile");
-      view.period = tid.split("-")[0]; view.filter = null; view.open = {}; view.open[tid] = true;
+      view.period = tid.split("-")[0]; view.filter = null; clearRows(); view.open[tid] = true;
       resetCycle();
       render(); window.scrollTo(0,0);
       var el = document.querySelector('[data-toggle="' + tid + '"]');
       if(el && el.scrollIntoView) el.scrollIntoView({block:"center"});
       return;
     }
-    var id = t.getAttribute("data-id") || t.getAttribute("data-toggle") || t.getAttribute("data-ack");
+    var id = t.getAttribute("data-id") || t.getAttribute("data-toggle") || t.getAttribute("data-ack")
+             || t.getAttribute("data-edit") || t.getAttribute("data-save");
     var it = currentItems().filter(function(x){ return x.id === id; })[0];
     if(!it) return;
-    if(t.hasAttribute("data-toggle")){ view.open[id] = !view.open[id]; render(); return; }
+
+    // ปลดล็อกแถวเพื่อแก้ไข
+    if(t.hasAttribute("data-edit")){
+      view.open[id] = true; view.rowEdit[id] = true; draftOf(it);
+      render(); return;
+    }
+    // บันทึกร่างของแถวนี้
+    if(t.hasAttribute("data-save")){
+      var d = view.draft[id];
+      if(!d){ clearDraft(id); render(); return; }
+      var patch = {};
+      DRAFT_KEYS.forEach(function(k){ patch[k] = d[k]; });
+      clearDraft(id);
+      setField(id, it.cyc.key, patch);      // setField วาดใหม่และบันทึกให้เอง
+      return;
+    }
+    if(t.hasAttribute("data-toggle")){
+      if(view.open[id] && isDirty(it) &&
+         !window.confirm("แถวนี้ยังไม่ได้กดบันทึก ถ้าปิดตอนนี้สิ่งที่แก้ไว้จะหาย\n\nต้องการปิดหรือไม่"))
+        return;
+      clearDraft(id);
+      view.open[id] = !view.open[id];
+      render(); return;
+    }
     if(t.hasAttribute("data-ack")){
       setField(id, it.cyc.key, {ack:{by:"", at:new Date().toISOString()}});
       return;
     }
     if(t.hasAttribute("data-status")){
+      if(!editingRow(id)) return;          // ต้องกด "แก้ไข" ก่อน
       var st = t.getAttribute("data-status");
-      var patch = {status:st};
-      if(st === "done") patch.progress = 100;
-      if(st === "todo") patch.progress = 0;
-      if(st === "doing" && it.progress === 0) patch.progress = 25;
-      setField(id, it.cyc.key, patch);
+      var dr = draftOf(it);
+      dr.status = st;
+      if(st === "done") dr.progress = 100;
+      else if(st === "todo") dr.progress = 0;
+      else if(st === "doing" && dr.progress === 0) dr.progress = 25;
+      render();
     }
   });
 
-  document.addEventListener("change", function(e){
-    var el = e.target;
-    if(!el.hasAttribute || !el.hasAttribute("data-f")) return;
+  // change = ออกจากช่อง/เลือก dropdown -> วาดใหม่ · input = กำลังพิมพ์ -> เก็บร่างเฉย ๆ
+  document.addEventListener("change", function(e){ fieldEdit(e.target, false); });
+  document.addEventListener("input",  function(e){ fieldEdit(e.target, true); });
+
+  function fieldEdit(el, typing){
+    if(!el || !el.hasAttribute || !el.hasAttribute("data-f")) return;
     var id = el.getAttribute("data-id"), f = el.getAttribute("data-f");
+    if(!editingRow(id)) return;
     var it = currentItems().filter(function(x){ return x.id === id; })[0];
     if(!it) return;
-    var v = el.value;
+    var d = draftOf(it), v = el.value;
     if(f === "progress"){
       v = Math.max(0, Math.min(100, parseInt(v,10) || 0));
-      var patch = {progress:v};
-      if(v === 100) patch.status = "done";
-      else if(v > 0 && it.status === "todo") patch.status = "doing";
-      else if(v === 0) patch.status = "todo";
-      setField(id, it.cyc.key, patch);
+      d.progress = v;
+      if(v === 100) d.status = "done";
+      else if(v > 0 && d.status === "todo") d.status = "doing";
+      else if(v === 0) d.status = "todo";
     } else {
-      setField(id, it.cyc.key, JSON.parse('{"'+f+'":'+JSON.stringify(v)+'}'));
+      d[f] = v;
     }
-  });
+    // ระหว่างพิมพ์ห้ามวาดใหม่ ไม่งั้นเคอร์เซอร์หลุด — อัปเดตแค่ปุ่มบันทึกกับป้ายเตือน
+    if(typing) markDirty(id, it); else render();
+  }
+  function markDirty(id, it){
+    var dirty = isDirty(it);
+    var btn = document.querySelector('[data-save="' + id + '"]');
+    if(btn) btn.disabled = !dirty;
+    var tag = document.querySelector('[data-dirty="' + id + '"]');
+    if(tag) tag.hidden = !dirty;
+  }
 
   /* ---------- เริ่มทำงาน ---------- */
   if(!lsAvailable()) mode = "readonly";
