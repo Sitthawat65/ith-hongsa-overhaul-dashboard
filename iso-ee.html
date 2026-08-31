@@ -198,6 +198,13 @@ button.panel:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
 .rowbtn:disabled:hover,.savebtn:disabled:hover{filter:none; border-color:var(--line)}
 
+.lockrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  background:rgba(53,160,245,.1); border:1px solid rgba(53,160,245,.42);
+  border-radius:5px; padding:8px 13px; font-size:12.5px; color:var(--ink); line-height:1.5}
+.lockrow .lk{flex:none; font-size:14px}
+.lockrow button{margin-left:auto; flex:none}
+@media (max-width:560px){ .lockrow button{margin-left:0} }
+
 .lateflag{color:var(--coral); font-weight:600; font-size:12px; white-space:nowrap;
   background:rgba(255,123,107,.15); border-radius:3px; padding:1px 8px; margin-left:8px}
 .fldhint{font-size:11px; color:var(--coral); margin-top:5px; line-height:1.5}
@@ -1105,7 +1112,14 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
           + fld("หมายเหตุ", '<textarea placeholder="บันทึกเพิ่มเติม" data-f="note" data-id="'
               + it.id + '">' + esc(d.note) + '</textarea>');
       } else {
-        h += '<div class="two">'
+        h += (mode === "readonly"
+               ? '<div class="lockrow"><span class="lk">🔒</span>'
+                 + '<span>บัญชีนี้ไม่มีสิทธิ์แก้ไข ดูได้อย่างเดียว</span></div>'
+               : '<div class="lockrow"><span class="lk">🔒</span>'
+                 + '<span>ตอนนี้อยู่ในโหมดดูอย่างเดียว จึงยังไม่มีปุ่ม '
+                 + '<b>แก้ไข</b> / <b>บันทึก</b> และช่องต่าง ๆ ยังเลือกไม่ได้</span>'
+                 + '<button class="rowbtn" data-mode="1">ใส่รหัสเพื่อแก้ไข</button></div>')
+          + '<div class="two">'
           + roFld("ความคืบหน้า (%)", it.progress + "%")
           + roFldHTML("สถานะงาน", esc(wstatusWord(it.status)) + lateFlag(it))
           + '</div><div class="two">'
