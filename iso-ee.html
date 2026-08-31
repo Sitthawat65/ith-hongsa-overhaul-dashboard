@@ -214,6 +214,59 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
 .rov{font-size:13px; padding:7px 9px; border:1px solid var(--line-soft); border-radius:5px;
   background:rgba(0,0,0,.16); min-height:34px; white-space:pre-wrap; overflow-wrap:anywhere}
 .rov.dim{color:var(--ink-faint)}
+
+/* ---------- ตัวเลือกรอบย่อย + ปี ---------- */
+.cycnav{margin:0 0 14px}
+.yr{display:flex; align-items:center; gap:6px; margin:0 0 9px; flex-wrap:wrap}
+.yr .cap{margin-right:2px}
+.yb{font:inherit; font-size:13px; min-width:30px; height:29px; padding:0 10px; line-height:1;
+  border:1px solid var(--line); background:var(--panel-2); color:var(--ink-soft);
+  border-radius:5px; cursor:pointer}
+.yb:hover{border-color:var(--tone); color:var(--tone)}
+.yb:focus-visible{outline:2px solid var(--tone); outline-offset:1px}
+.yb.jump{font-size:12px; font-weight:600; border-color:var(--tone); color:var(--tone)}
+.ylab{font-size:15px; font-weight:600; min-width:56px; text-align:center; color:var(--ink)}
+
+.cycs{display:grid; gap:6px}
+.cycs-M{grid-template-columns:repeat(12,minmax(0,1fr))}
+.cycs-Q{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cycs-H{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cycs-Y{grid-template-columns:minmax(0,230px)}
+@media (max-width:980px){ .cycs-M{grid-template-columns:repeat(6,minmax(0,1fr))} }
+@media (max-width:580px){
+  .cycs-M{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cycs-Q{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+.cyc{font:inherit; text-align:left; cursor:pointer; display:grid; gap:4px; min-width:0;
+  padding:8px 9px 9px; border:1px solid var(--line); border-top:2px solid var(--line-soft);
+  border-radius:5px; background:var(--panel-2); color:var(--ink-soft)}
+.cyc:hover{border-color:var(--tone); color:var(--ink)}
+.cyc:focus-visible{outline:2px solid var(--tone); outline-offset:1px}
+.cyc-t{font-size:12.5px; font-weight:600; color:var(--ink);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.cyc-s{font-size:10px; color:var(--ink-faint);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.cyc-b{display:block; height:4px; border-radius:99px; background:var(--track); overflow:hidden}
+.cyc-b i{display:block; height:100%; border-radius:99px; background:var(--ink-faint)}
+.cyc-n{font-size:10.5px; color:var(--ink-faint)}
+.cyc.is-ok{border-top-color:var(--teal)}    .cyc.is-ok .cyc-b i{background:var(--teal)}
+.cyc.is-doing{border-top-color:var(--cyan)} .cyc.is-doing .cyc-b i{background:var(--cyan)}
+.cyc.is-late{border-top-color:var(--coral)} .cyc.is-late .cyc-b i{background:var(--coral)}
+.cyc.is-late .cyc-n{color:var(--coral)}
+.cyc.is-future{opacity:.5}
+.cyc[aria-current="page"]{background:var(--tone-soft); border-color:var(--tone);
+  box-shadow:inset 0 0 0 1px var(--tone); color:var(--ink); opacity:1}
+.cyc.now .cyc-t::after{content:"\25CF"; color:var(--tone); font-size:8px;
+  margin-left:5px; vertical-align:2px}
+
+.offcycle{background:rgba(255,194,75,.1); border:1px solid var(--amber); color:var(--ink);
+  border-radius:5px; padding:8px 13px; font-size:12.5px; margin-bottom:12px;
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.offcycle button{font:inherit; font-size:12px; margin-left:auto; padding:4px 12px;
+  border:1px solid var(--amber); background:transparent; color:var(--amber);
+  border-radius:99px; cursor:pointer; white-space:nowrap}
+.offcycle button:hover{background:rgba(255,194,75,.16)}
+.offcycle button:focus-visible{outline:2px solid var(--amber); outline-offset:1px}
 </style>
 
 <div class="wrap" id="root"></div>
@@ -295,35 +348,64 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
   }
   function lsAvailable(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }
                           catch(e){ return false; } }
-  var view = { period:null, filter:null, open:{} };
+  var view = { period:null, filter:null, open:{}, year:null, idx:{} };
+  function curYear(){ return view.year || today().getFullYear(); }
+  function curIdx(code){
+    if(view.idx[code] != null) return view.idx[code];
+    var n = today();
+    // ปีอื่นที่ไม่ใช่ปีปัจจุบัน → เริ่มที่รอบแรก
+    return curYear() === n.getFullYear() ? cycleIndexOf(code, n) : 0;
+  }
+  function resetCycle(){ view.year = null; view.idx = {}; }
+  // สร้างรายการตามรอบที่กำลังเปิดอยู่ — ใช้ร่วมกันทั้งตอนวาดและตอนบันทึก
+  function currentItems(){
+    if(!view.period) return build();
+    var code = view.period, cyc = cycleAt(code, curYear(), curIdx(code));
+    return build(function(c){ return c === code ? cyc : cycleOf(c, today()); });
+  }
 
   /* ---------- รอบงานปัจจุบันของแต่ละช่วงเวลา ---------- */
-  function cycleOf(code, now){
-    var y = now.getFullYear(), m = now.getMonth() + 1, be = y + 543;
+  // จำนวนรอบย่อยในหนึ่งปี · M=12 เดือน Q=4 ไตรมาส H=2 ครึ่งปี Y=1
+  function cycleCount(code){ return code === "M" ? 12 : code === "Q" ? 4 : code === "H" ? 2 : 1; }
+  function cycleIndexOf(code, now){
+    var m = now.getMonth();
+    if(code === "M") return m;
+    if(code === "Q") return Math.floor(m/3);
+    if(code === "H") return m < 6 ? 0 : 1;
+    return 0;
+  }
+  // สร้างรอบจากปี + ลำดับที่ระบุ — key คงรูปแบบเดิม ข้อมูลเก่าจึงไม่หาย
+  function cycleAt(code, y, i){
+    var be = y + 543;
     if(code === "M")
-      return {key:y+"-"+pad(m), label:THMON[m-1]+" "+be, due:new Date(y, m-1, 5)};
+      return {key:y+"-"+pad(i+1), label:THMON[i]+" "+be, short:THMON[i],
+              span:"เดือนที่ "+(i+1), due:new Date(y, i, 5)};
     if(code === "Q"){
-      var q = Math.ceil(m/3), endM = q*3 + 1;
+      var q = i+1, endM = q*3 + 1;
       var dy = endM > 12 ? y+1 : y, dm = endM > 12 ? endM-12 : endM;
-      return {key:y+"-Q"+q, label:"ไตรมาส "+q+"/"+be, due:new Date(dy, dm, 0)};
+      return {key:y+"-Q"+q, label:"ไตรมาส "+q+"/"+be, short:"ไตรมาส "+q,
+              span:THMON[i*3]+"–"+THMON[i*3+2], due:new Date(dy, dm, 0)};
     }
     if(code === "H"){
-      var h = m <= 6 ? 1 : 2;
-      return {key:y+"-H"+h, label:"ครึ่งปีที่ "+h+"/"+be, due:new Date(y, h===1?6:12, 0)};
+      var h = i+1;
+      return {key:y+"-H"+h, label:"ครึ่งปีที่ "+h+"/"+be, short:"ครึ่งปีที่ "+h,
+              span: i === 0 ? "ม.ค.–มิ.ย." : "ก.ค.–ธ.ค.", due:new Date(y, h===1?6:12, 0)};
     }
-    return {key:String(y), label:"ปี "+be, due:new Date(y, 11, 0)};
+    return {key:String(y), label:"ปี "+be, short:"ปี "+be,
+            span:"ม.ค.–ธ.ค.", due:new Date(y, 11, 0)};
   }
+  function cycleOf(code, now){ return cycleAt(code, now.getFullYear(), cycleIndexOf(code, now)); }
   function pad(n){ return n < 10 ? "0"+n : ""+n; }
   function today(){ var d = new Date(); d.setHours(0,0,0,0); return d; }
   function dayDiff(a,b){ return Math.round((a-b)/86400000); }
   function fmtDate(d){ return d.getDate()+" "+THMON[d.getMonth()]+" "+(d.getFullYear()+543); }
 
   /* ---------- รวมแผน + สถานะ = รายการที่ใช้แสดงผล ---------- */
-  function build(){
+  function build(resolve){
     var now = today(), out = [];
     PLAN.forEach(function(row, i){
       var code = row[0], id = code + "-" + i;
-      var cyc = cycleOf(code, now);
+      var cyc = resolve ? resolve(code) : cycleOf(code, now);
       var rec = (STATE.log[id] && STATE.log[id][cyc.key]) || {};
       var status = rec.status || "todo";
       var prog = status === "done" ? 100 : (typeof rec.progress === "number" ? rec.progress : (status === "doing" ? 50 : 0));
@@ -655,13 +737,73 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     return h + '</div>';
   }
 
+  /* ---------- สรุปเร็ว ๆ ของรอบหนึ่ง ๆ สำหรับแถบเลือก ---------- */
+  function summaryOfCycle(code, y, i){
+    var now = today(), cyc = cycleAt(code, y, i);
+    var overdue = dayDiff(cyc.due, now) < 0;
+    var total = 0, done = 0, doing = 0, late = 0, prog = 0;
+    PLAN.forEach(function(row, idx){
+      if(row[0] !== code) return;
+      total++;
+      var log = STATE.log[code + "-" + idx];
+      var rec = (log && log[cyc.key]) || {};
+      var st = rec.status || "todo";
+      prog += st === "done" ? 100
+            : (typeof rec.progress === "number" ? rec.progress : (st === "doing" ? 50 : 0));
+      if(st === "done") done++;
+      else { if(st === "doing") doing++; if(overdue) late++; }
+    });
+    return {cyc:cyc, total:total, done:done, doing:doing, late:late, overdue:overdue,
+            pct: total ? Math.round(prog/total) : 0};
+  }
+  function chipState(s){
+    if(s.total && s.done === s.total) return "ok";
+    if(s.late) return "late";
+    if(s.pct > 0) return "doing";
+    return s.overdue ? "" : "future";
+  }
+
+  /* ---------- แถบเลือกรอบย่อย + ตัวเลื่อนปี ---------- */
+  function cycNav(code){
+    var y = curYear(), cur = curIdx(code), n = cycleCount(code);
+    var now = today(), nowY = now.getFullYear(), nowI = cycleIndexOf(code, now);
+    var h = '<div class="cycnav"><div class="yr">'
+      + '<span class="cap">ปี</span>'
+      + '<button class="yb" data-yr="-1" aria-label="ปีก่อนหน้า">‹</button>'
+      + '<span class="ylab mono">' + (y + 543) + '</span>'
+      + '<button class="yb" data-yr="1" aria-label="ปีถัดไป">›</button>'
+      + (y !== nowY ? '<button class="yb jump" data-yr="0">กลับปีปัจจุบัน</button>' : '')
+      + '</div><div class="cycs cycs-' + code + '" role="tablist" aria-label="เลือกรอบ">';
+    for(var i = 0; i < n; i++){
+      var sm = summaryOfCycle(code, y, i), st = chipState(sm);
+      var isNow = (y === nowY && i === nowI), sel = (i === cur);
+      h += '<button class="cyc' + (st ? " is-" + st : "") + (isNow ? " now" : "") + '"'
+        + ' data-cyc="' + i + '" role="tab" aria-current="' + (sel ? "page" : "false") + '"'
+        + ' title="' + esc(sm.cyc.label) + ' · กำหนด ' + esc(fmtDate(sm.cyc.due))
+        + (isNow ? ' · รอบปัจจุบัน' : '') + '">'
+        + '<span class="cyc-t">' + esc(sm.cyc.short) + '</span>'
+        + '<span class="cyc-s">' + esc(sm.cyc.span || "") + '</span>'
+        + '<span class="cyc-b"><i style="width:' + sm.pct + '%"></i></span>'
+        + '<span class="cyc-n mono">' + sm.done + '/' + sm.total + ' · ' + sm.pct + '%</span>'
+        + '</button>';
+    }
+    return h + '</div></div>';
+  }
+
   /* ---------- หน้ารอบงาน ---------- */
   function renderPeriod(items, code){
     var g = items.filter(function(x){ return x.code === code; });
     var s = summarise(g), p = PERIOD[code], c = g[0].cyc;
+    var offCycle = c.key !== cycleOf(code, today()).key;
     var h = '<div class="phead tone-' + code + '"><h2>' + esc(p.name)
       + '<span class="en">' + esc(p.en) + '</span></h2>'
       + '<div class="sub">รอบ ' + esc(c.label) + ' · กำหนด ' + esc(fmtDate(c.due)) + ' · ' + esc(p.remind) + '</div></div>'
+      + '<div class="tone-' + code + '">' + cycNav(code) + '</div>'
+      + (offCycle
+          ? '<div class="offcycle"><span>กำลังดูรอบ <strong>' + esc(c.label)
+            + '</strong> — ไม่ใช่รอบปัจจุบัน การแก้ไขจะบันทึกเข้ารอบนี้</span>'
+            + '<button data-yr="0">ไปรอบปัจจุบัน</button></div>'
+          : '')
       + '<div class="panels tone-' + code + '" style="margin-bottom:12px">'
       + '<div class="panel c4 sec"><h3>ความคืบหน้ารอบนี้</h3>'
       +   '<div style="display:flex;justify-content:center;padding:2px 0 4px">'
@@ -756,7 +898,7 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
 
   /* ---------- วาดทั้งหน้า ---------- */
   function render(){
-    var items = build();
+    var items = currentItems();
     var root = document.getElementById("root");
     var head = '<div class="top"><div class="brand">'
       + '<h1>แผนติดตามงาน ISO · Electrical CV-ITH</h1>'
@@ -784,27 +926,38 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
 
   /* ---------- รับการกดและการพิมพ์ ---------- */
   document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-mode],[data-goto],[data-status],[data-toggle],[data-ack],[data-tile],[data-filter]");
+    var t = e.target.closest("[data-mode],[data-yr],[data-cyc],[data-goto],[data-status],[data-toggle],[data-ack],[data-tile],[data-filter]");
     if(!t) return;
     if(t.hasAttribute("data-mode")){ setEditMode(!editMode); return; }
+    if(t.hasAttribute("data-yr")){
+      var dy = parseInt(t.getAttribute("data-yr"), 10) || 0;
+      if(dy === 0) resetCycle();
+      else { view.year = curYear() + dy; view.idx = {}; }
+      view.open = {}; render(); return;
+    }
+    if(t.hasAttribute("data-cyc")){
+      if(view.period) view.idx[view.period] = parseInt(t.getAttribute("data-cyc"), 10);
+      view.open = {}; render(); return;
+    }
     if(t.hasAttribute("data-goto")){
       view.period = t.getAttribute("data-goto") || null; view.filter = null; view.open = {};
-      render(); window.scrollTo(0,0); return;
+      resetCycle(); render(); window.scrollTo(0,0); return;
     }
     if(t.hasAttribute("data-filter")){
       view.filter = t.getAttribute("data-filter"); view.period = null; view.open = {};
-      render(); window.scrollTo(0,0); return;
+      resetCycle(); render(); window.scrollTo(0,0); return;
     }
     if(t.hasAttribute("data-tile")){
       var tid = t.getAttribute("data-tile");
       view.period = tid.split("-")[0]; view.filter = null; view.open = {}; view.open[tid] = true;
+      resetCycle();
       render(); window.scrollTo(0,0);
       var el = document.querySelector('[data-toggle="' + tid + '"]');
       if(el && el.scrollIntoView) el.scrollIntoView({block:"center"});
       return;
     }
     var id = t.getAttribute("data-id") || t.getAttribute("data-toggle") || t.getAttribute("data-ack");
-    var it = build().filter(function(x){ return x.id === id; })[0];
+    var it = currentItems().filter(function(x){ return x.id === id; })[0];
     if(!it) return;
     if(t.hasAttribute("data-toggle")){ view.open[id] = !view.open[id]; render(); return; }
     if(t.hasAttribute("data-ack")){
@@ -825,7 +978,7 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     var el = e.target;
     if(!el.hasAttribute || !el.hasAttribute("data-f")) return;
     var id = el.getAttribute("data-id"), f = el.getAttribute("data-f");
-    var it = build().filter(function(x){ return x.id === id; })[0];
+    var it = currentItems().filter(function(x){ return x.id === id; })[0];
     if(!it) return;
     var v = el.value;
     if(f === "progress"){
