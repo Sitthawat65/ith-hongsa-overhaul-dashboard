@@ -51,6 +51,8 @@
   #grpAlert .hot{color:#ffb4a0}
   #grpAlert .flt{color:#ffd591}
   #grpAlert .srv{color:#bcd0e8;font-weight:600}
+  .tab .devbdg,.refresh .devbdg{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:#334a63;color:#bcd0e8;font-size:10px;font-weight:700;letter-spacing:.3px;vertical-align:1px}
+  .tab.dev,.refresh.dev{border-color:#3a556f;color:#93a6ba}
   .wrap{max-width:820px;margin:0 auto;overflow-x:auto}
   table.temps{width:100%;border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
   table.temps th,table.temps td{padding:15px 20px;text-align:left;border-bottom:1px solid var(--line)}
@@ -187,11 +189,12 @@ function gaugeSVG(v){
 
 let DATA = null, activeGroup = null;
 
-// กลุ่มที่ยังไม่ติดตั้ง/พักการแจ้งเตือนไว้ก่อน — ลบชื่อออกเมื่อติดตั้งเสร็จ
-const HOLD_GROUPS = ['BWE1'];
+// กลุ่มที่กำลังพัฒนา/ยังไม่ติดตั้ง — พักการแจ้งเตือน + ขึ้นป้าย Development
+// ลบชื่อออกเมื่อติดตั้งเสร็จ
+const DEV_GROUPS = ['BWE1','CR2'];
 function groupIssues(g){
   const hot = [], fault = [];
-  if(HOLD_GROUPS.indexOf(g) > -1) return {hot, fault, server:false, newestSeen:0, bad:0};
+  if(DEV_GROUPS.indexOf(g) > -1) return {hot, fault, server:false, newestSeen:0, bad:0};
   const items = DATA.groups[g] || [];
   let withData = 0, staleCnt = 0, newestSeen = 0;
   items.forEach(item=>{
@@ -224,13 +227,15 @@ function fmtTime(iso){
 function render(){
   if(!DATA) return;
   const groups = Object.keys(DATA.groups||{});
-  if(!activeGroup || !groups.includes(activeGroup)) activeGroup = groups[0];
+  const shownGroups = groups.filter(g=>DEV_GROUPS.indexOf(g)===-1);
+  if(!activeGroup || !shownGroups.includes(activeGroup)) activeGroup = shownGroups[0] || groups[0];
 
   // tabs
   const tabs = document.getElementById('tabs');
   tabs.innerHTML = '';
-  if(groups.length > 1){
+  if(shownGroups.length > 1){
     groups.forEach(g=>{
+      if(DEV_GROUPS.indexOf(g) > -1) return;   // กลุ่มกำลังพัฒนา — ไม่แสดงแท็บในตาราง
       const iss = groupIssues(g);
       const b = document.createElement('div');
       b.className = 'tab' + (g===activeGroup?' active':'') + (iss.bad?' blink':'');
@@ -241,11 +246,17 @@ function render(){
   }
   document.querySelectorAll('a.refresh[data-grp]').forEach(a=>{
     const g = a.getAttribute('data-grp');
-    const iss = (DATA.groups && DATA.groups[g]) ? groupIssues(g) : {bad:0};
+    const dev = DEV_GROUPS.indexOf(g) > -1;
+    a.classList.toggle('dev', dev);
+    const iss = (!dev && DATA.groups && DATA.groups[g]) ? groupIssues(g) : {bad:0};
     a.classList.toggle('blink', iss.bad>0);
-    let bd = a.querySelector('.bdg');
-    if(iss.bad){ if(!bd){ bd=document.createElement('span'); bd.className='bdg'; a.appendChild(bd);} bd.textContent=iss.bad; }
-    else if(bd){ bd.remove(); }
+    let bd = a.querySelector('.bdg'), dv = a.querySelector('.devbdg');
+    if(dev){ if(bd){bd.remove();} if(!dv){ dv=document.createElement('span'); dv.className='devbdg'; dv.textContent='Development'; a.appendChild(dv);} }
+    else {
+      if(dv){ dv.remove(); }
+      if(iss.bad){ if(!bd){ bd=document.createElement('span'); bd.className='bdg'; a.appendChild(bd);} bd.textContent=iss.bad; }
+      else if(bd){ bd.remove(); }
+    }
   });
   const ga = document.getElementById('grpAlert');
   const cur = groupIssues(activeGroup);

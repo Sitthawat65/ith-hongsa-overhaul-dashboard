@@ -33,6 +33,7 @@
   .bar{max-width:1200px;margin:0 auto 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   .tab{padding:7px 16px;border-radius:999px;background:var(--panel);color:var(--muted);border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600}
   .tab.active{background:#1f6feb;color:#fff;border-color:#1f6feb}
+  .tab .devbdg{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:#334a63;color:#bcd0e8;font-size:10px;font-weight:700;vertical-align:1px}
   .spacer{flex:1 1 auto}
   .ycap{display:inline-flex;align-items:center;gap:6px;margin-right:8px}
   .ycap .lbl{font-size:12px;color:var(--muted)}
@@ -237,7 +238,7 @@ function renderTabs(){
   gs.forEach(g=>{
     const b = document.createElement('div');
     b.className = 'tab' + (g===group?' active':'');
-    b.textContent = g;
+    b.innerHTML = g + (DEV_GROUPS.indexOf(g)>-1 ? '<span class="devbdg">Development</span>' : '');
     b.onclick = ()=>{ group=g; drawAll(); };
     tabs.appendChild(b);
   });
@@ -270,8 +271,8 @@ function renderLegend(){
 function rowVal(row, i){ return (i+1 < row.length) ? row[i+1] : null; }
 // ค่านอกช่วงนี้ = เซ็นเซอร์ผิดปกติ/สายขาด ไม่ใช่อุณหภูมิจริง
 const T_MIN = -20, T_MAX = 150;
-// กลุ่มที่ยังไม่ติดตั้ง/พักการแจ้งเตือน — ลบออกเมื่อติดตั้งเสร็จ (ต้องตรงกับหน้าตาราง)
-const HOLD_GROUPS = ['BWE1'];
+// กลุ่มที่กำลังพัฒนา/ยังไม่ติดตั้ง — พักการแจ้งเตือน + ขึ้นป้าย Development (ต้องตรงกับหน้าตาราง)
+const DEV_GROUPS = ['BWE1','CR2'];
 function badVal(v){ return v==null || isNaN(v) || v < T_MIN || v > T_MAX; }
 function esc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -371,7 +372,7 @@ function drawChart(){
     flush(); endRun();
   });
   // ป้าย "Sensor Error" ที่เห็นชัด — 1 ป้ายต่อ 1 ช่วงที่เสีย เว้นระยะกันไม่ให้ทับ
-  const held = HOLD_GROUPS.indexOf(group) > -1;
+  const held = DEV_GROUPS.indexOf(group) > -1;
   if(errRuns.length && !held){
     errRuns.sort((a,b)=>a.x0-b.x0);
     let lastLabelX = -1e9;

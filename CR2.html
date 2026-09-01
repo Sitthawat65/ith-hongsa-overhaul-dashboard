@@ -107,6 +107,7 @@ function ageText(ms){
 }
    // ไม่มีค่าใหม่เกินเท่านี้ = แสดงจางลง
 const GROUP = "CR2";
+const DEV = true;   // กำลังพัฒนาระบบ — แสดงค่าเป็น "—" · เปลี่ยนเป็น false เมื่อติดตั้งเสร็จ
 const TAGS = ["CR2_NDE_SPL_L", "CR2_NDE_SPL_R", "CR2_DE_SPL_L", "CR2_DE_SPL_R", "CR2_NDE_DCV_L", "CR2_NDE_DCV_R", "CR2_SNUB_L", "CR2_SNUB_R", "CR2_DE_DCV_L", "CR2_DE_DCV_R"];
 let DATA = null;
 
@@ -118,6 +119,12 @@ function fmtTime(iso){
 
 function render(){
   if(!DATA) return;
+  if(DEV){   // ยังไม่ติดตั้ง/กำลังพัฒนา — โชว์ "—" ทุกจุด ไม่เอาค่าค้างเก่า
+    TAGS.forEach(tag=>{ const el=document.getElementById(tag);
+      if(el){ el.textContent='—'; el.className='tv'; el.title='กำลังพัฒนาระบบ (Development)'; } });
+    var u=document.getElementById('updated'); if(u) u.textContent='กำลังพัฒนาระบบ (Development)';
+    return;
+  }
   const map = {};
   ((DATA.groups||{})[GROUP]||[]).forEach(it=>{ map[it.tag]=it; });
   TAGS.forEach(tag=>{
