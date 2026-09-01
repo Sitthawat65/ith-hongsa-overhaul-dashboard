@@ -11,7 +11,7 @@ KEEP_DAYS วันทิ้ง
 {
   "updated": "<iso ล่าสุด>",
   "step_min": 5,
-  "keep_days": 3,
+  "keep_days": 30,
   "series": {
     "SPD": {
       "tags":   ["DCV_TC_L", ...],          # ลำดับจุดวัด (โตได้เมื่อมี tag ใหม่)
@@ -29,7 +29,7 @@ import json, pathlib, datetime
 HERE      = pathlib.Path(__file__).resolve().parent
 REPO_DIR  = HERE.parent
 HIST_JSON = REPO_DIR / "temps_history.json"
-KEEP_DAYS = 3
+KEEP_DAYS = 30
 STEP_MIN  = 5
 TZ = datetime.timezone(datetime.timedelta(hours=7))
 
