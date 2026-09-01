@@ -50,6 +50,7 @@
   #grpAlert .it{display:inline-flex;align-items:center;gap:4px;margin-right:14px;white-space:nowrap}
   #grpAlert .hot{color:#ffb4a0}
   #grpAlert .flt{color:#ffd591}
+  #grpAlert .srv{color:#bcd0e8;font-weight:600}
   .wrap{max-width:820px;margin:0 auto;overflow-x:auto}
   table.temps{width:100%;border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
   table.temps th,table.temps td{padding:15px 20px;text-align:left;border-bottom:1px solid var(--line)}
@@ -188,15 +189,26 @@ let DATA = null, activeGroup = null;
 
 function groupIssues(g){
   const hot = [], fault = [];
-  (DATA.groups[g]||[]).forEach(item=>{
+  const items = DATA.groups[g] || [];
+  let withData = 0, staleCnt = 0, newestSeen = 0;
+  items.forEach(item=>{
     const v = Number(item.value);
-    if(item.value==null || isNaN(v)) return;
-    const m = /^(.*)_(L|R)$/.exec(item.tag);
-    const nm = baseLabel(m ? m[1] : item.tag) + (m ? ' ('+m[2]+')' : '');
-    if(v < T_MIN || v > T_MAX) fault.push({nm, v});
-    else if(v >= ALARM) hot.push({nm, v});
+    if(item.value!=null && !isNaN(v)){
+      withData++;
+      const seenMs = Date.parse(item.seen || DATA.updated);
+      if(!isNaN(seenMs)){
+        if(seenMs > newestSeen) newestSeen = seenMs;
+        if(Date.now() - seenMs > STALE_MS) staleCnt++;
+      }
+      const m = /^(.*)_(L|R)$/.exec(item.tag);
+      const nm = baseLabel(m ? m[1] : item.tag) + (m ? ' ('+m[2]+')' : '');
+      if(v < T_MIN || v > T_MAX) fault.push({nm, v});
+      else if(v >= ALARM) hot.push({nm, v});
+    }
   });
-  return {hot, fault, bad: hot.length + fault.length};
+  const server = (withData > 0 && staleCnt === withData);
+  return {hot, fault, server, newestSeen,
+          bad: hot.length + fault.length + (server ? 1 : 0)};
 }
 
 function fmtTime(iso){
@@ -236,6 +248,10 @@ function render(){
   const cur = groupIssues(activeGroup);
   if(cur.bad){
     let h = '<div class="box"><b>⚠ พบปัญหาในกลุ่ม '+activeGroup+':</b> ';
+    if(cur.server){
+      h += '<span class="it srv">📡 Server / Converter Error — ดึงค่าจาก Primus ไม่ได้'
+        + (cur.newestSeen ? ' (ค่าล่าสุด '+fmtTime(new Date(cur.newestSeen).toISOString())+')' : '') + '</span>';
+    }
     cur.hot.forEach(x=>{ h += '<span class="it hot">🔥 '+x.nm+' '+x.v.toFixed(1)+'°C (ร้อนเกิน '+ALARM+')</span>'; });
     cur.fault.forEach(x=>{ h += '<span class="it flt">⚙️ '+x.nm+' เซ็นเซอร์เพี้ยน '+x.v.toFixed(1)+'°C (>'+T_MAX+')</span>'; });
     ga.innerHTML = h + '</div>';
