@@ -187,8 +187,11 @@ function gaugeSVG(v){
 
 let DATA = null, activeGroup = null;
 
+// กลุ่มที่ยังไม่ติดตั้ง/พักการแจ้งเตือนไว้ก่อน — ลบชื่อออกเมื่อติดตั้งเสร็จ
+const HOLD_GROUPS = ['BWE1'];
 function groupIssues(g){
   const hot = [], fault = [];
+  if(HOLD_GROUPS.indexOf(g) > -1) return {hot, fault, server:false, newestSeen:0, bad:0};
   const items = DATA.groups[g] || [];
   let withData = 0, staleCnt = 0, newestSeen = 0;
   items.forEach(item=>{

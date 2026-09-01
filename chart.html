@@ -270,6 +270,8 @@ function renderLegend(){
 function rowVal(row, i){ return (i+1 < row.length) ? row[i+1] : null; }
 // ค่านอกช่วงนี้ = เซ็นเซอร์ผิดปกติ/สายขาด ไม่ใช่อุณหภูมิจริง
 const T_MIN = -20, T_MAX = 150;
+// กลุ่มที่ยังไม่ติดตั้ง/พักการแจ้งเตือน — ลบออกเมื่อติดตั้งเสร็จ (ต้องตรงกับหน้าตาราง)
+const HOLD_GROUPS = ['BWE1'];
 function badVal(v){ return v==null || isNaN(v) || v < T_MIN || v > T_MAX; }
 function esc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -369,7 +371,8 @@ function drawChart(){
     flush(); endRun();
   });
   // ป้าย "Sensor Error" ที่เห็นชัด — 1 ป้ายต่อ 1 ช่วงที่เสีย เว้นระยะกันไม่ให้ทับ
-  if(errRuns.length){
+  const held = HOLD_GROUPS.indexOf(group) > -1;
+  if(errRuns.length && !held){
     errRuns.sort((a,b)=>a.x0-b.x0);
     let lastLabelX = -1e9;
     errRuns.forEach(r=>{
@@ -407,6 +410,7 @@ function drawChart(){
   const STALL_MIN = 2;
   let lastSrvX = -1e9;
   stallRuns.forEach(([a,b])=>{
+    if(held) return;
     if(b-a < STALL_MIN) return;
     const x0=px(rows[a].t), x1=px(rows[b].t), xc=(x0+x1)/2;
     // แถบเทาคลุมช่วงที่ไม่มีข้อมูลสด
