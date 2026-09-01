@@ -349,29 +349,45 @@ function drawChart(){
     parts.push('<text x="'+x.toFixed(1)+'" y="'+(H-mB+16)+'" fill="#6b7a89" font-size="11" text-anchor="middle">'+lbl+'</text>');
   }
   // series polylines (แยกช่วงเมื่อเจอ null)
-  const errMarks = [];
+  const errRuns = [];   // ช่วงที่เซ็นเซอร์ผิดปกติ (ค่า >150 หรือ <-20): {i,col,label,x0,x1,t0,t1,vmax,n}
   visIdx.forEach(i=>{
     const col = seriesColor(i, s.tags.length);
-    let seg=[];
+    let seg=[], run=null;
     const flush=()=>{ if(seg.length>1) parts.push('<polyline fill="none" stroke="'+col+'" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" points="'+seg.join(' ')+'"/>'); else if(seg.length===1){const[x,y]=seg[0].split(',');parts.push('<circle cx="'+x+'" cy="'+y+'" r="1.8" fill="'+col+'"/>');} seg=[]; };
+    const endRun=()=>{ if(run){ errRuns.push(run); run=null; } };
     rows.forEach(x=>{
       const v=rowVal(x.r,i);
-      if(v==null||isNaN(v)){ flush(); }
+      if(v==null||isNaN(v)){ flush(); endRun(); }
       else if(v < T_MIN || v > T_MAX){
         flush();
-        errMarks.push({x:px(x.t), col:col, label:tagLabel(s.tags[i]), v:v, t:x.t});
+        const xx=px(x.t);
+        if(run && (xx-run.x1) <= 14){ run.x1=xx; run.t1=x.t; run.n++; if(Math.abs(v)>Math.abs(run.vmax)) run.vmax=v; }
+        else { endRun(); run={i:i,col:col,label:tagLabel(s.tags[i]),x0:xx,x1:xx,t0:x.t,t1:x.t,vmax:v,n:1}; }
       }
-      else { seg.push(px(x.t).toFixed(1)+','+py(v).toFixed(1)); }
+      else { seg.push(px(x.t).toFixed(1)+','+py(v).toFixed(1)); endRun(); }
     });
-    flush();
+    flush(); endRun();
   });
-  // จุด "เซ็นเซอร์ผิดปกติ" ที่ขอบล่าง สีตามเส้น ขอบแดง เอาเมาส์ชี้เห็นค่าจริง
-  if(errMarks.length){
-    const ey = H - mB - 6;
-    errMarks.forEach(m=>{
-      parts.push('<rect class="errmk" x="'+(m.x-3).toFixed(1)+'" y="'+(ey-3)+'" width="6" height="6" rx="1" '
-        + 'fill="'+m.col+'" stroke="#e02424" stroke-width="1.4">'
-        + '<title>เซ็นเซอร์ผิดปกติ · '+esc(m.label)+' = '+(+m.v).toFixed(1)+'°C ('+fmtTime(new Date(m.t).toISOString())+')</title></rect>');
+  // ป้าย "Sensor Error" ที่เห็นชัด — 1 ป้ายต่อ 1 ช่วงที่เสีย เว้นระยะกันไม่ให้ทับ
+  if(errRuns.length){
+    errRuns.sort((a,b)=>a.x0-b.x0);
+    let lastLabelX = -1e9;
+    errRuns.forEach(r=>{
+      const xc = (r.x0+r.x1)/2;
+      // แถบแดงจาง ๆ คลุมช่วงเวลาที่เสีย เต็มความสูง
+      parts.push('<rect x="'+(r.x0-2).toFixed(1)+'" y="'+mT+'" width="'+Math.max(4,(r.x1-r.x0+4)).toFixed(1)+'" height="'+(H-mT-mB)+'" fill="#e02424" opacity="0.08"/>');
+      // เส้นประแดงตรงกลางช่วง
+      parts.push('<line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#e02424" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>');
+      // จุดสี่เหลี่ยมสีเส้น (บอกว่าเป็นเซ็นเซอร์ตัวไหน) + tooltip
+      parts.push('<rect class="errmk" x="'+(xc-3).toFixed(1)+'" y="'+(H-mB-9)+'" width="6" height="6" rx="1" fill="'+r.col+'" stroke="#e02424" stroke-width="1.4">'
+        + '<title>Sensor Error · '+esc(r.label)+' = '+(+r.vmax).toFixed(1)+'°C ('+fmtTime(new Date(r.t0).toISOString())+(r.n>1?' – '+fmtTime(new Date(r.t1).toISOString()):'')+')</title></rect>');
+      // ป้ายข้อความชัด ๆ ด้านบน เว้นอย่างน้อย 92px กันทับ
+      if(xc - lastLabelX >= 92){
+        const tx = Math.min(Math.max(xc, mL+52), W-mR-52);
+        parts.push('<g class="errlbl"><rect x="'+(tx-50).toFixed(1)+'" y="'+(mT+2)+'" width="100" height="15" rx="3" fill="#e02424"/>'
+          + '<text x="'+tx.toFixed(1)+'" y="'+(mT+13)+'" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">⚠ Sensor Error</text></g>');
+        lastLabelX = xc;
+      }
     });
   }
   // hover overlay
