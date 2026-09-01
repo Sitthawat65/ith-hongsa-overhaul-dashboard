@@ -461,6 +461,14 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
   // live     = อยู่บนหน้าเผยแพร่ บันทึกแล้วทุกเครื่องเห็นตรงกัน
   // local    = อยู่บนเว็บทั่วไป (GitHub Pages) บันทึกไว้ในเบราว์เซอร์เครื่องนี้
   // readonly = ไม่มีสิทธิ์แก้ไข
+  /* ---------- ที่เก็บข้อมูลกลาง (Google Sheets ผ่าน Apps Script) ----------
+     ปล่อยว่าง = ทำงานแบบเดิม เก็บในเบราว์เซอร์เครื่องนี้เท่านั้น
+     ใส่ URL ของเว็บแอป = ทุกเครื่องเห็นข้อมูลชุดเดียวกัน */
+  var SYNC_URL = "https://script.google.com/macros/s/AKfycbzfvu1ApD05VLdXzz3b9xQ3tby1_cRg3VmrgnuwY-E-0Bri8wm-YP3gfbQ7u9hk5BuzRQ/exec";
+  var SYNC_KEY = "ITH-ISOEE-2569";     // ต้องตรงกับ WRITE_KEY ใน iso-ee-sync.gs
+  var POLL_MS  = 45000;                // ดึงข้อมูลใหม่ทุก 45 วินาที
+  var syncState = "idle", syncErr = "", syncPulledAt = 0;
+
   var LS_KEY = "iso_ee_status_v1", LS_EDIT = "iso_ee_editmode_v1";
   var artifactApi = null, mode = "local", saving = "idle";
   // editMode = สลับเองได้ เริ่มต้นที่ “ดูอย่างเดียว” กันกดโดนโดยไม่ตั้งใจ
@@ -671,6 +679,102 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
     rec.at = new Date().toISOString();
     render();
     save();
+    syncPush(id, cycKey);
+  }
+
+  /* ---------- แปลงเรคคอร์ดหนึ่งรายการให้เป็นแถวแบนสำหรับชีต ---------- */
+  function flatRec(id, cycKey){
+    var r = (STATE.log[id] && STATE.log[id][cycKey]) || {};
+    return {
+      id:id, cycle:cycKey,
+      status: r.status || "todo",
+      progress: typeof r.progress === "number" ? r.progress : 0,
+      owner: r.owner || "", checker: r.checker || "", doc: r.doc || "none",
+      reason: r.reason || "", reasonNote: r.reasonNote || "", note: r.note || "",
+      ack: (r.ack && r.ack.at) ? r.ack.at : "",
+      at: r.at || "", by: r.by || ""
+    };
+  }
+
+  /* ---------- รวมข้อมูลจากส่วนกลางเข้ากับของในเครื่อง ----------
+     ตัดสินด้วยเวลาแก้ไขล่าสุด (at) — ใครบันทึกทีหลังชนะ */
+  function applyRemote(recs){
+    var changed = false;
+    recs.forEach(function(r){
+      if(!r || !r.id || !r.cycle) return;
+      var log = STATE.log[r.id] || (STATE.log[r.id] = {});
+      var cur = log[r.cycle];
+      var remoteAt = Date.parse(r.at || "") || 0;
+      var localAt  = cur ? (Date.parse(cur.at || "") || 0) : -1;
+      if(remoteAt < localAt) return;              // ของในเครื่องใหม่กว่า เก็บไว้
+      log[r.cycle] = {
+        status: String(r.status || "todo"),
+        progress: Number(r.progress) || 0,
+        owner: String(r.owner || ""), checker: String(r.checker || ""),
+        doc: String(r.doc || "none"), reason: String(r.reason || ""),
+        reasonNote: String(r.reasonNote || ""), note: String(r.note || ""),
+        ack: r.ack ? {by: String(r.by || ""), at: String(r.ack)} : null,
+        at: String(r.at || ""), by: String(r.by || "")
+      };
+      changed = true;
+    });
+    return changed;
+  }
+
+  function cacheLocal(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }catch(e){}
+  }
+
+  /* ---------- ดึงข้อมูลล่าสุดจากส่วนกลาง ---------- */
+  function syncPull(quiet){
+    if(!SYNC_URL || !window.fetch) return;
+    syncState = "pull"; paintSave();
+    fetch(SYNC_URL + (SYNC_URL.indexOf("?") > -1 ? "&" : "?") + "t=" + Date.now())
+      .then(function(res){ return res.json(); })
+      .then(function(d){
+        if(!d || !d.ok) throw new Error((d && d.error) || "อ่านข้อมูลไม่สำเร็จ");
+        var changed = applyRemote(d.records || []);
+        syncState = "ok"; syncErr = ""; syncPulledAt = Date.now();
+        cacheLocal();
+        // ห้ามวาดใหม่ขณะมีแถวเปิดแก้ไขอยู่ ไม่งั้นสิ่งที่พิมพ์ค้างจะหาย
+        var busy = false;
+        for(var k in view.rowEdit){ if(view.rowEdit[k]) { busy = true; break; } }
+        if(changed && !busy) render(); else paintSave();
+      })["catch"](function(err){
+        syncState = "err"; syncErr = String((err && err.message) || err);
+        paintSave();
+        if(!quiet) console.error("sync pull failed:", err);
+      });
+  }
+
+  /* ---------- ส่งรายการที่เพิ่งบันทึกขึ้นส่วนกลาง ----------
+     ส่งเป็น text/plain เพื่อเลี่ยง CORS preflight ที่ Apps Script ไม่รองรับ */
+  function syncPush(id, cycKey, attempt){
+    if(!SYNC_URL || !window.fetch) return;
+    attempt = attempt || 1;
+    syncState = "push"; paintSave();
+    fetch(SYNC_URL, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify({key: SYNC_KEY, records: [flatRec(id, cycKey)]})
+    })
+      .then(function(res){ return res.text(); })
+      .then(function(txt){
+        var d = null;
+        try { d = JSON.parse(txt); } catch(e){ d = null; }
+        if(!d || !d.ok) throw new Error((d && d.error) || "บันทึกขึ้นส่วนกลางไม่สำเร็จ");
+        syncState = "ok"; syncErr = ""; paintSave();
+      })["catch"](function(err){
+        // Apps Script บางครั้ง redirect หน่วงตอนยิงครั้งแรก — ลองซ้ำอีกครั้ง
+        // เขียนแบบทับที่เดิม (idempotent) จึงลองซ้ำได้ปลอดภัย
+        if(attempt < 3){
+          setTimeout(function(){ syncPush(id, cycKey, attempt + 1); }, 1500 * attempt);
+          return;
+        }
+        syncState = "err"; syncErr = String((err && err.message) || err);
+        paintSave();
+        console.error("sync push failed:", err);
+      });
   }
 
   var saveTimer = null;
@@ -708,17 +812,30 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
   function paintSave(){
     var el = document.getElementById("saveState");
     if(!el) return;
-    var map = {
-      idle:[mode === "readonly" || !editMode ? "off" : "",
-            mode === "readonly" ? "ดูอย่างเดียว"
-              : !editMode ? "ดูอย่างเดียว"
-              : mode === "live" ? "บันทึกอัตโนมัติ · ซิงค์ทุกเครื่อง"
-              : "บันทึกในเครื่องนี้"],
-      pending:["busy","กำลังบันทึก…"], saving:["busy","กำลังบันทึก…"],
-      saved:["", "บันทึกแล้ว"], error:["off","บันทึกไม่สำเร็จ"], readonly:["off","ดูอย่างเดียว"]
-    };
-    var m = map[saving] || map.idle;
-    el.innerHTML = '<span class="dot ' + m[0] + '"></span>' + esc(m[1]);
+    var cls = "", txt = "", tip = "";
+
+    if(mode === "readonly" || !editMode){
+      cls = "off";
+      txt = SYNC_URL ? "ดูอย่างเดียว · ซิงค์ทุกเครื่อง" : "ดูอย่างเดียว";
+    } else if(SYNC_URL){
+      if(syncState === "push" || syncState === "pull"){ cls = "busy"; txt = "กำลังซิงค์…"; }
+      else if(syncState === "err"){
+        cls = "off"; txt = "ซิงค์ไม่ได้ · เก็บในเครื่องนี้ชั่วคราว"; tip = syncErr;
+      } else {
+        txt = "ซิงค์ทุกเครื่องแล้ว";
+        if(syncPulledAt) tip = "อ่านข้อมูลล่าสุดเมื่อ " + new Date(syncPulledAt).toLocaleTimeString("th-TH");
+      }
+    } else {
+      var map = {
+        pending:["busy","กำลังบันทึก…"], saving:["busy","กำลังบันทึก…"],
+        saved:["","บันทึกแล้ว"], error:["off","บันทึกไม่สำเร็จ"], readonly:["off","ดูอย่างเดียว"]
+      };
+      var m = map[saving] || ["", mode === "live" ? "บันทึกอัตโนมัติ · ซิงค์ทุกเครื่อง"
+                                                  : "บันทึกในเครื่องนี้"];
+      cls = m[0]; txt = m[1];
+    }
+    el.innerHTML = '<span class="dot ' + cls + '"></span>' + esc(txt);
+    el.title = tip;
   }
 
   /* ---------- สร้างเอกสารทั้งหน้าเพื่อบันทึกเป็นเวอร์ชันใหม่ ---------- */
@@ -1335,6 +1452,16 @@ button.brow{font:inherit; color:inherit; border:none; background:transparent;
   /* ---------- เริ่มทำงาน ---------- */
   if(!lsAvailable()) mode = "readonly";
   render();
+
+  if(SYNC_URL){
+    mode = "local";                 // ยังใช้ localStorage เป็นแคชสำรองตอนเน็ตหลุด
+    syncPull(true);
+    setInterval(function(){ syncPull(true); }, POLL_MS);
+    // กลับมาที่แท็บนี้เมื่อไหร่ ดึงของใหม่ทันที
+    document.addEventListener("visibilitychange", function(){
+      if(!document.hidden && Date.now() - syncPulledAt > 8000) syncPull(true);
+    });
+  }
   if(window.claude && window.claude.use){
     window.claude.use("artifact").then(function(api){
       if(api){ artifactApi = api; mode = "live"; }   // หน้าเผยแพร่: บันทึกให้ทุกเครื่อง
