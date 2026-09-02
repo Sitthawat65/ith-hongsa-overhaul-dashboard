@@ -25,6 +25,16 @@ try:
 except Exception:
     pass
 
+# เครื่องหลัง proxy ที่ตรวจ SSL (self-signed cert) ต่อ api.telegram.org ไม่ได้ —
+# ตั้ง TELEGRAM_INSECURE_SSL=1 (หรือ PYTHONHTTPSVERIFY=0) เพื่อข้าม verify เฉพาะเครื่องนั้น
+import os as _os
+if _os.environ.get("TELEGRAM_INSECURE_SSL") == "1" or _os.environ.get("PYTHONHTTPSVERIFY") == "0":
+    try:
+        import ssl as _ssl
+        _ssl._create_default_https_context = _ssl._create_unverified_context
+    except Exception:
+        pass
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import telegram_alert as TA
 import telegram_alarm as AL

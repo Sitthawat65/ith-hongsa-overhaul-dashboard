@@ -27,6 +27,17 @@ try:
 except Exception:
     pass
 
+# บางเครื่อง (เช่น PC ในเครือข่ายโรงงานที่มี proxy ตรวจ SSL คั่นด้วย self-signed cert)
+# ทำให้ urllib ต่อ api.telegram.org ไม่ได้ = CERTIFICATE_VERIFY_FAILED. ตั้งค่าตัวแปร
+# TELEGRAM_INSECURE_SSL=1 (หรือ PYTHONHTTPSVERIFY=0) เพื่อข้ามการตรวจ cert เฉพาะเครื่องนั้น
+# (ไม่กระทบเครื่องอื่นที่ต่อได้ปกติ). ปิด verify เฉพาะการเรียก HTTPS ผ่าน urllib ของเครื่องมือนี้
+if os.environ.get("TELEGRAM_INSECURE_SSL") == "1" or os.environ.get("PYTHONHTTPSVERIFY") == "0":
+    try:
+        import ssl as _ssl
+        _ssl._create_default_https_context = _ssl._create_unverified_context
+    except Exception:
+        pass
+
 # ---- ตั้งค่า ----
 BASE_URL = "https://primus.ith.co.th/"
 SPD_URL = ("https://primus.ith.co.th/home?factory_id=68c1024abea6aa0b8ca1c61e"
