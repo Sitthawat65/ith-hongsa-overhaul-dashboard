@@ -34,18 +34,6 @@ TZ = datetime.timezone(datetime.timedelta(hours=7))
 
 WARN, ALARM = 70, 80
 STALE_MIN = 20                      # ไม่มีค่าใหม่เกินเท่านี้ (นาที) = ถือว่าเป็นค่าเก่า
-MAINT_JSON = REPO_DIR / "maintenance.json"
-
-
-def _maint_mode():
-    """คืนชื่อโหมดงานซ่อมบำรุงถ้ากำลังเปิดอยู่ (เช่น 'PM Day') ไม่งั้นคืน None"""
-    try:
-        m = json.loads(MAINT_JSON.read_text(encoding="utf-8"))
-        if m.get("active") and m.get("mode"):
-            return m["mode"]
-    except Exception:
-        pass
-    return None
 # หาฟอนต์ให้เจอทั้งบน Windows (เครื่องนี้) และ Linux (GitHub Actions)
 FONT_CANDIDATES = [
     "C:/Windows/Fonts/arial.ttf",
@@ -171,9 +159,6 @@ def caption(page, items, updated, hot, shown):
         t = "-"
     head = f"{'🚨' if hot else '📊'} {page} — {full}"
     lines = [head, f"อัปเดต {t} น. · {shown} จุด"]
-    maint = _maint_mode()
-    if maint:
-        lines.append(f"🔧 โหมดงานซ่อมบำรุง: {maint}")
     if hot:
         lines.append("")
         lines.append(f"เกิน {ALARM}°C:")
@@ -184,10 +169,7 @@ def caption(page, items, updated, hot, shown):
         if tags:
             top = max(tags, key=lambda t2: items[t2][0])
             v, seen = items[top]
-            if age_minutes(seen) > STALE_MIN:
-                old = f"  ({maint})" if maint else "  (ค่าเก่า)"
-            else:
-                old = ""
+            old = "  (ค่าเก่า)" if age_minutes(seen) > STALE_MIN else ""
             lines.append(f"สูงสุด: {label(top)}  {v:.1f}°C{old}")
     return "\n".join(lines)
 

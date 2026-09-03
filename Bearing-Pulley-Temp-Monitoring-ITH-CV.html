@@ -93,22 +93,6 @@
   .legend{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:6px}
   .legend span{display:inline-flex;align-items:center;gap:6px}
   .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
-  /* ---------- ปุ่มโหมดงานซ่อมบำรุง (พักการแจ้งเตือน Server/Sensor) ---------- */
-  .maintbar{max-width:820px;margin:0 auto 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-    padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
-  .maintbar.on{border-color:#f5a623;background:rgba(245,166,35,.10)}
-  .maintbar .ml{font-size:12.5px;color:var(--muted);font-weight:600;margin-right:2px}
-  .mbtn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;
-    background:#101a26;color:#cdd9e5;border:1px solid var(--line);cursor:pointer;
-    font-family:inherit;font-size:12.5px;font-weight:600;transition:background .15s,border-color .15s}
-  .mbtn:hover{background:#1c2a3a;border-color:#31465c}
-  .mbtn:active{transform:translateY(1px)}
-  .mbtn.active{background:#f5a623;border-color:#ffcf7a;color:#241a06;font-weight:800}
-  .mbtn.resume{margin-left:2px}
-  .mbtn.locked{opacity:.4;pointer-events:none}
-  .mstate{font-size:12px;color:#ffd591;font-weight:700;margin-left:4px;white-space:nowrap}
-  #grpAlert .mbox{border:1px solid #f5a623;background:rgba(245,166,35,.12);border-radius:12px;
-    padding:10px 15px;font-size:13px;color:#ffd591;font-weight:600;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -133,15 +117,6 @@
       <div>อัปเดตล่าสุด: <b id="updated">—</b></div>
     </div>
   </header>
-
-  <div class="maintbar" id="maintbar">
-    <span class="ml">งานที่วางแผนไว้ (พักแจ้งเตือน Server/Sensor):</span>
-    <button class="mbtn" data-mt="PM" type="button" title="งาน PM ประจำวัน — ดับไฟ/หยุดเครื่อง">🔧 PM Day</button>
-    <button class="mbtn" data-mt="SHIFT" type="button" title="งานเลื่อน/ปรับแนวสายพาน (Shift Line)">↔ Shift Line Day</button>
-    <button class="mbtn" data-mt="RELOCATE" type="button" title="งานย้ายตำแหน่งเครื่อง (Relocate)">🚚 Relocate Day</button>
-    <button class="mbtn resume" data-mt="OFF" type="button" title="ยกเลิกโหมดซ่อมบำรุง กลับมาแจ้งเตือนตามปกติ">▶ กลับสู่ปกติ</button>
-    <span class="mstate" id="mstate"></span>
-  </div>
 
   <div class="tabs" id="tabs"></div>
   <div id="grpAlert"></div>
@@ -237,13 +212,9 @@ function groupIssues(g){
       else if(v >= ALARM) hot.push({nm, v});
     }
   });
-  let server = (withData > 0 && staleCnt === withData);
-  let outFault = fault;
-  // โหมดงานซ่อมบำรุง: พักการแจ้งเตือน Server/Sensor error
-  // (ค่าค้าง/ค่าเพี้ยนเป็นเรื่องปกติตอนดับไฟ PM / ย้ายเครื่อง / เลื่อนแนวสายพาน)
-  if(maintActive()){ server = false; outFault = []; }
-  return {hot, fault: outFault, server, newestSeen,
-          bad: hot.length + outFault.length + (server ? 1 : 0)};
+  const server = (withData > 0 && staleCnt === withData);
+  return {hot, fault, server, newestSeen,
+          bad: hot.length + fault.length + (server ? 1 : 0)};
 }
 
 function fmtTime(iso){
@@ -254,7 +225,6 @@ function fmtTime(iso){
 }
 
 function render(){
-  drawMaint();
   if(!DATA) return;
   const groups = Object.keys(DATA.groups||{});
   const shownGroups = groups.filter(g=>DEV_GROUPS.indexOf(g)===-1);
@@ -290,9 +260,6 @@ function render(){
   });
   const ga = document.getElementById('grpAlert');
   const cur = groupIssues(activeGroup);
-  const mo = maintNow();
-  const ah = mo ? '<div class="mbox">🔧 โหมดงานซ่อมบำรุง: '+mo.label+(mo.shared?' (ทั้งระบบ)':'')
-      +' — พักการแจ้งเตือน Server/Sensor error ชั่วคราว</div>' : '';
   if(cur.bad){
     let h = '<div class="box"><b>⚠ พบปัญหาในกลุ่ม '+activeGroup+':</b> ';
     if(cur.server){
@@ -301,8 +268,8 @@ function render(){
     }
     cur.hot.forEach(x=>{ h += '<span class="it hot">🔥 '+x.nm+' '+x.v.toFixed(1)+'°C (ร้อนเกิน '+ALARM+')</span>'; });
     cur.fault.forEach(x=>{ h += '<span class="it flt">⚙️ '+x.nm+' เซ็นเซอร์เพี้ยน '+x.v.toFixed(1)+'°C (>'+T_MAX+')</span>'; });
-    ga.innerHTML = ah + h + '</div>';
-  } else { ga.innerHTML = ah; }
+    ga.innerHTML = h + '</div>';
+  } else { ga.innerHTML = ''; }
 
   // pair tags (…_L / …_R) into one row per bearing, keeping source order
   const order = [], byBase = {};
@@ -332,7 +299,7 @@ function render(){
       return '<td class="num stale" title="ค่าล่าสุดเมื่อ '+fmtTime(seen || DATA.updated)+'">'
         + '<div class="gwrap">'+gaugeSVG(v)+'<div class="gval">'
         + '<span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span>'
-        + '<div class="agetag">'+(maintActive()? '🔧 '+maintNow().label : 'ค้าง '+ageText(age))+'</div></div></div></td>';
+        + '<div class="agetag">ค้าง '+ageText(age)+'</div></div></div></td>';
     }
     return '<td class="'+cls+'"><div class="gwrap">'+gaugeSVG(v)+'<div class="gval">'
       + '<span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span></div></div></td>';
@@ -375,121 +342,10 @@ function tickCountdown(){
 }
 setInterval(tickCountdown, 1000);
 
-// ---- โหมดงานซ่อมบำรุง: พักการแจ้งเตือน Server/Sensor error ชั่วคราว ----
-// เก็บใน localStorage (เฉพาะเบราว์เซอร์นี้) และคืนค่าอัตโนมัติหลัง 24 ชม. เผื่อลืมกดกลับ
-const MAINT_KEY = 'ith_maint';
-const MAINT_MAX = 24 * 60 * 60 * 1000;
-const MAINT_LABEL = {PM:'PM Day', SHIFT:'Shift Line Day', RELOCATE:'Relocate Day'};
-// URL ของ Cloudflare Worker (สั่งโหมดทั้งระบบจากเว็บ) — เว้นว่าง = ยังไม่ตั้ง ปุ่มจะทำงานแบบ local
-const MAINT_WORKER_URL = '';
-const WORKER_MODE = {PM:'pm', SHIFT:'shift', RELOCATE:'relocate', OFF:'normal'};
-// flag กลางจาก PC/Worker (maintenance.json ที่ push ขึ้น GitHub) — มีผลกับทุกคนที่เปิดดู
-let SHARED_MAINT = null;
-async function fetchSharedMaint(){
-  try{
-    const r = await fetch('maintenance.json?_=' + Date.now(), {cache:'no-store'});
-    if(r.ok){ const m = await r.json(); SHARED_MAINT = (m && m.active && m.mode) ? m : null; }
-    else SHARED_MAINT = null;
-  }catch(e){ SHARED_MAINT = null; }
-}
-// รวมสถานะ: flag กลาง (จาก PC) มาก่อน ไม่งั้นใช้ปุ่ม local ในเบราว์เซอร์นี้
-function maintNow(){
-  if(SHARED_MAINT) return {label: SHARED_MAINT.mode, since: Date.parse(SHARED_MAINT.since)||Date.now(), shared:true};
-  const o = maintGet();
-  if(o) return {label: MAINT_LABEL[o.type], since: o.since, shared:false};
-  return null;
-}
-function maintActive(){ return !!maintNow(); }
-function maintGet(){
-  try{
-    const o = JSON.parse(localStorage.getItem(MAINT_KEY) || 'null');
-    if(o && MAINT_LABEL[o.type] && o.since && (Date.now() - o.since) < MAINT_MAX) return o;
-  }catch(e){}
-  return null;
-}
-function maintSet(type){
-  try{
-    if(!type || type === 'OFF') localStorage.removeItem(MAINT_KEY);
-    else localStorage.setItem(MAINT_KEY, JSON.stringify({type, since: Date.now()}));
-  }catch(e){}
-  render();
-}
-function drawMaint(){
-  const local = maintGet();
-  const now = maintNow();
-  // ปุ่มไฮไลต์ตามสถานะจริง: flag กลาง (code เช่น 'pm'->'PM') มาก่อน ไม่งั้นใช้ปุ่ม local
-  const activeType = SHARED_MAINT ? String(SHARED_MAINT.code||'').toUpperCase()
-                                  : (local ? local.type : null);
-  // ล็อกปุ่มเมื่อโหมดทั้งระบบเปิดอยู่ "และยังไม่ได้ตั้ง Worker" (ยกเลิกได้ที่ PC เท่านั้น)
-  // ถ้าตั้ง Worker แล้ว ปุ่มกดได้ปกติเพื่อสั่ง/ยกเลิกทั้งระบบ
-  const sharedLock = !!SHARED_MAINT && !MAINT_WORKER_URL;
-  document.querySelectorAll('#maintbar .mbtn').forEach(b=>{
-    const t = b.getAttribute('data-mt');
-    if(t !== 'OFF') b.classList.toggle('active', activeType === t);
-    b.classList.toggle('locked', sharedLock);
-  });
-  const bar = document.getElementById('maintbar');
-  if(bar) bar.classList.toggle('on', !!now);
-  const st = document.getElementById('mstate');
-  if(st){
-    if(now){
-      const since = new Date(now.since).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-      st.textContent = now.shared
-        ? '● ทั้งระบบ: ' + now.label + ' — เริ่ม ' + since + ' น.'
-          + (MAINT_WORKER_URL ? ' · กด กลับสู่ปกติ เพื่อยกเลิก' : ' · ยกเลิกที่ PC (Back_to_Normal.bat)')
-        : '● พักแจ้งเตือน — เริ่ม ' + since + ' น. · คืนค่าอัตโนมัติใน 24 ชม.';
-    } else st.textContent = '';
-  }
-}
-// ---- สั่งโหมดทั้งระบบผ่าน Cloudflare Worker (ถ้าตั้ง MAINT_WORKER_URL ไว้) ----
-function maintPin(){
-  let p = '';
-  try{ p = sessionStorage.getItem('ith_maint_pin') || ''; }catch(e){}
-  if(!p){
-    p = (prompt('ใส่ PIN เพื่อสั่งโหมดซ่อมบำรุง:') || '').trim();
-    if(p){ try{ sessionStorage.setItem('ith_maint_pin', p); }catch(e){} }
-  }
-  return p;
-}
-async function callWorker(mode){
-  const pin = maintPin();
-  if(!pin) return;
-  try{
-    const r = await fetch(MAINT_WORKER_URL, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({mode, pin})
-    });
-    const j = await r.json().catch(()=>({}));
-    if(r.status === 403){ try{ sessionStorage.removeItem('ith_maint_pin'); }catch(e){} alert('PIN ไม่ถูกต้อง ลองใหม่'); return; }
-    if(!r.ok){ alert('สั่งไม่สำเร็จ: ' + (j.error || ('HTTP '+r.status))); return; }
-    // อัปเดตทันที (optimistic) จากผลลัพธ์ที่ Worker คืนมา ไม่ต้องรอ GitHub Pages rebuild
-    if(j && j.state){ SHARED_MAINT = (j.state.active && j.state.mode) ? j.state : null; render(); }
-  }catch(e){ alert('เชื่อมต่อ Worker ไม่ได้: ' + e); }
-}
-document.querySelectorAll('#maintbar .mbtn').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    const t = b.getAttribute('data-mt');
-    if(MAINT_WORKER_URL){
-      let mode = WORKER_MODE[t];
-      // กดปุ่มโหมดที่กำลังเปิดอยู่ซ้ำ = สั่งกลับสู่ปกติ
-      if(t !== 'OFF' && SHARED_MAINT && String(SHARED_MAINT.code||'').toUpperCase() === t) mode = 'normal';
-      callWorker(mode);
-    } else {
-      const cur = maintGet();
-      if(t === 'OFF' || (cur && cur.type === t)) maintSet('OFF');   // กดปุ่มเดิมซ้ำ = ปิดโหมด (local)
-      else maintSet(t);
-    }
-  });
-});
-drawMaint();
-// ดึงสถานะโหมดทั้งระบบซ้ำทุก 60 วินาที เพื่อให้ทุกคนเห็นการเปลี่ยนแปลงเร็วขึ้น
-setInterval(async ()=>{ await fetchSharedMaint(); render(); }, 60000);
-
 async function load(){
   try{
     const r = await fetch('temps.json?_=' + Date.now(), {cache:'no-store'});
     DATA = await r.json();
-    await fetchSharedMaint();
     render();
   }catch(e){ console.error('load failed', e); }
 }
