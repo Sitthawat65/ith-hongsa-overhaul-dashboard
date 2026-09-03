@@ -1,0 +1,35 @@
+name: Temp Watchdog
+
+# เฝ้าดูว่า temps.json ยังถูกอัปเดตอยู่ไหม ถ้าค้างเกิน STALE_MIN นาที ส่ง Telegram เตือน
+#
+# ทำงานบนเครื่องของ GitHub (นอกโรงงาน) จึงจับได้แม้ PC ที่ออฟฟิศดับ / ไฟดับ / เน็ตหลุด
+# อ่านแค่ temps.json ในรีโป ไม่ยุ่งกับ Primus จึง "ไม่" ติด Cloudflare เหมือน update-temps.yml
+#
+# หมายเหตุเวลา: cron ของ GitHub Actions เป็นแบบ "พยายามให้ใกล้เคียง" อาจช้า 5-15 นาที
+# ไม่เป็นไรกับ watchdog เพราะมันวัดอายุจากฟิลด์ updated ในไฟล์ ไม่ได้ขึ้นกับเวลาที่รัน
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'    # ทุก ~15 นาที
+  workflow_dispatch: {}         # กดรันเองได้เพื่อทดสอบ
+
+permissions:
+  contents: read
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: false
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: เช็ก temps.json ว่าค้างหรือไม่ แล้วเตือนถ้าค้าง
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+          STALE_MIN: '20'
+        run: python .github/scripts/watchdog.py
