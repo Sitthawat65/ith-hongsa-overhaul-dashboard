@@ -11,7 +11,12 @@ name: Temp Watchdog
 on:
   schedule:
     - cron: '*/15 * * * *'    # ทุก ~15 นาที
-  workflow_dispatch: {}         # กดรันเองได้เพื่อทดสอบ
+  workflow_dispatch:            # กดรันเองได้เพื่อทดสอบ
+    inputs:
+      stale_min:
+        description: 'เกณฑ์ค้าง (นาที) — ใส่ 0 เพื่อบังคับส่งเตือนทดสอบทันที'
+        required: false
+        default: '20'
 
 permissions:
   contents: read
@@ -31,5 +36,5 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
-          STALE_MIN: '20'
+          STALE_MIN: ${{ github.event.inputs.stale_min || '20' }}
         run: python .github/scripts/watchdog.py
