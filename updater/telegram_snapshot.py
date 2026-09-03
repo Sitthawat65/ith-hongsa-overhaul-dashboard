@@ -173,7 +173,7 @@ def caption(page, items, updated, hot, shown):
     lines = [head, f"อัปเดต {t} น. · {shown} จุด"]
     maint = _maint_mode()
     if maint:
-        lines.append(f"🔧 โหมดงานซ่อมบำรุง: {maint} (ค่าค้างเป็นปกติระหว่างงาน)")
+        lines.append(f"🔧 โหมดงานซ่อมบำรุง: {maint}")
     if hot:
         lines.append("")
         lines.append(f"เกิน {ALARM}°C:")
