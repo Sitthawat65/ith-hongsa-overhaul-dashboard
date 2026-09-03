@@ -105,6 +105,7 @@
   .mbtn:active{transform:translateY(1px)}
   .mbtn.active{background:#f5a623;border-color:#ffcf7a;color:#241a06;font-weight:800}
   .mbtn.resume{margin-left:2px}
+  .mbtn.locked{opacity:.4;pointer-events:none}
   .mstate{font-size:12px;color:#ffd591;font-weight:700;margin-left:4px;white-space:nowrap}
   #grpAlert .mbox{border:1px solid #f5a623;background:rgba(245,166,35,.12);border-radius:12px;
     padding:10px 15px;font-size:13px;color:#ffd591;font-weight:600;margin-bottom:10px}
@@ -413,9 +414,14 @@ function maintSet(type){
 function drawMaint(){
   const local = maintGet();
   const now = maintNow();
+  // ปุ่มไฮไลต์ตามสถานะจริง: flag กลาง (code เช่น 'pm'->'PM') มาก่อน ไม่งั้นใช้ปุ่ม local
+  const activeType = SHARED_MAINT ? String(SHARED_MAINT.code||'').toUpperCase()
+                                  : (local ? local.type : null);
+  const sharedLock = !!SHARED_MAINT;   // โหมดทั้งระบบ = ล็อกปุ่ม local (ยกเลิกได้ที่ PC เท่านั้น)
   document.querySelectorAll('#maintbar .mbtn').forEach(b=>{
     const t = b.getAttribute('data-mt');
-    if(t !== 'OFF') b.classList.toggle('active', !!local && local.type === t);
+    if(t !== 'OFF') b.classList.toggle('active', activeType === t);
+    b.classList.toggle('locked', sharedLock);
   });
   const bar = document.getElementById('maintbar');
   if(bar) bar.classList.toggle('on', !!now);
@@ -424,7 +430,7 @@ function drawMaint(){
     if(now){
       const since = new Date(now.since).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
       st.textContent = now.shared
-        ? '● ทั้งระบบ: ' + now.label + ' — เริ่ม ' + since + ' น. (สั่งจาก PC)'
+        ? '● ทั้งระบบ: ' + now.label + ' — เริ่ม ' + since + ' น. · ยกเลิกที่ PC (Back_to_Normal.bat)'
         : '● พักแจ้งเตือน — เริ่ม ' + since + ' น. · คืนค่าอัตโนมัติใน 24 ชม.';
     } else st.textContent = '';
   }
