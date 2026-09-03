@@ -1,5 +1,6 @@
 @echo off
 cd /d "%~dp0"
+set TELEGRAM_INSECURE_SSL=1
 echo ==========================================
 echo   ITH - Back to NORMAL (resume alerts)
 echo ==========================================

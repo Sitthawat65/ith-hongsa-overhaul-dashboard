@@ -1,5 +1,6 @@
 @echo off
 cd /d "%~dp0"
+set TELEGRAM_INSECURE_SSL=1
 echo ==========================================
 echo   ITH - Enter maintenance mode: Shift Line Day
 echo   (pauses Server/stale alerts for everyone)
