@@ -577,14 +577,27 @@ def main():
     except Exception as e:
         print(f"(snapshot) ข้าม: {type(e).__name__} {e}")
 
-    # push ขึ้น GitHub
+    # push ขึ้น GitHub — ต้องทนกรณี remote มี commit อื่นมาก่อน (เช่นมีคนแก้หน้าเว็บ/ปุ่มด้วยมือ)
+    # เดิม push ตรงๆ: ถ้า remote มี commit ใหม่ที่ PC นี้ยังไม่มี จะโดน reject ทุก 5 นาที
+    # แล้วค้างถาวร (dashboard แช่แข็ง) จน pull เอง — บั๊กนี้ทำให้ค่าหยุดที่ 11:51 วันที่ 3 ก.ย.
+    def _git(*args):
+        return subprocess.run(["git", "-C", str(REPO_DIR), *args],
+                              creationflags=CREATE_NO_WINDOW,
+                              capture_output=True, text=True, encoding="utf-8", errors="replace")
     try:
-        subprocess.run(["git", "-C", str(REPO_DIR), "add", "temps.json", "temps_history.json"], check=True, creationflags=CREATE_NO_WINDOW)
-        subprocess.run(["git", "-C", str(REPO_DIR), "commit", "-m",
-                        f"Update temps {data['updated']}"], check=True, creationflags=CREATE_NO_WINDOW)
-        subprocess.run(["git", "-C", str(REPO_DIR), "push", "origin", "main"], check=True, creationflags=CREATE_NO_WINDOW)
+        _git("add", "temps.json", "temps_history.json")
+        _git("commit", "-m", f"Update temps {data['updated']}")   # 'nothing to commit' = ไม่เป็นไร
+        if _git("push", "origin", "main").returncode != 0:
+            # remote นำหน้าอยู่ -> ดึงมา rebase (commit ค่า temps ของเราไปต่อท้าย) แล้ว push ใหม่
+            if _git("pull", "--rebase", "origin", "main").returncode != 0:
+                # rebase ชนกัน (เช่นมีคนแก้ temps.json บน remote จริงๆ) -> ยอม sync ตรงกับ remote
+                # temps.json ถูกสร้างใหม่ทุกรอบอยู่แล้ว รอบหน้าจะเขียนทับให้เอง (เสียข้อมูลอย่างมาก 1 รอบ)
+                _git("rebase", "--abort")
+                _git("fetch", "origin", "main")
+                _git("reset", "--hard", "origin/main")
+            _git("push", "origin", "main")
         print(">> Pushed to GitHub Pages.")
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         print(f"(git) {e}")
 
 
