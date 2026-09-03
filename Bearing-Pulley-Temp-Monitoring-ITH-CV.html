@@ -240,7 +240,7 @@ function groupIssues(g){
   let outFault = fault;
   // โหมดงานซ่อมบำรุง: พักการแจ้งเตือน Server/Sensor error
   // (ค่าค้าง/ค่าเพี้ยนเป็นเรื่องปกติตอนดับไฟ PM / ย้ายเครื่อง / เลื่อนแนวสายพาน)
-  if(maintGet()){ server = false; outFault = []; }
+  if(maintActive()){ server = false; outFault = []; }
   return {hot, fault: outFault, server, newestSeen,
           bad: hot.length + outFault.length + (server ? 1 : 0)};
 }
@@ -289,8 +289,8 @@ function render(){
   });
   const ga = document.getElementById('grpAlert');
   const cur = groupIssues(activeGroup);
-  const mo = maintGet();
-  const ah = mo ? '<div class="mbox">🔧 โหมดงานซ่อมบำรุง: '+MAINT_LABEL[mo.type]
+  const mo = maintNow();
+  const ah = mo ? '<div class="mbox">🔧 โหมดงานซ่อมบำรุง: '+mo.label+(mo.shared?' (ทั้งระบบ)':'')
       +' — พักการแจ้งเตือน Server/Sensor error ชั่วคราว</div>' : '';
   if(cur.bad){
     let h = '<div class="box"><b>⚠ พบปัญหาในกลุ่ม '+activeGroup+':</b> ';
@@ -331,7 +331,7 @@ function render(){
       return '<td class="num stale" title="ค่าล่าสุดเมื่อ '+fmtTime(seen || DATA.updated)+'">'
         + '<div class="gwrap">'+gaugeSVG(v)+'<div class="gval">'
         + '<span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span>'
-        + '<div class="agetag">ค้าง '+ageText(age)+'</div></div></div></td>';
+        + '<div class="agetag">'+(maintActive()? '🔧 '+maintNow().label : 'ค้าง '+ageText(age))+'</div></div></div></td>';
     }
     return '<td class="'+cls+'"><div class="gwrap">'+gaugeSVG(v)+'<div class="gval">'
       + '<span class="v">'+v.toFixed(1)+'</span><span class="u">°C</span></div></div></td>';
@@ -379,6 +379,23 @@ setInterval(tickCountdown, 1000);
 const MAINT_KEY = 'ith_maint';
 const MAINT_MAX = 24 * 60 * 60 * 1000;
 const MAINT_LABEL = {PM:'PM Day', SHIFT:'Shift Line Day', RELOCATE:'Relocate Day'};
+// flag กลางจาก PC (maintenance.json ที่ push ขึ้น GitHub) — มีผลกับทุกคนที่เปิดดู
+let SHARED_MAINT = null;
+async function fetchSharedMaint(){
+  try{
+    const r = await fetch('maintenance.json?_=' + Date.now(), {cache:'no-store'});
+    if(r.ok){ const m = await r.json(); SHARED_MAINT = (m && m.active && m.mode) ? m : null; }
+    else SHARED_MAINT = null;
+  }catch(e){ SHARED_MAINT = null; }
+}
+// รวมสถานะ: flag กลาง (จาก PC) มาก่อน ไม่งั้นใช้ปุ่ม local ในเบราว์เซอร์นี้
+function maintNow(){
+  if(SHARED_MAINT) return {label: SHARED_MAINT.mode, since: Date.parse(SHARED_MAINT.since)||Date.now(), shared:true};
+  const o = maintGet();
+  if(o) return {label: MAINT_LABEL[o.type], since: o.since, shared:false};
+  return null;
+}
+function maintActive(){ return !!maintNow(); }
 function maintGet(){
   try{
     const o = JSON.parse(localStorage.getItem(MAINT_KEY) || 'null');
@@ -394,18 +411,21 @@ function maintSet(type){
   render();
 }
 function drawMaint(){
-  const mo = maintGet();
+  const local = maintGet();
+  const now = maintNow();
   document.querySelectorAll('#maintbar .mbtn').forEach(b=>{
     const t = b.getAttribute('data-mt');
-    if(t !== 'OFF') b.classList.toggle('active', !!mo && mo.type === t);
+    if(t !== 'OFF') b.classList.toggle('active', !!local && local.type === t);
   });
   const bar = document.getElementById('maintbar');
-  if(bar) bar.classList.toggle('on', !!mo);
+  if(bar) bar.classList.toggle('on', !!now);
   const st = document.getElementById('mstate');
   if(st){
-    if(mo){
-      const since = new Date(mo.since).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-      st.textContent = '● พักแจ้งเตือน — เริ่ม ' + since + ' น. · คืนค่าอัตโนมัติใน 24 ชม.';
+    if(now){
+      const since = new Date(now.since).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+      st.textContent = now.shared
+        ? '● ทั้งระบบ: ' + now.label + ' — เริ่ม ' + since + ' น. (สั่งจาก PC)'
+        : '● พักแจ้งเตือน — เริ่ม ' + since + ' น. · คืนค่าอัตโนมัติใน 24 ชม.';
     } else st.textContent = '';
   }
 }
@@ -422,6 +442,7 @@ async function load(){
   try{
     const r = await fetch('temps.json?_=' + Date.now(), {cache:'no-store'});
     DATA = await r.json();
+    await fetchSharedMaint();
     render();
   }catch(e){ console.error('load failed', e); }
 }
