@@ -380,7 +380,10 @@ setInterval(tickCountdown, 1000);
 const MAINT_KEY = 'ith_maint';
 const MAINT_MAX = 24 * 60 * 60 * 1000;
 const MAINT_LABEL = {PM:'PM Day', SHIFT:'Shift Line Day', RELOCATE:'Relocate Day'};
-// flag กลางจาก PC (maintenance.json ที่ push ขึ้น GitHub) — มีผลกับทุกคนที่เปิดดู
+// URL ของ Cloudflare Worker (สั่งโหมดทั้งระบบจากเว็บ) — เว้นว่าง = ยังไม่ตั้ง ปุ่มจะทำงานแบบ local
+const MAINT_WORKER_URL = '';
+const WORKER_MODE = {PM:'pm', SHIFT:'shift', RELOCATE:'relocate', OFF:'normal'};
+// flag กลางจาก PC/Worker (maintenance.json ที่ push ขึ้น GitHub) — มีผลกับทุกคนที่เปิดดู
 let SHARED_MAINT = null;
 async function fetchSharedMaint(){
   try{
@@ -417,7 +420,9 @@ function drawMaint(){
   // ปุ่มไฮไลต์ตามสถานะจริง: flag กลาง (code เช่น 'pm'->'PM') มาก่อน ไม่งั้นใช้ปุ่ม local
   const activeType = SHARED_MAINT ? String(SHARED_MAINT.code||'').toUpperCase()
                                   : (local ? local.type : null);
-  const sharedLock = !!SHARED_MAINT;   // โหมดทั้งระบบ = ล็อกปุ่ม local (ยกเลิกได้ที่ PC เท่านั้น)
+  // ล็อกปุ่มเมื่อโหมดทั้งระบบเปิดอยู่ "และยังไม่ได้ตั้ง Worker" (ยกเลิกได้ที่ PC เท่านั้น)
+  // ถ้าตั้ง Worker แล้ว ปุ่มกดได้ปกติเพื่อสั่ง/ยกเลิกทั้งระบบ
+  const sharedLock = !!SHARED_MAINT && !MAINT_WORKER_URL;
   document.querySelectorAll('#maintbar .mbtn').forEach(b=>{
     const t = b.getAttribute('data-mt');
     if(t !== 'OFF') b.classList.toggle('active', activeType === t);
@@ -430,19 +435,55 @@ function drawMaint(){
     if(now){
       const since = new Date(now.since).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
       st.textContent = now.shared
-        ? '● ทั้งระบบ: ' + now.label + ' — เริ่ม ' + since + ' น. · ยกเลิกที่ PC (Back_to_Normal.bat)'
+        ? '● ทั้งระบบ: ' + now.label + ' — เริ่ม ' + since + ' น.'
+          + (MAINT_WORKER_URL ? ' · กด กลับสู่ปกติ เพื่อยกเลิก' : ' · ยกเลิกที่ PC (Back_to_Normal.bat)')
         : '● พักแจ้งเตือน — เริ่ม ' + since + ' น. · คืนค่าอัตโนมัติใน 24 ชม.';
     } else st.textContent = '';
   }
 }
+// ---- สั่งโหมดทั้งระบบผ่าน Cloudflare Worker (ถ้าตั้ง MAINT_WORKER_URL ไว้) ----
+function maintPin(){
+  let p = '';
+  try{ p = sessionStorage.getItem('ith_maint_pin') || ''; }catch(e){}
+  if(!p){
+    p = (prompt('ใส่ PIN เพื่อสั่งโหมดซ่อมบำรุง:') || '').trim();
+    if(p){ try{ sessionStorage.setItem('ith_maint_pin', p); }catch(e){} }
+  }
+  return p;
+}
+async function callWorker(mode){
+  const pin = maintPin();
+  if(!pin) return;
+  try{
+    const r = await fetch(MAINT_WORKER_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({mode, pin})
+    });
+    const j = await r.json().catch(()=>({}));
+    if(r.status === 403){ try{ sessionStorage.removeItem('ith_maint_pin'); }catch(e){} alert('PIN ไม่ถูกต้อง ลองใหม่'); return; }
+    if(!r.ok){ alert('สั่งไม่สำเร็จ: ' + (j.error || ('HTTP '+r.status))); return; }
+    // อัปเดตทันที (optimistic) จากผลลัพธ์ที่ Worker คืนมา ไม่ต้องรอ GitHub Pages rebuild
+    if(j && j.state){ SHARED_MAINT = (j.state.active && j.state.mode) ? j.state : null; render(); }
+  }catch(e){ alert('เชื่อมต่อ Worker ไม่ได้: ' + e); }
+}
 document.querySelectorAll('#maintbar .mbtn').forEach(b=>{
   b.addEventListener('click', ()=>{
-    const t = b.getAttribute('data-mt'), cur = maintGet();
-    if(t === 'OFF' || (cur && cur.type === t)) maintSet('OFF');   // กดปุ่มเดิมซ้ำ = ปิดโหมด
-    else maintSet(t);
+    const t = b.getAttribute('data-mt');
+    if(MAINT_WORKER_URL){
+      let mode = WORKER_MODE[t];
+      // กดปุ่มโหมดที่กำลังเปิดอยู่ซ้ำ = สั่งกลับสู่ปกติ
+      if(t !== 'OFF' && SHARED_MAINT && String(SHARED_MAINT.code||'').toUpperCase() === t) mode = 'normal';
+      callWorker(mode);
+    } else {
+      const cur = maintGet();
+      if(t === 'OFF' || (cur && cur.type === t)) maintSet('OFF');   // กดปุ่มเดิมซ้ำ = ปิดโหมด (local)
+      else maintSet(t);
+    }
   });
 });
 drawMaint();
+// ดึงสถานะโหมดทั้งระบบซ้ำทุก 60 วินาที เพื่อให้ทุกคนเห็นการเปลี่ยนแปลงเร็วขึ้น
+setInterval(async ()=>{ await fetchSharedMaint(); render(); }, 60000);
 
 async function load(){
   try{
