@@ -94,6 +94,10 @@
   .tipx{border:none;background:#22344a;color:#cdd9e5;width:20px;height:20px;border-radius:6px;cursor:pointer;font-size:12px;line-height:1;flex:none}
   .tipx:hover{background:#31465c}
 
+  .annlegend{max-width:1200px;margin:14px auto 0;display:flex;flex-wrap:wrap;gap:8px 26px;justify-content:center;align-items:center;color:var(--muted);font-size:12.5px}
+  .annitem{display:inline-flex;align-items:center;gap:8px}
+  .annitem svg{flex:none}
+  .annitem b{font-weight:700}
   footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
   .printonly{display:none}
 
@@ -181,6 +185,11 @@
     <div class="chartwrap" id="chartwrap">
       <div class="empty" id="emptyMsg">กำลังโหลดข้อมูล…</div>
     </div>
+  </div>
+
+  <div class="annlegend">
+    <span class="annitem"><svg width="30" height="10" viewBox="0 0 30 10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="#e02424" stroke-width="1.6" stroke-dasharray="3 3"/></svg> <b style="color:#e02424">Sensor Error</b> — ค่าอยู่นอกช่วงที่วัดได้ (เซ็นเซอร์ผิดปกติ)</span>
+    <span class="annitem"><svg width="30" height="10" viewBox="0 0 30 10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="#f59e0b" stroke-width="1.6" stroke-dasharray="4 3"/></svg> <b style="color:#f59e0b">Server / Converter Error</b> — ฟีดข้อมูลจาก Primus ค้าง/หยุดอัปเดต</span>
   </div>
 
   <div class="legend" id="legend"></div>
@@ -375,23 +384,15 @@ function drawChart(){
   const held = DEV_GROUPS.indexOf(group) > -1;
   if(errRuns.length && !held){
     errRuns.sort((a,b)=>a.x0-b.x0);
-    let lastLabelX = -1e9;
     errRuns.forEach(r=>{
       const xc = (r.x0+r.x1)/2;
-      // แถบแดงจาง ๆ คลุมช่วงเวลาที่เสีย เต็มความสูง
-      parts.push('<rect x="'+(r.x0-2).toFixed(1)+'" y="'+mT+'" width="'+Math.max(4,(r.x1-r.x0+4)).toFixed(1)+'" height="'+(H-mT-mB)+'" fill="#e02424" opacity="0.08"/>');
-      // เส้นประแดงตรงกลางช่วง
-      parts.push('<line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#e02424" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>');
+      const ttl = 'Sensor Error · '+esc(r.label)+' = '+(+r.vmax).toFixed(1)+'°C ('+fmtTime(new Date(r.t0).toISOString())+(r.n>1?' – '+fmtTime(new Date(r.t1).toISOString()):'')+')';
+      // เส้นประแดงบาง ๆ ตรงช่วงที่เสีย (มี tooltip อธิบาย)
+      parts.push('<g class="errmk"><line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#e02424" stroke-width="1" stroke-dasharray="3 3" opacity="0.55"/>'
+        + '<title>'+ttl+'</title></g>');
       // จุดสี่เหลี่ยมสีเส้น (บอกว่าเป็นเซ็นเซอร์ตัวไหน) + tooltip
       parts.push('<rect class="errmk" x="'+(xc-3).toFixed(1)+'" y="'+(H-mB-9)+'" width="6" height="6" rx="1" fill="'+r.col+'" stroke="#e02424" stroke-width="1.4">'
-        + '<title>Sensor Error · '+esc(r.label)+' = '+(+r.vmax).toFixed(1)+'°C ('+fmtTime(new Date(r.t0).toISOString())+(r.n>1?' – '+fmtTime(new Date(r.t1).toISOString()):'')+')</title></rect>');
-      // ป้ายข้อความชัด ๆ ด้านบน เว้นอย่างน้อย 92px กันทับ
-      if(xc - lastLabelX >= 92){
-        const tx = Math.min(Math.max(xc, mL+52), W-mR-52);
-        parts.push('<g class="errlbl"><rect x="'+(tx-50).toFixed(1)+'" y="'+(mT+2)+'" width="100" height="15" rx="3" fill="#e02424"/>'
-          + '<text x="'+tx.toFixed(1)+'" y="'+(mT+13)+'" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">⚠ Sensor Error</text></g>');
-        lastLabelX = xc;
-      }
+        + '<title>'+ttl+'</title></rect>');
     });
   }
 
@@ -409,22 +410,14 @@ function drawChart(){
   })();
   // เก็บเฉพาะช่วงที่ค้าง >= 2 ช่วงเวลา (~10 นาที) กันสัญญาณรบกวน
   const STALL_MIN = 2;
-  let lastSrvX = -1e9;
   stallRuns.forEach(([a,b])=>{
     if(held) return;
     if(b-a < STALL_MIN) return;
     const x0=px(rows[a].t), x1=px(rows[b].t), xc=(x0+x1)/2;
-    // แถบเทาคลุมช่วงที่ไม่มีข้อมูลสด
-    parts.push('<rect x="'+x0.toFixed(1)+'" y="'+mT+'" width="'+Math.max(3,(x1-x0)).toFixed(1)+'" height="'+(H-mT-mB)+'" fill="#64748b" opacity="0.14"/>');
-    // เส้นประเหลืองอำพันตรงกลาง
-    parts.push('<line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>');
-    // ป้าย "Server / Converter Error" ด้านบน (ใต้ป้าย Sensor Error) เว้นระยะกันทับ
-    if(xc - lastSrvX >= 150){
-      const tx = Math.min(Math.max(xc, mL+78), W-mR-78);
-      parts.push('<g class="srvlbl"><rect x="'+(tx-76).toFixed(1)+'" y="'+(mT+20)+'" width="152" height="15" rx="3" fill="#b45309"/>'
-        + '<text x="'+tx.toFixed(1)+'" y="'+(mT+31)+'" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">\u26A0 Server / Converter Error</text></g>');
-      lastSrvX = xc;
-    }
+    const ttl = 'Server / Converter Error · ฟีดข้อมูลค้าง ('+fmtTime(new Date(rows[a].t).toISOString())+' – '+fmtTime(new Date(rows[b].t).toISOString())+')';
+    // เส้นประเหลืองอำพันบาง ๆ ตรงช่วงที่ฟีดค้าง (มี tooltip)
+    parts.push('<g class="errmk"><line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>'
+      + '<title>'+ttl+'</title></g>');
   });
   // hover overlay
   parts.push('<line id="cross" x1="0" y1="'+mT+'" x2="0" y2="'+(H-mB)+'" stroke="#9cc2ff" stroke-width="1" opacity="0"/>');
