@@ -95,9 +95,12 @@
   .tipx:hover{background:#31465c}
 
   .annlegend{max-width:1200px;margin:14px auto 0;display:flex;flex-wrap:wrap;gap:8px 26px;justify-content:center;align-items:center;color:var(--muted);font-size:12.5px}
-  .annitem{display:inline-flex;align-items:center;gap:8px}
+  .annitem{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:3px 9px;border-radius:999px;border:1px solid transparent;transition:opacity .12s,border-color .12s,background .12s}
+  .annitem:hover{border-color:var(--line);background:var(--panel)}
   .annitem svg{flex:none}
   .annitem b{font-weight:700}
+  .annitem.off{opacity:.4}
+  .annitem.off b{text-decoration:line-through}
   footer{max-width:1200px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
   .printonly{display:none}
 
@@ -188,8 +191,9 @@
   </div>
 
   <div class="annlegend">
-    <span class="annitem"><svg width="30" height="10" viewBox="0 0 30 10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="#e02424" stroke-width="1.6" stroke-dasharray="3 3"/></svg> <b style="color:#e02424">Sensor Error</b> — ค่าอยู่นอกช่วงที่วัดได้ (เซ็นเซอร์ผิดปกติ)</span>
-    <span class="annitem"><svg width="30" height="10" viewBox="0 0 30 10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="#f59e0b" stroke-width="1.6" stroke-dasharray="4 3"/></svg> <b style="color:#f59e0b">Server / Converter Error</b> — ฟีดข้อมูลจาก Primus ค้าง/หยุดอัปเดต</span>
+    <span class="lgctrl">คำอธิบาย (คลิกเพื่อซ่อน/แสดง):</span>
+    <span class="annitem" id="annSensor" role="button" tabindex="0" title="คลิกเพื่อซ่อน/แสดงเส้น Sensor Error"><svg width="30" height="10" viewBox="0 0 30 10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="#22d3ee" stroke-width="1.8" stroke-dasharray="3 3"/></svg> <b style="color:#22d3ee">Sensor Error</b> — ค่าอยู่นอกช่วงที่วัดได้ (เซ็นเซอร์ผิดปกติ)</span>
+    <span class="annitem" id="annServer" role="button" tabindex="0" title="คลิกเพื่อซ่อน/แสดงเส้น Server / Converter Error"><svg width="30" height="10" viewBox="0 0 30 10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="4 3"/></svg> <b style="color:#94a3b8">Server / Converter Error</b> — ฟีดข้อมูลจาก Primus ค้าง/หยุดอัปเดต</span>
   </div>
 
   <div class="legend" id="legend"></div>
@@ -230,6 +234,10 @@ let yMaxSel = 'auto';    // เพดานแกน Y: 'auto' หรือ 85/9
 let customDateRange = null;   // {from,to} เป็น ms เมื่อเลือกช่วงวันที่เอง (null = ใช้ปุ่มย้อนหลัง)
 let pinnedTime = null;   // เวลา (ms) ของหมุดที่คลิกค้างไว้ (null = ไม่ปัก)
 const hidden = {};    // { group: Set(tagIndex ที่ปิด) }
+// สีเส้นประ error — เลือกให้ไม่ซ้ำเส้นเกณฑ์ 70°C (ส้ม) / 80°C (แดง)
+const C_SENSOR = '#22d3ee';   // Sensor Error = ฟ้า
+const C_SERVER = '#94a3b8';   // Server / Converter Error = เทา
+const showErr = { sensor:true, server:true };   // เปิด/ปิดเส้น error ได้
 
 function fmtTime(iso){
   try{ return new Date(iso).toLocaleString('th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' น.'; }
@@ -382,16 +390,16 @@ function drawChart(){
   });
   // ป้าย "Sensor Error" ที่เห็นชัด — 1 ป้ายต่อ 1 ช่วงที่เสีย เว้นระยะกันไม่ให้ทับ
   const held = DEV_GROUPS.indexOf(group) > -1;
-  if(errRuns.length && !held){
+  if(errRuns.length && !held && showErr.sensor){
     errRuns.sort((a,b)=>a.x0-b.x0);
     errRuns.forEach(r=>{
       const xc = (r.x0+r.x1)/2;
       const ttl = 'Sensor Error · '+esc(r.label)+' = '+(+r.vmax).toFixed(1)+'°C ('+fmtTime(new Date(r.t0).toISOString())+(r.n>1?' – '+fmtTime(new Date(r.t1).toISOString()):'')+')';
-      // เส้นประแดงบาง ๆ ตรงช่วงที่เสีย (มี tooltip อธิบาย)
-      parts.push('<g class="errmk"><line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#e02424" stroke-width="1" stroke-dasharray="3 3" opacity="0.55"/>'
+      // เส้นประฟ้าบาง ๆ ตรงช่วงที่เสีย (มี tooltip อธิบาย)
+      parts.push('<g class="errmk"><line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="'+C_SENSOR+'" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>'
         + '<title>'+ttl+'</title></g>');
       // จุดสี่เหลี่ยมสีเส้น (บอกว่าเป็นเซ็นเซอร์ตัวไหน) + tooltip
-      parts.push('<rect class="errmk" x="'+(xc-3).toFixed(1)+'" y="'+(H-mB-9)+'" width="6" height="6" rx="1" fill="'+r.col+'" stroke="#e02424" stroke-width="1.4">'
+      parts.push('<rect class="errmk" x="'+(xc-3).toFixed(1)+'" y="'+(H-mB-9)+'" width="6" height="6" rx="1" fill="'+r.col+'" stroke="'+C_SENSOR+'" stroke-width="1.4">'
         + '<title>'+ttl+'</title></rect>');
     });
   }
@@ -411,12 +419,12 @@ function drawChart(){
   // เก็บเฉพาะช่วงที่ค้าง >= 2 ช่วงเวลา (~10 นาที) กันสัญญาณรบกวน
   const STALL_MIN = 2;
   stallRuns.forEach(([a,b])=>{
-    if(held) return;
+    if(held || !showErr.server) return;
     if(b-a < STALL_MIN) return;
     const x0=px(rows[a].t), x1=px(rows[b].t), xc=(x0+x1)/2;
     const ttl = 'Server / Converter Error · ฟีดข้อมูลค้าง ('+fmtTime(new Date(rows[a].t).toISOString())+' – '+fmtTime(new Date(rows[b].t).toISOString())+')';
-    // เส้นประเหลืองอำพันบาง ๆ ตรงช่วงที่ฟีดค้าง (มี tooltip)
-    parts.push('<g class="errmk"><line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>'
+    // เส้นประเทาบาง ๆ ตรงช่วงที่ฟีดค้าง (มี tooltip)
+    parts.push('<g class="errmk"><line x1="'+xc.toFixed(1)+'" y1="'+mT+'" x2="'+xc.toFixed(1)+'" y2="'+(H-mB)+'" stroke="'+C_SERVER+'" stroke-width="1" stroke-dasharray="4 3" opacity="0.75"/>'
       + '<title>'+ttl+'</title></g>');
   });
   // hover overlay
@@ -578,6 +586,17 @@ window.addEventListener('beforeprint', ()=>{
     ' · ข้อมูลล่าสุด '+(HIST?fmtTime(HIST.updated):'-')+' · พิมพ์เมื่อ '+new Date().toLocaleString('th-TH');
 });
 document.getElementById('pdfBtn').addEventListener('click', ()=>{ window.print(); });
+
+// เปิด/ปิดเส้น Sensor Error / Server-Converter Error จากคำอธิบายใต้กราฟ
+function bindAnnToggle(id, key){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const toggle = ()=>{ showErr[key] = !showErr[key]; el.classList.toggle('off', !showErr[key]); if(HIST) drawChart(); };
+  el.addEventListener('click', toggle);
+  el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+}
+bindAnnToggle('annSensor','sensor');
+bindAnnToggle('annServer','server');
 
 // ---------- ปฏิทินเลือกช่วงวันที่ ----------
 const TH_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
