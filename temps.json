@@ -1,55 +1,67 @@
 {
-  "updated": "2026-09-05T07:47:30+07:00",
+  "updated": "2026-09-05T07:51:23+07:00",
   "source": "Primus dashboards (socket.io): SPD + BWE1 + BWE2",
   "groups": {
-    "BWE2": [
+    "CR1": [
       {
-        "tag": "BWE2_DE_WCV_L",
-        "value": 29.4,
-        "color": "#2e7d32",
-        "seen": "2026-09-05T05:46:16+07:00"
+        "tag": "CR1_NDE_SPL_L",
+        "value": 34.0,
+        "color": "#f8e71c",
+        "seen": "2026-09-05T07:51:10+07:00"
       },
       {
-        "tag": "BWE2_DE_WCV_R",
-        "value": 32.7,
-        "color": "#2e7d32",
-        "seen": "2026-09-05T05:46:16+07:00"
+        "tag": "CR1_NDE_SPL_R",
+        "value": 30.3,
+        "color": "#f8e71c",
+        "seen": "2026-09-05T07:51:10+07:00"
       },
       {
-        "tag": "BWE2_NDE_WCV_L",
-        "value": 32.5,
-        "color": "#e6d800",
-        "seen": "2026-09-05T05:46:16+07:00"
+        "tag": "CR1_DE_SPL_L",
+        "value": 32.2,
+        "color": "#f5a623",
+        "seen": "2026-09-05T07:51:10+07:00"
       },
       {
-        "tag": "BWE2_NDE_WCV_R",
-        "value": 16.4,
-        "color": "#e6d800",
-        "seen": "2026-09-05T05:46:16+07:00"
+        "tag": "CR1_DE_SPL_R",
+        "value": 30.8,
+        "color": "#f5a623",
+        "seen": "2026-09-05T07:51:10+07:00"
       },
       {
-        "tag": "BWE2_DE_DCV_L",
-        "value": 31.5,
-        "color": "#cc00cc",
-        "seen": "2026-09-05T05:46:16+07:00"
+        "tag": "CR1_NDE_DCV_L",
+        "value": 51.6,
+        "color": "#7ed321",
+        "seen": "2026-09-05T07:51:10+07:00"
       },
       {
-        "tag": "BWE2_DE_DCV_R",
-        "value": 37.4,
-        "color": "#cc00cc",
-        "seen": "2026-09-05T05:46:16+07:00"
+        "tag": "CR1_NDE_DCV_R",
+        "value": 41.9,
+        "color": "#7ed321",
+        "seen": "2026-09-05T07:51:10+07:00"
       },
       {
-        "tag": "BWE2_NDE_DCV_L",
-        "value": 34.1,
-        "color": "#8b5a2b",
-        "seen": "2026-09-05T05:46:06+07:00"
+        "tag": "CR1_SNUB_L",
+        "value": 45.3,
+        "color": "#9013fe",
+        "seen": "2026-09-05T07:51:10+07:00"
       },
       {
-        "tag": "BWE2_NDE_DCV_R",
-        "value": 43.6,
-        "color": "#8b5a2b",
-        "seen": "2026-09-05T07:46:26+07:00"
+        "tag": "CR1_SNUB_R",
+        "value": 39.9,
+        "color": "#9013fe",
+        "seen": "2026-09-05T07:51:10+07:00"
+      },
+      {
+        "tag": "CR1_DE_DCV_L",
+        "value": 35.8,
+        "color": "#2f7d32",
+        "seen": "2026-09-05T07:51:10+07:00"
+      },
+      {
+        "tag": "CR1_DE_DCV_R",
+        "value": 33.0,
+        "color": "#2f7d32",
+        "seen": "2026-09-05T07:51:10+07:00"
       }
     ],
     "SPD": [
@@ -146,66 +158,54 @@
         "seen": "2026-08-27T08:00:51+07:00"
       }
     ],
-    "CR1": [
+    "BWE2": [
       {
-        "tag": "CR1_NDE_SPL_L",
+        "tag": "BWE2_DE_WCV_L",
+        "value": 29.4,
+        "color": "#2e7d32",
+        "seen": "2026-09-05T05:46:16+07:00"
+      },
+      {
+        "tag": "BWE2_DE_WCV_R",
+        "value": 32.7,
+        "color": "#2e7d32",
+        "seen": "2026-09-05T05:46:16+07:00"
+      },
+      {
+        "tag": "BWE2_NDE_WCV_L",
+        "value": 32.5,
+        "color": "#e6d800",
+        "seen": "2026-09-05T05:46:16+07:00"
+      },
+      {
+        "tag": "BWE2_NDE_WCV_R",
+        "value": 16.4,
+        "color": "#e6d800",
+        "seen": "2026-09-05T05:46:16+07:00"
+      },
+      {
+        "tag": "BWE2_DE_DCV_L",
+        "value": 31.5,
+        "color": "#cc00cc",
+        "seen": "2026-09-05T05:46:16+07:00"
+      },
+      {
+        "tag": "BWE2_DE_DCV_R",
+        "value": 37.4,
+        "color": "#cc00cc",
+        "seen": "2026-09-05T05:46:16+07:00"
+      },
+      {
+        "tag": "BWE2_NDE_DCV_L",
         "value": 34.1,
-        "color": "#f8e71c",
-        "seen": "2026-09-05T07:26:20+07:00"
+        "color": "#8b5a2b",
+        "seen": "2026-09-05T05:46:06+07:00"
       },
       {
-        "tag": "CR1_NDE_SPL_R",
-        "value": 30.2,
-        "color": "#f8e71c",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_DE_SPL_L",
-        "value": 32.2,
-        "color": "#f5a623",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_DE_SPL_R",
-        "value": 30.7,
-        "color": "#f5a623",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_NDE_DCV_L",
-        "value": 51.5,
-        "color": "#7ed321",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_NDE_DCV_R",
-        "value": 41.3,
-        "color": "#7ed321",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_SNUB_L",
-        "value": 45.0,
-        "color": "#9013fe",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_SNUB_R",
-        "value": 39.8,
-        "color": "#9013fe",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_DE_DCV_L",
-        "value": 35.6,
-        "color": "#2f7d32",
-        "seen": "2026-09-05T07:30:33+07:00"
-      },
-      {
-        "tag": "CR1_DE_DCV_R",
-        "value": 33.0,
-        "color": "#2f7d32",
-        "seen": "2026-09-05T07:30:33+07:00"
+        "tag": "BWE2_NDE_DCV_R",
+        "value": 43.6,
+        "color": "#8b5a2b",
+        "seen": "2026-09-05T07:46:26+07:00"
       }
     ]
   }
