@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-07T10:31:22+07:00",
+  "updated": "2026-09-07T10:36:22+07:00",
   "source": "Primus dashboards (socket.io): SPD + BWE1 + BWE2",
   "groups": {
     "CR1": [
@@ -7,7 +7,7 @@
         "tag": "CR1_NDE_SPL_L",
         "value": 34.4,
         "color": "#f8e71c",
-        "seen": "2026-09-07T10:30:31+07:00"
+        "seen": "2026-09-07T10:35:57+07:00"
       },
       {
         "tag": "CR1_NDE_SPL_R",
@@ -25,7 +25,7 @@
         "tag": "CR1_DE_SPL_R",
         "value": 33.1,
         "color": "#f5a623",
-        "seen": "2026-09-07T10:30:47+07:00"
+        "seen": "2026-09-07T10:36:13+07:00"
       },
       {
         "tag": "CR1_NDE_DCV_L",
@@ -35,15 +35,15 @@
       },
       {
         "tag": "CR1_NDE_DCV_R",
-        "value": 40.0,
+        "value": 40.1,
         "color": "#7ed321",
-        "seen": "2026-09-07T10:30:31+07:00"
+        "seen": "2026-09-07T10:35:57+07:00"
       },
       {
         "tag": "CR1_SNUB_L",
-        "value": 42.3,
+        "value": 42.1,
         "color": "#9013fe",
-        "seen": "2026-09-07T10:21:17+07:00"
+        "seen": "2026-09-07T10:35:42+07:00"
       },
       {
         "tag": "CR1_SNUB_R",
